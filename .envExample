@@ -1,0 +1,11 @@
+# mongoDB
+MONGO_USERNAME=
+MONGO_PASSWORD=
+MONGO_DOMAIN=cluster0.ndg09.mongodb.net
+MONGO_NAME=sixnode
+
+JWT_SECRET=dfklmihjuoi123hjkhjk12
+
+DEFAULT_ADMIN_USERNAME=admin
+DEFAULT_ADMIN_PASSWORD=admin
+DEFAULT_ADMIN_EMAIL=admin@gmail.com
