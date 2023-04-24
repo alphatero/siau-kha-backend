@@ -12,11 +12,11 @@ import {
 import { ApiCreatedResponse, ApiHeader, ApiTags } from '@nestjs/swagger';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
-import { JwtGuard, RoleGuard } from 'src/common/guards';
+import { JwtGuard } from 'src/common/guards';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 
 @ApiTags('Todo')
-@UseGuards(JwtGuard, RoleGuard)
+@UseGuards(JwtGuard)
 @Controller('todos')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}

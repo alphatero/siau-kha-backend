@@ -7,6 +7,7 @@ import {
 import { Response } from 'express';
 import { Observable, map } from 'rxjs';
 
+// todo 建立一個攔截器，將回傳的資料包裝成 { status  message data }
 @Injectable()
 export class ResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
@@ -15,7 +16,6 @@ export class ResponseInterceptor implements NestInterceptor {
     const code = response.statusCode;
     return next.handle().pipe(
       map((data) => {
-        console.log('data', data);
         const timestamp = new Date().toISOString();
         return {
           code,

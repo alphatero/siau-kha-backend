@@ -18,7 +18,8 @@ export class UserService implements OnApplicationBootstrap {
   ) {}
 
   async onApplicationBootstrap() {
-    await this.createDefaultAdmin();
+    // 在系統啟動時，建立預設管理員帳號
+    // await this.createDefaultAdmin();
   }
 
   public async createUser(dto: CreateUserDto) {
@@ -28,6 +29,7 @@ export class UserService implements OnApplicationBootstrap {
     return this.userModel.create({ ...dto, password: hash });
   }
 
+  // 建立初始管理員帳號
   public async createDefaultAdmin() {
     const { username, password, email } = this.configService.get('admin');
 

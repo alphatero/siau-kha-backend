@@ -6,25 +6,34 @@ import {
   SwaggerModule,
 } from '@nestjs/swagger';
 import { INestApplication } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // 設定全域路由前綴
+  app.setGlobalPrefix('api');
+
+  // 取得port環境變數
+  const port = app.get(ConfigService).get('PORT');
+
+  // 設定Swagger
   setupSwagger(app);
-  await app.listen(5008);
+  await app.listen(port);
 }
 
 function setupSwagger(app: INestApplication) {
   const configs = new DocumentBuilder()
-    .setTitle('Todo API')
-    .setDescription('Swagger x NestJs')
-    .setVersion('1.0')
+    .setTitle('siau-kha API')
+    .setDescription('siau-kha Swagger')
+    .setVersion('0.0.1')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, configs);
   const options: SwaggerCustomOptions = {
     explorer: true,
   };
-  SwaggerModule.setup('api', app, document, options);
+  SwaggerModule.setup('swagger-ui', app, document, options);
 }
 
 bootstrap();

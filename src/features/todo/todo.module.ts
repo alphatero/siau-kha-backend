@@ -6,12 +6,12 @@ import { Todo, TodoSchema } from 'src/core/models/todo';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      {
-        name: Todo.name,
-        schema: TodoSchema,
-      },
-    ]),
+    // MongooseModule.forFeature([
+    //   {
+    //     name: Todo.name,
+    //     schema: TodoSchema,
+    //   },
+    // ]),
   ],
   controllers: [TodoController],
   providers: [TodoService],
