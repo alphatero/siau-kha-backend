@@ -13,9 +13,9 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtGuard, RoleGuard } from 'src/common/guards';
+import { JwtGuard } from 'src/common/guards';
 
-@UseGuards(JwtGuard, RoleGuard)
+@UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -37,12 +37,6 @@ export class UserController {
     const document = await this.userService.updateUser(id, dto);
     return document.toJSON();
   }
-
-  // @Get(':id')
-  // async getUser(@Param('id') id: string) {
-  //   const document = await this.userService.getUser(id);
-  //   return document.toJSON();
-  // }
 
   @Get()
   async getUsers(@Query('skip') skip: number, @Query('limit') limit: number) {

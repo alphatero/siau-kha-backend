@@ -1,21 +1,22 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+// import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { join } from 'path';
 
 import {
   GLOBAL_VALIDATION_PIPE,
   GLOBAL_RESPONSE_INTERCEPTOR,
+  GLOBAL_HTTP_EXCEPTION,
 } from './common/providers';
-import { AuthorizationModule } from './common/modules/authorization';
+
+import { AppController } from './app.controller';
 
 import secretConfig from './configs/secret.config';
 import databaseConfig from './configs/database.config';
 import adminConfig from './configs/admin.config';
 
-import { UserModule } from './features/user';
-import { AuthModule } from './features/auth';
-import { TodoModule } from './features/todo';
+// import { AuthModule } from './features/auth';
+// import { UserModule } from './features/user';
+// import { TodoModule } from './features/todo';
 
 @Module({
   imports: [
@@ -23,23 +24,26 @@ import { TodoModule } from './features/todo';
       isGlobal: true,
       load: [databaseConfig, secretConfig, adminConfig],
     }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        uri: configService.get<string>('mongo.uri'),
-      }),
-    }),
-    AuthorizationModule.register({
-      modelPath: join(__dirname, '../casbin/model.conf'),
-      policyAdapter: join(__dirname, '../casbin/policy.csv'),
-      global: true,
-    }),
-    UserModule,
-    AuthModule,
-    TodoModule,
+    // todo 建立資料庫連線
+    // MongooseModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   inject: [ConfigService],
+    //   useFactory: (configService: ConfigService) => ({
+    //     uri: configService.get<string>('mongo.uri'),
+    //   }),
+    // }),
+
+    // todo 建立權限管理模組
+    // AuthModule,
   ],
-  controllers: [],
-  providers: [GLOBAL_VALIDATION_PIPE, GLOBAL_RESPONSE_INTERCEPTOR],
+  controllers: [AppController],
+  providers: [
+    // * DTO 驗證
+    GLOBAL_VALIDATION_PIPE,
+    // * 回傳資料格式
+    GLOBAL_RESPONSE_INTERCEPTOR,
+    // * 全域錯誤處理
+    GLOBAL_HTTP_EXCEPTION,
+  ],
 })
 export class AppModule {}

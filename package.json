@@ -30,7 +30,6 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.3.0",
     "bcrypt": "^5.1.0",
-    "casbin": "^5.26.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "flat": "^5.0.2",
