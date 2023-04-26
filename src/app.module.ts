@@ -26,7 +26,7 @@ import { UserModule } from './features/user';
     }),
     // todo 建立資料庫連線
     MongooseModule.forRootAsync({
-      imports: [ConfigModule,UserModule],
+      imports: [ConfigModule, UserModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         uri: configService.get<string>('mongo.uri'),
