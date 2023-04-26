@@ -23,7 +23,6 @@ export class UserService implements OnApplicationBootstrap {
   }
 
   public async createUser(dto: CreateUserDto) {
-    console.log(dto);
     const { password } = dto;
     const hash = await bcrypt.hash(password, 12);
     return this.userModel.create({ ...dto, password: hash });
