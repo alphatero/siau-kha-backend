@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-// import { MongooseModule } from '@nestjs/mongoose';
+import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import {
@@ -15,7 +15,7 @@ import databaseConfig from './configs/database.config';
 import adminConfig from './configs/admin.config';
 
 // import { AuthModule } from './features/auth';
-// import { UserModule } from './features/user';
+import { UserModule } from './features/user';
 // import { TodoModule } from './features/todo';
 
 @Module({
@@ -25,13 +25,13 @@ import adminConfig from './configs/admin.config';
       load: [databaseConfig, secretConfig, adminConfig],
     }),
     // todo 建立資料庫連線
-    // MongooseModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //   inject: [ConfigService],
-    //   useFactory: (configService: ConfigService) => ({
-    //     uri: configService.get<string>('mongo.uri'),
-    //   }),
-    // }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule,UserModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.get<string>('mongo.uri'),
+      }),
+    }),
 
     // todo 建立權限管理模組
     // AuthModule,
