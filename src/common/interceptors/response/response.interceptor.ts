@@ -7,7 +7,7 @@ import {
 import { Observable, map } from 'rxjs';
 @Injectable()
 export class ResponseInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(_: ExecutionContext, next: CallHandler): Observable<any> {
     const status = 'success';
     const message = '成功';
 

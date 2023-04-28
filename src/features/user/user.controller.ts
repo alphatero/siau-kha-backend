@@ -13,12 +13,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtGuard } from 'src/common/guards';
-import {
-  ApiTags,
-  ApiExcludeEndpoint,
-  ApiBearerAuth,
-  ApiQuery,
-} from '@nestjs/swagger';
+import { ApiTags, ApiExcludeEndpoint, ApiBearerAuth } from '@nestjs/swagger';
 
 @UseGuards(JwtGuard)
 @Controller('users')

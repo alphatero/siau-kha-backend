@@ -28,7 +28,7 @@ function setupSwagger(app: INestApplication) {
     .setDescription('siau-kha Swagger')
     .setVersion('0.1.0')
     .addBearerAuth()
-    .addTag('auth')
+    .addTag('Auth')
     .build();
   const document = SwaggerModule.createDocument(app, configs);
   const options: SwaggerCustomOptions = {

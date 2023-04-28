@@ -50,14 +50,14 @@ export class User {
   @Prop()
   updated_time: Date;
 
-  @Prop()
-  last_login_time: Date;
-
   @Prop({ default: false })
   is_blocked: boolean;
 
   @Prop()
   set_blocked_time: Date;
+
+  @Prop()
+  last_sign_in_time: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

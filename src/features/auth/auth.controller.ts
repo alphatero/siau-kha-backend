@@ -6,7 +6,7 @@ import { IUserPayload } from './models/payload.model';
 import { LocalGuard } from 'src/common/guards';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('auth')
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -28,6 +28,7 @@ export class AuthController {
   })
   @Post('signin')
   async signin(@UserPayload() payload: IUserPayload) {
+    await this.userService.updateUserSignInTime(payload.id);
     const user_info = Object.assign(
       {},
       payload,
