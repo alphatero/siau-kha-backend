@@ -8,7 +8,7 @@ import { User, UserSchema } from 'src/core/models/user';
 
 @Module({
   imports: [
-    // TODO 建立Mongo資料庫連線
+    // 建立Mongo資料庫連線
     MongooseModule.forFeature([
       {
         name: User.name,

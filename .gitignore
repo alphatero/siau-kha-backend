@@ -35,3 +35,7 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 .env
+.vscode/launch.json
+.vscode/tasks.json
+.prettierrc
+settings.json

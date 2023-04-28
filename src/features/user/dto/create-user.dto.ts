@@ -1,4 +1,4 @@
-import { MinLength, MaxLength, IsEmail, IsEnum } from 'class-validator';
+import { MinLength, MaxLength, IsEnum } from 'class-validator';
 import {
   Role,
   USER_PASSWORD_MIN_LENGTH,
@@ -10,15 +10,16 @@ import {
 export class CreateUserDto {
   @MinLength(USER_USERNAME_MIN_LENGTH)
   @MaxLength(USER_USERNAME_MAX_LENGTH)
-  public readonly username: string;
+  public readonly user_account: string;
 
   @MinLength(USER_PASSWORD_MIN_LENGTH)
   @MaxLength(USER_PASSWORD_MAX_LENGTH)
-  public readonly password: string;
+  public readonly user_mima: string;
 
-  @IsEmail()
-  public readonly email: string;
+  @MinLength(USER_USERNAME_MIN_LENGTH)
+  @MaxLength(USER_USERNAME_MAX_LENGTH)
+  public readonly user_name: string;
 
   @IsEnum(Role)
-  public readonly role: Role;
+  public readonly user_role: Role;
 }

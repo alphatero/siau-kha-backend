@@ -14,7 +14,7 @@ import secretConfig from './configs/secret.config';
 import databaseConfig from './configs/database.config';
 import adminConfig from './configs/admin.config';
 
-// import { AuthModule } from './features/auth';
+import { AuthModule } from './features/auth';
 import { UserModule } from './features/user';
 // import { TodoModule } from './features/todo';
 
@@ -24,17 +24,14 @@ import { UserModule } from './features/user';
       isGlobal: true,
       load: [databaseConfig, secretConfig, adminConfig],
     }),
-    // todo 建立資料庫連線
+    // 建立資料庫連線
     MongooseModule.forRootAsync({
-      imports: [ConfigModule, UserModule],
+      imports: [ConfigModule, UserModule, AuthModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         uri: configService.get<string>('mongo.uri'),
       }),
     }),
-
-    // todo 建立權限管理模組
-    // AuthModule,
   ],
   controllers: [AppController],
   providers: [

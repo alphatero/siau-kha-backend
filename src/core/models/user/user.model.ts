@@ -4,48 +4,60 @@ import {
   USER_USERNAME_MIN_LENGTH,
   USER_USERNAME_MAX_LENGTH,
 } from './user.const';
-import { isEmail } from 'class-validator';
 import { Role } from './user.type';
 
 export type UserDocument = User & Document;
 
 @Schema({
-  timestamps: true,
+  timestamps: {
+    createdAt: 'create_time',
+    updatedAt: 'updated_time',
+  },
   versionKey: false,
 })
 export class User {
+  // 使用者帳號
   @Prop({
     min: USER_USERNAME_MIN_LENGTH,
     max: USER_USERNAME_MAX_LENGTH,
     required: true,
   })
-  username: string;
+  user_account: string;
 
-  @Prop({
-    validate: {
-      validator: (input: string) => isEmail(input),
-    },
-    required: true,
-  })
-  email: string;
-
+  // 使用者mima
   @Prop({
     required: true,
   })
-  password: string;
+  user_mima: string;
+
+  // 使用者名稱
+  @Prop({
+    min: USER_USERNAME_MIN_LENGTH,
+    max: USER_USERNAME_MAX_LENGTH,
+    required: true,
+  })
+  user_name: string;
 
   @Prop({
     required: true,
     enum: Object.values(Role),
-    default: Role.STAFF,
   })
-  role: Role;
+  user_role: Role;
 
   @Prop()
-  createdAt: Date;
+  create_time: Date;
 
   @Prop()
-  updatedAt: Date;
+  updated_time: Date;
+
+  @Prop()
+  last_login_time: Date;
+
+  @Prop({ default: false })
+  is_blocked: boolean;
+
+  @Prop()
+  set_blocked_time: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
