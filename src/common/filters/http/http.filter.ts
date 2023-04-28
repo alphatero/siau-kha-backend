@@ -26,12 +26,11 @@ export class HttpFilter<T extends HttpException> implements ExceptionFilter<T> {
       }
       return (response as any).message;
     })();
-    const timestamp = new Date().toISOString();
 
     response.status(code).json({
-      code,
+      status: 'error',
       message,
-      timestamp,
+      code,
     });
   }
 }
