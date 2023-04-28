@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TodoPriority } from '../types/todo.type';
 import {
   IsBoolean,
   IsNotEmpty,

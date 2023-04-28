@@ -5,11 +5,9 @@ import {
   Patch,
   Param,
   Get,
-  Query,
   Delete,
   ConflictException,
   UseGuards,
-  Response,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -48,25 +46,15 @@ export class UserController {
 
   @ApiTags('User')
   @ApiBearerAuth()
-  @ApiQuery({ name: 'skip', required: false })
-  @ApiQuery({ name: 'limit', required: false })
   @Get()
-  async getUsers(
-    @Query('skip') skip: number,
-    @Query('limit') limit: number,
-    @Response() res,
-  ) {
-    const documents = await this.userService.getUsers(skip, limit);
+  async getUsers() {
+    const documents = await this.userService.getUsers();
     const users = documents.map((doc) => {
       const user = doc.toJSON();
       user.user_mima = null;
       return user;
     });
-    return res.send({
-      status: 'Success',
-      message: '成功',
-      data: users,
-    });
+    return users;
   }
 
   // 隱藏此API不要出現在Swagger上

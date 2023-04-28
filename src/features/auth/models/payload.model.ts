@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { Role } from 'src/core/models/user';
 
 export interface IUserPayload {
