@@ -7,16 +7,12 @@ import {
   GLOBAL_RESPONSE_INTERCEPTOR,
   GLOBAL_HTTP_EXCEPTION,
 } from './common/providers';
-
-import { AppController } from './app.controller';
-
 import secretConfig from './configs/secret.config';
 import databaseConfig from './configs/database.config';
 import adminConfig from './configs/admin.config';
 
 import { AuthModule } from './features/auth';
 import { UserModule } from './features/user';
-// import { TodoModule } from './features/todo';
 
 @Module({
   imports: [
@@ -33,7 +29,7 @@ import { UserModule } from './features/user';
       }),
     }),
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
     // * DTO 驗證
     GLOBAL_VALIDATION_PIPE,

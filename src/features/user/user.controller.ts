@@ -9,19 +9,25 @@ import {
   Delete,
   ConflictException,
   UseGuards,
+  Response,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtGuard } from 'src/common/guards';
-import { ApiTags, ApiExcludeEndpoint, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiExcludeEndpoint,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 
+@UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiExcludeEndpoint()
-  @UseGuards(JwtGuard)
   @Post()
   async createUser(@Body() dto: CreateUserDto) {
     const { user_account } = dto;
@@ -34,7 +40,6 @@ export class UserController {
   }
 
   @ApiExcludeEndpoint()
-  @UseGuards(JwtGuard)
   @Patch(':id')
   async updateUser(@Param('id') id: string, @Body() dto: UpdateUserDto) {
     const document = await this.userService.updateUser(id, dto);
@@ -42,22 +47,30 @@ export class UserController {
   }
 
   @ApiTags('User')
-  @UseGuards(JwtGuard)
   @ApiBearerAuth()
+  @ApiQuery({ name: 'skip', required: false })
+  @ApiQuery({ name: 'limit', required: false })
   @Get()
-  async getUsers(@Query('skip') skip: number, @Query('limit') limit: number) {
+  async getUsers(
+    @Query('skip') skip: number,
+    @Query('limit') limit: number,
+    @Response() res,
+  ) {
     const documents = await this.userService.getUsers(skip, limit);
     const users = documents.map((doc) => {
       const user = doc.toJSON();
       user.user_mima = null;
       return user;
     });
-    return users;
+    return res.send({
+      status: 'Success',
+      message: '成功',
+      data: users,
+    });
   }
 
   // 隱藏此API不要出現在Swagger上
   @ApiExcludeEndpoint()
-  @UseGuards(JwtGuard)
   @Delete(':id')
   async deleteUser(@Param('id') id: string) {
     const document = await this.userService.deleteUser(id);

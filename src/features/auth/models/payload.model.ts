@@ -5,5 +5,5 @@ export interface IUserPayload {
   id: string;
   user_name: string;
   user_account: string;
-  role: Role;
+  user_role: Role;
 }
