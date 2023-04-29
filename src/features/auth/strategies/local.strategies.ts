@@ -18,20 +18,27 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
    * @param user_mima
    * @returns
    */
-  async validate(user_account: string, user_mima: string) {
+  async validate(user_account = '', user_mima = '') {
     // 先執行mima驗證，所以這裡會呼叫AuthService的validateUser方法
-    const user = await this.authService.validateUser(user_account, user_mima);
-
+    const validate_result = await this.authService.validateUser(
+      user_account,
+      user_mima,
+    );
     // 未通過驗證，拋出例外
-    if (!user) {
-      throw new UnauthorizedException();
+    if (!validate_result.user_state) {
+      if (validate_result.state_message === '使用者不存在') {
+        throw new UnauthorizedException('使用者不存在');
+      }
+      if (validate_result.state_message === '密碼不正確') {
+        throw new UnauthorizedException('密碼不正確');
+      }
     }
 
     const payload: IUserPayload = {
-      id: user._id,
-      user_name: user.user_name,
-      user_account: user.user_account,
-      user_role: user.user_role,
+      id: validate_result.user_info.id,
+      user_name: validate_result.user_info.user_name,
+      user_account: validate_result.user_info.user_account,
+      user_role: validate_result.user_info.user_role,
     };
 
     return payload;

@@ -26,13 +26,15 @@ export class AuthController {
       required: ['user_account', 'user_mima'],
     },
   })
-  @Post('signin')
-  async signin(@UserPayload() payload: IUserPayload) {
+  @Post('sign-in')
+  async signIn(@UserPayload() payload: IUserPayload) {
     await this.userService.updateUserSignInTime(payload.id);
     const user_info = Object.assign(
       {},
       payload,
-      this.authService.generateJwt(payload),
+      this.authService.generateJwt(
+        payload as unknown as Record<string, string>,
+      ),
     );
     return user_info;
   }
