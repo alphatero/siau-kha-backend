@@ -2,7 +2,6 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 import { AuthService } from '../auth.service';
-import { IUserPayload } from '../models/payload.model';
 
 // PassportStrategy 第二個參數為策略名稱，如果沒輸入的話，會將第一個參數的名稱當作策略名稱
 // AuthGuard 要使用此策略的舉例：AuthGuard('local')
@@ -34,8 +33,8 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       }
     }
 
-    const payload: IUserPayload = {
-      id: validate_result.user_info.id,
+    const payload = {
+      id: validate_result.user_info._id,
       user_name: validate_result.user_info.user_name,
       user_account: validate_result.user_info.user_account,
       user_role: validate_result.user_info.user_role,

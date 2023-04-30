@@ -2,7 +2,6 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { UserService } from '../user';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { IUserPayload } from './models/payload.model';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +20,7 @@ export class AuthService {
     const validate_state = {
       user_state: false,
       state_message: '',
-      user_info: {} as IUserPayload,
+      user_info: {} as any,
     };
     try {
       // 取得使用者資訊

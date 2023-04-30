@@ -1,7 +1,7 @@
-import { SigninMiddleware } from './signIn.middleware';
+import { SignInMiddleware } from './signIn.middleware';
 
-describe('SigninMiddleware', () => {
+describe('SignInMiddleware', () => {
   it('should be defined', () => {
-    expect(new SigninMiddleware()).toBeDefined();
+    expect(new SignInMiddleware()).toBeDefined();
   });
 });

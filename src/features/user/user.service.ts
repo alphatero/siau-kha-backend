@@ -32,11 +32,9 @@ export class UserService {
 
   public updateUserSignInTime(id: string) {
     const lastSignInTime = new Date();
-    return this.userModel.findByIdAndUpdate(
-      id,
-      { $set: { last_sign_in_time: lastSignInTime } },
-      { new: true },
-    );
+    return this.userModel.findByIdAndUpdate(id, {
+      $set: { last_sign_in_time: lastSignInTime },
+    });
   }
 
   public async getUser(filters: FilterQuery<UserDocument>) {
