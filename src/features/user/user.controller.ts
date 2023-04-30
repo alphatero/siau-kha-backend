@@ -15,6 +15,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtGuard } from 'src/common/guards';
 import { ApiTags, ApiExcludeEndpoint, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('User')
 @UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {
@@ -39,7 +40,6 @@ export class UserController {
     return document.toJSON();
   }
 
-  @ApiTags('User')
   @ApiBearerAuth()
   @Get()
   async getUsers() {
