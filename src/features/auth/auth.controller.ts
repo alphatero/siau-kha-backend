@@ -1,44 +1,41 @@
-import {
-  Body,
-  Controller,
-  ForbiddenException,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
-import { CreateUserDto } from '../user/dto/create-user.dto';
+import { Controller, Post, UseGuards } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
-import { JwtService } from '@nestjs/jwt';
 import { UserPayload } from './decorators/payload.decorator';
 import { IUserPayload } from './models/payload.model';
 import { LocalGuard } from 'src/common/guards';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly userService: UserService,
     private readonly authService: AuthService,
-    private readonly jwtService: JwtService,
   ) {}
 
-  @Post('signup')
-  async signup(@Body() dto: CreateUserDto) {
-    const { username, email } = dto;
-    const isExist = await this.userService.useExist(username, email);
-
-    if (isExist) {
-      throw new ForbiddenException('User already exist');
-    }
-
-    const user = await this.userService.createUser(dto);
-    const { _id: id } = user;
-    return this.authService.generateJwt({ id, username });
-  }
-
   @UseGuards(LocalGuard)
-  @Post('signin')
-  async signin(@UserPayload() payload: IUserPayload) {
-    // return request.user;
-    return this.jwtService.sign(payload);
+  @ApiOperation({ summary: '登入' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        user_account: { type: 'string' },
+        user_mima: { type: 'string' },
+      },
+      required: ['user_account', 'user_mima'],
+    },
+  })
+  @Post('sign-in')
+  async signIn(@UserPayload() payload: IUserPayload) {
+    await this.userService.updateUserSignInTime(payload.id);
+    const user_info = Object.assign(
+      {},
+      payload,
+      this.authService.generateJwt(
+        payload as unknown as Record<string, string>,
+      ),
+    );
+    return user_info;
   }
 }

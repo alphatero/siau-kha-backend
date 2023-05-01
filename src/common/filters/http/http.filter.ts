@@ -6,12 +6,6 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 
-interface ResponseBody {
-  code: number;
-  message: string;
-  timestamp: string;
-}
-
 // 建立http exception handler，並統一錯誤回傳格式
 @Catch(HttpException)
 export class HttpFilter<T extends HttpException> implements ExceptionFilter<T> {
@@ -26,12 +20,11 @@ export class HttpFilter<T extends HttpException> implements ExceptionFilter<T> {
       }
       return (response as any).message;
     })();
-    const timestamp = new Date().toISOString();
 
     response.status(code).json({
-      code,
+      status: 'error',
       message,
-      timestamp,
+      code,
     });
   }
 }

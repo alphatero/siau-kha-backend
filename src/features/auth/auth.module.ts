@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -9,6 +9,7 @@ import { AuthService } from './auth.service';
 import { UserModule } from '../user';
 import { LocalStrategy } from './strategies/local.strategies';
 import { JwtStrategy } from './strategies/jwt.strategies';
+import { SignInMiddleware } from 'src/common/middleware';
 
 @Module({
   imports: [
@@ -26,4 +27,8 @@ import { JwtStrategy } from './strategies/jwt.strategies';
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],
 })
-export class AuthModule {}
+export class AuthModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(SignInMiddleware).forRoutes('auth/sign-in');
+  }
+}

@@ -26,12 +26,15 @@ function setupSwagger(app: INestApplication) {
   const configs = new DocumentBuilder()
     .setTitle('siau-kha API')
     .setDescription('siau-kha Swagger')
-    .setVersion('0.0.1')
+    .setVersion('0.1.0')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, configs);
   const options: SwaggerCustomOptions = {
     explorer: true,
+    swaggerOptions: {
+      filter: true,
+    },
   };
   SwaggerModule.setup('swagger-ui', app, document, options);
 }
