@@ -22,7 +22,7 @@ import { UserModule } from './features/user';
     }),
     // 建立資料庫連線
     MongooseModule.forRootAsync({
-      imports: [ConfigModule, UserModule, AuthModule],
+      imports: [ConfigModule, AuthModule, UserModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         uri: configService.get<string>('mongo.uri'),

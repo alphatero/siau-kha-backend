@@ -28,11 +28,13 @@ function setupSwagger(app: INestApplication) {
     .setDescription('siau-kha Swagger')
     .setVersion('0.1.0')
     .addBearerAuth()
-    .addTag('Auth')
     .build();
   const document = SwaggerModule.createDocument(app, configs);
   const options: SwaggerCustomOptions = {
     explorer: true,
+    swaggerOptions: {
+      filter: true,
+    },
   };
   SwaggerModule.setup('swagger-ui', app, document, options);
 }
