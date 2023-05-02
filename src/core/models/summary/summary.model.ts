@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { ProductTags } from '../product-tags';
 import { User } from '../user';
 
 export type SummaryDocument = Summary & Document;
