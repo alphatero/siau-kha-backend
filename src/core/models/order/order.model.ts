@@ -30,14 +30,6 @@ export class Order {
   })
   customer_num: number;
 
-  // 負責人(外場 ID)
-  @Prop({
-    type: Types.ObjectId,
-    ref: 'User',
-    required: true,
-  })
-  waiter_id: User;
-
   @Prop({
     type: Number,
     required: true,
