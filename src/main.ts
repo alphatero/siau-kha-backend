@@ -17,6 +17,14 @@ async function bootstrap() {
   // 取得port環境變數
   const port = app.get(ConfigService).get('PORT');
 
+  // 取得允許cors的相關網域
+  const frontend_domain = app.get(ConfigService).get('FRONTEND_DOMAIN');
+  const pr_frontend_domain = app.get(ConfigService).get('PR_FRONTEND_DOMAIN');
+
+  app.enableCors({
+    origin: [frontend_domain, pr_frontend_domain, `http://localhost:${port}`],
+  });
+
   // 設定Swagger
   setupSwagger(app);
   await app.listen(port);
