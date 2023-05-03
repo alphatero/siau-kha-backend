@@ -13,6 +13,7 @@ import adminConfig from './configs/admin.config';
 
 import { AuthModule } from './features/auth';
 import { UserModule } from './features/user';
+import { TableModule } from './features/table';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { UserModule } from './features/user';
     }),
     // 建立資料庫連線
     MongooseModule.forRootAsync({
-      imports: [ConfigModule, AuthModule, UserModule],
+      imports: [ConfigModule, AuthModule, UserModule, TableModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         uri: configService.get<string>('mongo.uri'),
