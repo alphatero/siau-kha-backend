@@ -10,18 +10,20 @@ import {
 import secretConfig from './configs/secret.config';
 import databaseConfig from './configs/database.config';
 import adminConfig from './configs/admin.config';
+import socketPortConfig from './configs/socket-port.config';
 
 import { AuthModule } from './features/auth';
 import { UserModule } from './features/user';
 import { TableModule } from './features/table';
 import { ImageModule } from './features/image';
 import { ProductModule } from './features/product';
+import { OrderSocketModule } from './features/order-socket/order-socket.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig, secretConfig, adminConfig],
+      load: [databaseConfig, secretConfig, adminConfig, socketPortConfig],
     }),
     // 建立資料庫連線
     MongooseModule.forRootAsync({
@@ -36,6 +38,7 @@ import { ProductModule } from './features/product';
     TableModule,
     ProductModule,
     ImageModule,
+    OrderSocketModule,
   ],
   controllers: [],
   providers: [
