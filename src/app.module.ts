@@ -14,6 +14,7 @@ import adminConfig from './configs/admin.config';
 import { AuthModule } from './features/auth';
 import { UserModule } from './features/user';
 import { TableModule } from './features/table';
+import { ImageModule } from './features/image';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { TableModule } from './features/table';
         uri: configService.get<string>('mongo.uri'),
       }),
     }),
+    ImageModule,
   ],
   controllers: [],
   providers: [

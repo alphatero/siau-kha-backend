@@ -13,7 +13,12 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtGuard } from 'src/common/guards';
-import { ApiTags, ApiExcludeEndpoint, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiExcludeEndpoint,
+  ApiBearerAuth,
+  ApiOperation,
+} from '@nestjs/swagger';
 
 @ApiTags('User')
 @UseGuards(JwtGuard)
@@ -41,6 +46,7 @@ export class UserController {
   }
 
   @ApiBearerAuth()
+  @ApiOperation({ summary: '取得所有使用者' })
   @Get()
   async getUsers() {
     const documents = await this.userService.getUsers();
