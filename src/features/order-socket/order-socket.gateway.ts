@@ -1,4 +1,4 @@
-import { Inject, UsePipes, UseFilters, ValidationPipe } from '@nestjs/common';
+import { Inject, UsePipes, UseFilters } from '@nestjs/common';
 import {
   SubscribeMessage,
   WebSocketGateway,
@@ -12,10 +12,16 @@ import { ConfigService } from '@nestjs/config';
 import { TableDataDto } from './dto/table-data.dto';
 import { WSValidationPipe } from '../../common/pipes';
 import { WebSocketExceptionFilter } from 'src/common/filters/websocket/ws-exception.filter';
+import { corsOrigin, gatewayPort as port } from 'src/common/gateways';
+
+// * 設定 namespace
+const namespace = 'order-product-details';
 
 @WebSocketGateway({
+  namespace,
+  port,
   cors: {
-    origin: '*',
+    origin: Object.values(corsOrigin),
   },
 })
 export class OrderSocketGateway implements OnGatewayConnection {
@@ -30,24 +36,13 @@ export class OrderSocketGateway implements OnGatewayConnection {
   @UsePipes(new WSValidationPipe())
   @SubscribeMessage('order-product-details')
   handleMessage(@MessageBody() body: TableDataDto): void {
-    console.log(body);
     this.server.emit('onOrder', {
       ...body,
     });
   }
 
-  // 應用程式啟動時觸發，抓取設定檔中的websocket port並監聽
-  afterInit() {
-    const orderProductDetails = this.configService.get<number>(
-      'socketPort.orderProductDetails',
-    );
-    if (orderProductDetails) {
-      this.server.listen(orderProductDetails);
-    }
-  }
-
   // 當客戶端連接時觸發
-  handleConnection(client: Socket, ...args: any[]) {
+  handleConnection(client: Socket) {
     console.log(`Client connected: ${client.id}`);
   }
 
