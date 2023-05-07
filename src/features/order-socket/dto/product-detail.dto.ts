@@ -4,7 +4,6 @@ import {
   IsPositive,
   IsString,
   IsEnum,
-  IsDateString,
 } from 'class-validator';
 import { ProductDetailStatus } from 'src/core/models/product-detail';
 
@@ -27,10 +26,10 @@ export class ProductDetailDto {
   public readonly product_note: string;
 
   @IsNotEmpty()
-  @IsEnum(ProductDetailStatus, { each: true })
+  @IsEnum(ProductDetailStatus)
   public readonly status: ProductDetailStatus;
 
   @IsNotEmpty()
-  // @IsDateString()
+  @IsString()
   public readonly create_time: string;
 }

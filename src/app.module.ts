@@ -10,7 +10,6 @@ import {
 import secretConfig from './configs/secret.config';
 import databaseConfig from './configs/database.config';
 import adminConfig from './configs/admin.config';
-import socketPortConfig from './configs/socket-port.config';
 
 import { AuthModule } from './features/auth';
 import { UserModule } from './features/user';
@@ -23,7 +22,7 @@ import { OrderSocketModule } from './features/order-socket/order-socket.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig, secretConfig, adminConfig, socketPortConfig],
+      load: [databaseConfig, secretConfig, adminConfig],
     }),
     // 建立資料庫連線
     MongooseModule.forRootAsync({
