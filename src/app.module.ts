@@ -25,18 +25,16 @@ import { ProductModule } from './features/product';
     }),
     // 建立資料庫連線
     MongooseModule.forRootAsync({
-      imports: [
-        ConfigModule,
-        AuthModule,
-        UserModule,
-        TableModule,
-        ProductModule,
-      ],
+      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         uri: configService.get<string>('mongo.uri'),
       }),
     }),
+    AuthModule,
+    UserModule,
+    TableModule,
+    ProductModule,
     ImageModule,
   ],
   controllers: [],
