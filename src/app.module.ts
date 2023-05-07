@@ -24,12 +24,15 @@ import { ImageModule } from './features/image';
     }),
     // 建立資料庫連線
     MongooseModule.forRootAsync({
-      imports: [ConfigModule, AuthModule, UserModule, TableModule],
+      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         uri: configService.get<string>('mongo.uri'),
       }),
     }),
+    AuthModule,
+    UserModule,
+    TableModule,
     ImageModule,
   ],
   controllers: [],
