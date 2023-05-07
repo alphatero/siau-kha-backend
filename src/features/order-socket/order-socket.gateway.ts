@@ -34,7 +34,7 @@ export class OrderSocketGateway implements OnGatewayConnection {
 
   @UseFilters(WebSocketExceptionFilter)
   @UsePipes(new WSValidationPipe())
-  @SubscribeMessage('order-product-details')
+  @SubscribeMessage(namespace)
   handleMessage(@MessageBody() body: TableDataDto): void {
     this.server.emit('onOrder', {
       ...body,
