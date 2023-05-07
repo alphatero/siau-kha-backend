@@ -114,6 +114,7 @@ export class ImageController {
   }
 
   @ApiBearerAuth()
+  @ApiOperation({ summary: '取得所有照片' })
   @Get('/getImageList')
   async getImageList() {
     if (!this.firebaseApp) {
@@ -140,6 +141,7 @@ export class ImageController {
   }
 
   @ApiBearerAuth()
+  @ApiOperation({ summary: '刪除指定照片' })
   @Delete('/deleteImage')
   // 此API作為開發用，後續正式上線時應該要移除
   async deleteImage(@Body() body: DeleteImageDto) {
