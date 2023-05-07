@@ -17,9 +17,8 @@ import { corsOrigin, gatewayPort as port } from 'src/common/gateways';
 // * 設定 namespace
 const namespace = 'order-product-details';
 
-@WebSocketGateway({
+@WebSocketGateway(port[namespace], {
   namespace,
-  port,
   cors: {
     origin: Object.values(corsOrigin),
   },

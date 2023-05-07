@@ -10,5 +10,5 @@ export const corsOrigin = {
 
 // key: namespace, value: port
 export const gatewayPort = {
-  'order-product-details': process.env.ORDER_PRODUCT_DETAILS_PORT,
+  'order-product-details': parseInt(process.env.ORDER_PRODUCT_DETAILS_PORT),
 };
