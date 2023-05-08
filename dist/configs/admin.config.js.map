@@ -1,0 +1,1 @@
+{"version":3,"file":"admin.config.js","sourceRoot":"","sources":["../../src/configs/admin.config.ts"],"names":[],"mappings":";;AAAA,2CAA4C;AAE5C,kBAAe,IAAA,mBAAU,EAAC,OAAO,EAAE,GAAG,EAAE,CAAC,CAAC;IACxC,QAAQ,EAAE,OAAO,CAAC,GAAG,CAAC,sBAAsB;IAC5C,QAAQ,EAAE,OAAO,CAAC,GAAG,CAAC,sBAAsB;IAC5C,KAAK,EAAE,OAAO,CAAC,GAAG,CAAC,mBAAmB;CACvC,CAAC,CAAC,CAAC"}
