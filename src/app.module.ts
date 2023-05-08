@@ -16,6 +16,7 @@ import { UserModule } from './features/user';
 import { TableModule } from './features/table';
 import { ImageModule } from './features/image';
 import { ActivitiesModule } from './features/activities';
+import { ProductModule } from './features/product';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { ActivitiesModule } from './features/activities';
     UserModule,
     TableModule,
     ActivitiesModule,
+    ProductModule,
     ImageModule,
   ],
   controllers: [],

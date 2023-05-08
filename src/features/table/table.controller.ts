@@ -1,5 +1,10 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtGuard } from 'src/common/guards';
 import { TableService } from './table.service';
 import { CreateTableDto } from './dto/create-table.dto';
@@ -11,6 +16,7 @@ export class TableController {
   constructor(private readonly tableService: TableService) {}
 
   @ApiBearerAuth()
+  @ApiOperation({ summary: '取得所有桌況' })
   @Get('/list')
   async getTableList() {
     const documents = await this.tableService.getTableList();
