@@ -18,6 +18,7 @@ const auth_1 = require("./features/auth");
 const user_1 = require("./features/user");
 const table_1 = require("./features/table");
 const image_1 = require("./features/image");
+const product_1 = require("./features/product");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -37,6 +38,7 @@ AppModule = __decorate([
             auth_1.AuthModule,
             user_1.UserModule,
             table_1.TableModule,
+            product_1.ProductModule,
             image_1.ImageModule,
         ],
         controllers: [],

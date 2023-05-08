@@ -45,6 +45,7 @@ let TableController = class TableController {
 };
 __decorate([
     (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: '取得所有桌況' }),
     (0, common_1.Get)('/list'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),

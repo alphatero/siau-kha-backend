@@ -1,5 +1,5 @@
 export declare enum ProductTagStatus {
-    ENABLE = "ENABLE ",
+    ENABLE = "ENABLE",
     DISABLE = "DISABLE",
-    DELETE = "DELETE "
+    DELETE = "DELETE"
 }
