@@ -15,6 +15,7 @@ import { AuthModule } from './features/auth';
 import { UserModule } from './features/user';
 import { TableModule } from './features/table';
 import { ImageModule } from './features/image';
+import { ActivitiesModule } from './features/activities';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ImageModule } from './features/image';
     AuthModule,
     UserModule,
     TableModule,
+    ActivitiesModule,
     ImageModule,
   ],
   controllers: [],
