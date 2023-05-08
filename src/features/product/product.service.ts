@@ -33,7 +33,7 @@ export class ProductService {
   public async getProducts(filters?: FilterQuery<ProductList>) {
     const filter: FilterQuery<ProductList> = {};
     if (filters?.tag_id) {
-      if (!Types.ObjectId.isValid(filters.id)) {
+      if (!Types.ObjectId.isValid(filters.tag_id)) {
         throw new BadRequestException('tag_id 格式錯誤');
       }
       filter.product_tags = new Types.ObjectId(filters.tag_id);
