@@ -1,16 +1,20 @@
-import { Body, Controller, Post, Get } from '@nestjs/common';
-import { ApiExcludeEndpoint, ApiOperation, ApiTags } from '@nestjs/swagger';
-// import { JwtGuard } from 'src/common/guards';
+import { Body, Controller, Post, Get, UseGuards } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { JwtGuard } from 'src/common/guards';
 import { ActivitiesService } from './activities.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
 @ApiTags('activities')
-// @UseGuards(JwtGuard)
+@UseGuards(JwtGuard)
 @Controller('activities')
 export class ActivitiesController {
   constructor(private readonly ActivitiesService: ActivitiesService) {}
 
-  @ApiExcludeEndpoint()
-  //   @ApiBearerAuth()
+  @ApiBearerAuth()
   @ApiOperation({ summary: '取得所有活動' })
   @Get('/list')
   async getActivity() {
@@ -31,7 +35,7 @@ export class ActivitiesController {
   }
 
   @ApiExcludeEndpoint()
-  //   @ApiBearerAuth()
+  @ApiBearerAuth()
   @Post()
   async createActivity(@Body() dto: CreateActivityDto) {
     return await this.ActivitiesService.createActivity(dto);

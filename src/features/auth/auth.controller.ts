@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { UserPayload } from './decorators/payload.decorator';
 import { IUserPayload } from './models/payload.model';
 import { LocalGuard } from 'src/common/guards';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -24,6 +24,19 @@ export class AuthController {
         user_mima: { type: 'string' },
       },
       required: ['user_account', 'user_mima'],
+    },
+  })
+  @ApiResponse({
+    status: 200,
+    description: '登入成功',
+    schema: {
+      properties: {
+        id: { type: 'string' },
+        user_account: { type: 'string' },
+        user_name: { type: 'string' },
+        user_role: { type: 'string' },
+        token: { type: 'string' },
+      },
     },
   })
   @Post('sign-in')
