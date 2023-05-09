@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ActivitiesController } from './activities.controller';
 import { ActivitiesService } from './activities.service';
 import { Activities, ActivitiesSchema } from 'src/core/models/activities';
+import { ActivitiesMiddleware } from 'src/common/middleware';
 
 @Module({
   imports: [
@@ -17,4 +18,8 @@ import { Activities, ActivitiesSchema } from 'src/core/models/activities';
   controllers: [ActivitiesController],
   providers: [ActivitiesService],
 })
-export class ActivitiesModule {}
+export class ActivitiesModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(ActivitiesMiddleware).forRoutes('POST', 'activities');
+  }
+}

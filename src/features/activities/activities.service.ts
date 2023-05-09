@@ -12,7 +12,11 @@ export class ActivitiesService {
   ) {}
 
   public async createActivity(dto: CreateActivityDto) {
-    console.log('dto', dto);
     return this.ActivitiesModel.create(dto);
+  }
+
+  public async getActivitiesList() {
+    const query = this.ActivitiesModel.find({ status: true, is_delete: false });
+    return query;
   }
 }
