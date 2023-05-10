@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import {
@@ -30,5 +30,25 @@ export class ReservationService {
       })
       .sort({ create_time: 1 });
     return query;
+  }
+
+  public async changeReservationStatus(id: string, action: string) {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('tag_id 格式錯誤');
+    }
+
+    const targetStatus =
+      action === 'SUCCESS'
+        ? ReservationStatus.SUCCESS
+        : ReservationStatus.CANCEL;
+
+    const updatedReservation = await this.reservationModel.findOneAndUpdate(
+      { _id: id, status: ReservationStatus.WAIT },
+      { status: targetStatus },
+    );
+
+    if (!updatedReservation) {
+      throw new BadRequestException('找不到此筆預約');
+    }
   }
 }
