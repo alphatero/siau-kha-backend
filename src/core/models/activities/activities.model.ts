@@ -39,6 +39,10 @@ export class Activities {
   })
   charge_type: string;
 
+  // 折扣比率
+  @Prop({ required: false })
+  discount_rate: number;
+
   // 是否為期間限定
   @Prop({ default: false })
   is_period: boolean;
