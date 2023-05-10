@@ -16,6 +16,7 @@ import { UserModule } from './features/user';
 import { TableModule } from './features/table';
 import { ImageModule } from './features/image';
 import { ProductModule } from './features/product';
+import { OrderDetailModule } from './features/order-detail/order-detail.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { ProductModule } from './features/product';
     TableModule,
     ProductModule,
     ImageModule,
+    OrderDetailModule,
   ],
   controllers: [],
   providers: [
