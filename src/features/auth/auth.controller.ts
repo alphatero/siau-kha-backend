@@ -14,18 +14,6 @@ export class AuthController {
     private readonly authService: AuthService,
   ) {}
 
-  // {
-  //   "status": "success",
-  //   "message": "成功",
-  //   "data": {
-  //     "id": "644a6def9a4dcd031e9e3c78",
-  //     "user_name": "Enzo",
-  //     "user_account": "enzokao01",
-  //     "user_role": "admin",
-  //     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NGE2ZGVmOWE0ZGNkMDMxZTllM2M3OCIsInVzZXJfbmFtZSI6IkVuem8iLCJ1c2VyX2FjY291bnQiOiJlbnpva2FvMDEiLCJ1c2VyX3JvbGUiOiJhZG1pbiIsImlhdCI6MTY4MzcwMDMxMSwiZXhwIjoxNjgzNzg2NzExfQ.LWNifOBmAfm3Ppo18ipMHYXKMLiHWNmQZ0o8YLBMDuI"
-  //   }
-  // }
-
   @UseGuards(LocalGuard)
   @ApiOperation({ summary: '登入' })
   @ApiBody({
