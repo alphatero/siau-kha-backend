@@ -3,6 +3,7 @@ import {
   ApiBearerAuth,
   ApiExcludeEndpoint,
   ApiOperation,
+  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtGuard } from 'src/common/guards';
@@ -16,6 +17,28 @@ export class ActivitiesController {
 
   @ApiBearerAuth()
   @ApiOperation({ summary: '取得所有活動' })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      example: {
+        status: 'success',
+        message: '成功',
+        activities: {
+          table_list: [
+            {
+              activities_name: '打卡優惠活動',
+              discount_type: '1',
+              min_spend: 99,
+              is_period: true,
+              start_time: '2023-05-02T07:23:22.000Z',
+              end_time: '2023-06-30T11:22:22.000Z',
+              act_products_list: ['644e9a33020c9409fe694dc4'],
+            },
+          ],
+        },
+      },
+    },
+  })
   @Get('/list')
   async getActivity() {
     const documents = await this.ActivitiesService.getActivitiesList();
