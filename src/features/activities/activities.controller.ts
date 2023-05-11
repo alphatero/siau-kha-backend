@@ -13,7 +13,7 @@ import { CreateActivityDto } from './dto/create-activity.dto';
 @UseGuards(JwtGuard)
 @Controller('activities')
 export class ActivitiesController {
-  constructor(private readonly ActivitiesService: ActivitiesService) {}
+  constructor(private readonly activitiesService: ActivitiesService) {}
 
   @ApiBearerAuth()
   @ApiOperation({ summary: '取得所有活動' })
@@ -41,7 +41,7 @@ export class ActivitiesController {
   })
   @Get('/list')
   async getActivity() {
-    const documents = await this.ActivitiesService.getActivitiesList();
+    const documents = await this.activitiesService.getActivitiesList();
     const activities = documents.map((doc) => {
       const activity = doc.toJSON();
       return {
@@ -61,6 +61,6 @@ export class ActivitiesController {
   @ApiBearerAuth()
   @Post()
   async createActivity(@Body() dto: CreateActivityDto) {
-    return await this.ActivitiesService.createActivity(dto);
+    return await this.activitiesService.createActivity(dto);
   }
 }
