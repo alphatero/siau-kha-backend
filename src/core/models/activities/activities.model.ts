@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { ProductList } from '../product-list';
 
 export type ActivitiesDocument = Activities & Document;
 
@@ -49,8 +50,11 @@ export class Activities {
   @Prop({ required: false })
   end_time: Date;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'ProductList' }], default: [] })
-  act_products_list: Types.ObjectId[];
+  @Prop({
+    type: [Types.ObjectId],
+    ref: 'ProductList',
+  })
+  act_products_list: ProductList;
 
   @Prop()
   create_time: Date;
