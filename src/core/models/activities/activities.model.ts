@@ -49,7 +49,7 @@ export class Activities {
   @Prop({ required: false })
   end_time: Date;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Product' }], default: [] })
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'ProductList' }], default: [] })
   act_products_list: Types.ObjectId[];
 
   @Prop()
