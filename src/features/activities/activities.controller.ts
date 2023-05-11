@@ -26,6 +26,7 @@ export class ActivitiesController {
         activities: {
           table_list: [
             {
+              id: '6459e2c4f30c49fdcfeff467',
               activities_name: '打卡優惠活動',
               discount_type: '1',
               min_spend: 99,
