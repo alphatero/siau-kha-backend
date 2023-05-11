@@ -51,7 +51,7 @@ export class ActivitiesController {
         is_period: activity.is_period,
         start_time: activity.start_time,
         end_time: activity.end_time,
-        act_products_list: [].concat(activity.act_products_list),
+        act_products_list: activity.act_products_list,
       };
     });
     return { activities };
