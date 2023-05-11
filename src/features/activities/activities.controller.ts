@@ -45,6 +45,7 @@ export class ActivitiesController {
     const activities = documents.map((doc) => {
       const activity = doc.toJSON();
       return {
+        id: activity._id,
         activities_name: activity.activities_name,
         discount_type: activity.discount_type,
         min_spend: activity.min_spend,
