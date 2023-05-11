@@ -50,7 +50,7 @@ export class CreateActivityDto {
   @IsNotEmpty()
   @IsIn(['0', '1'], {
     message: () => {
-      throw new BadRequestException("discount_type必須為 '0' 或 '1'");
+      throw new BadRequestException("charge_type 必須為 '0' 或 '1'");
     },
   })
   // 0-折扣 1-折讓
