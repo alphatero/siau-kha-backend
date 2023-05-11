@@ -16,7 +16,7 @@ import { UserModule } from './features/user';
 import { TableModule } from './features/table';
 import { ImageModule } from './features/image';
 import { ProductModule } from './features/product';
-import { ReservationModule } from './features/reservation/reservation.module';
+import { ReservationModule } from './features/reservation';
 
 @Module({
   imports: [
@@ -36,8 +36,8 @@ import { ReservationModule } from './features/reservation/reservation.module';
     UserModule,
     TableModule,
     ProductModule,
-    ImageModule,
     ReservationModule,
+    ImageModule,
   ],
   controllers: [],
   providers: [

@@ -20,7 +20,7 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtGuard } from 'src/common/guards';
 import { CreateReservationDto } from './dto/check-in-reservation.dto';
 
-@ApiTags('Table')
+@ApiTags('Reservation')
 @UseGuards(JwtGuard)
 @Controller('reservation')
 export class ReservationController {
@@ -45,10 +45,9 @@ export class ReservationController {
     @Request() request,
     @Body() dto: CreateReservationDto,
   ) {
-    const token = request.headers.authorization.replace('Bearer ', '');
-    const decodedToken = this.jwtService.verify(token);
+    const { user } = request;
     // 寫入候位資訊
-    await this.reservationService.createReservation(dto, decodedToken.id);
+    await this.reservationService.createReservation(dto, user.id);
   }
 
   @ApiBearerAuth()
