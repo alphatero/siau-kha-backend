@@ -16,7 +16,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ReservationService } from './reservation.service';
-import { JwtService } from '@nestjs/jwt';
 import { JwtGuard } from 'src/common/guards';
 import { CreateReservationDto } from './dto/check-in-reservation.dto';
 
@@ -24,10 +23,7 @@ import { CreateReservationDto } from './dto/check-in-reservation.dto';
 @UseGuards(JwtGuard)
 @Controller('reservation')
 export class ReservationController {
-  constructor(
-    private readonly reservationService: ReservationService,
-    private readonly jwtService: JwtService,
-  ) {}
+  constructor(private readonly reservationService: ReservationService) {}
 
   @ApiBearerAuth()
   @ApiOperation({ summary: '登記候位' })
