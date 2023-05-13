@@ -17,6 +17,7 @@ import { TableModule } from './features/table';
 import { ImageModule } from './features/image';
 import { ProductModule } from './features/product';
 import { OrderModule } from './features/order';
+import { ReservationModule } from './features/reservation';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { OrderModule } from './features/order';
     UserModule,
     TableModule,
     ProductModule,
+    ReservationModule,
     ImageModule,
     OrderModule,
   ],
