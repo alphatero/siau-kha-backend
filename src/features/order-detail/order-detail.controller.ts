@@ -1,4 +1,14 @@
-import { Controller, Post, Param, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Param,
+  Query,
+  Body,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiResponse,
@@ -10,6 +20,13 @@ import { JwtGuard } from 'src/common/guards';
 import { OrderDetailService } from './order-detail.service';
 import { CreateOrderDetailDto } from './dto/create-order-detail.dto';
 
+import {
+  postOrderDetailExample,
+  getOrderDetailExample,
+  commonExample,
+} from './apiExample';
+
+// B-10 送出餐點紀錄
 @ApiTags('OrderDetail')
 @UseGuards(JwtGuard)
 @Controller('order-detail')
@@ -17,24 +34,11 @@ export class OrderDetailController {
   constructor(private readonly orderDetailService: OrderDetailService) {}
 
   @ApiBearerAuth()
-  @ApiOperation({ summary: '新增訂單明細' })
+  @ApiOperation({ summary: '送出餐點紀錄' })
   @ApiResponse({
     status: 200,
     schema: {
-      example: {
-        status: 'success',
-        message: '成功',
-        data: {
-          order: '644e5571020c9409fe694db5',
-          product_detail: ['645be06607b72ad4a95c1f53'],
-          total: 2200,
-          status: 'IN_PROGRESS',
-          create_user: '644b1c251bdbf1f010dddaf9',
-          _id: '645be06707b72ad4a95c1f59',
-          create_time: '2023-05-10T18:20:23.425Z',
-          updatedAt: '2023-05-10T18:20:23.425Z',
-        },
-      },
+      example: postOrderDetailExample,
     },
   })
   @Post('/:order_id')
@@ -43,5 +47,63 @@ export class OrderDetailController {
     @Body() orderDetail: CreateOrderDetailDto,
   ) {
     return await this.orderDetailService.OrderFlow(orderDetail, orderId);
+  }
+
+  // B-8 單一餐點上菜
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '單一餐點上菜' })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      example: commonExample,
+    },
+  })
+  @Patch('/:order_id/:detail_id/:p_id')
+  async patchOrderDetail(
+    @Param('order_id') orderId: string,
+    @Param('detail_id') detailId: string,
+    @Param('p_id') pId: string,
+  ) {
+    return await this.orderDetailService.patchOrderDetail(
+      orderId,
+      detailId,
+      pId,
+    );
+  }
+
+  // B-7 單一餐點退點
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '單一餐點退點' })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      example: commonExample,
+    },
+  })
+  @Delete('/:order_id/:detail_id/:p_id')
+  async deleteOrderDetail(
+    @Param('order_id') orderId: string,
+    @Param('detail_id') detailId: string,
+    @Param('p_id') pId: string,
+  ) {
+    return await this.orderDetailService.deleteOrderDetail(
+      orderId,
+      detailId,
+      pId,
+    );
+  }
+
+  // B-6 取得此桌訂單紀錄
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '取得此桌訂單紀錄' })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      example: getOrderDetailExample,
+    },
+  })
+  @Get('')
+  async getOrderDetail(@Query('id') id: string) {
+    return await this.orderDetailService.getOrderDetail(id);
   }
 }
