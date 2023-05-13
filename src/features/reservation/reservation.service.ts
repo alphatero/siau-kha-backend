@@ -32,19 +32,14 @@ export class ReservationService {
     return query;
   }
 
-  public async changeReservationStatus(id: string, action: string) {
+  public async changeReservationStatus(id: string, action: ReservationStatus) {
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('tag_id 格式錯誤');
     }
 
-    const targetStatus =
-      action === 'SUCCESS'
-        ? ReservationStatus.SUCCESS
-        : ReservationStatus.CANCEL;
-
     const updatedReservation = await this.reservationModel.findOneAndUpdate(
       { _id: id, status: ReservationStatus.WAIT },
-      { status: targetStatus },
+      { status: action },
     );
 
     if (!updatedReservation) {

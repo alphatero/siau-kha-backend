@@ -18,6 +18,7 @@ import {
 import { ReservationService } from './reservation.service';
 import { JwtGuard } from 'src/common/guards';
 import { CreateReservationDto } from './dto/check-in-reservation.dto';
+import { ReservationStatus } from 'src/core/models/reservation';
 
 @ApiTags('Reservation')
 @UseGuards(JwtGuard)
@@ -100,7 +101,10 @@ export class ReservationController {
   @Patch('/:id')
   async arrangeSetting(@Param('id') id: string) {
     // 安排入座
-    await this.reservationService.changeReservationStatus(id, 'SUCCESS');
+    await this.reservationService.changeReservationStatus(
+      id,
+      ReservationStatus.SUCCESS,
+    );
   }
 
   @ApiBearerAuth()
@@ -117,6 +121,9 @@ export class ReservationController {
   @Delete('/:id')
   async deleteReservation(@Param('id') id: string) {
     // 取消候位
-    await this.reservationService.changeReservationStatus(id, 'DELETE');
+    await this.reservationService.changeReservationStatus(
+      id,
+      ReservationStatus.CANCEL,
+    );
   }
 }
