@@ -26,7 +26,7 @@ export class OrderDetail {
     ref: 'ProductDetail',
     required: true,
   })
-  product_detail: ProductDetail;
+  product_detail: [ProductDetail];
 
   @Prop({
     type: Number,
