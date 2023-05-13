@@ -34,6 +34,34 @@ export class TableController {
               customer_num: 3,
               create_time: '2023-04-30T16:00:00.000Z',
               is_pay: false,
+              order_id: '644e5571020c9409fe694db5',
+              order_detail: [
+                [
+                  {
+                    order_detail_id: '645bded09373ce38a31ef49e',
+                    id: '645bded09373ce38a31ef49a',
+                    product_name: 'A5 日本和牛套餐',
+                    status: 'IN_PROGRESS',
+                    is_delete: false,
+                  },
+                  {
+                    order_detail_id: '645bded09373ce38a31ef49e',
+                    id: '645bded09373ce38a31ef49a',
+                    product_name: '豪華全牛套餐',
+                    status: 'IN_PROGRESS',
+                    is_delete: false,
+                  },
+                ],
+                [
+                  {
+                    order_detail_id: '645be06707b72ad4a95c1f59',
+                    id: '645be06607b72ad4a95c1f53',
+                    product_name: '可爾必思',
+                    status: 'IN_PROGRESS',
+                    is_delete: false,
+                  },
+                ],
+              ],
             },
             {
               id: '644e54a6893f163f3a3678f8',
@@ -51,6 +79,17 @@ export class TableController {
     const documents = await this.tableService.getTableList();
     const table_list = documents.map((doc) => {
       const table = doc.toJSON();
+      const order_detail = table.order?.order_detail.map((order_detail) => {
+        return order_detail.product_detail.map((p) => {
+          return {
+            order_detail_id: order_detail['_id'],
+            id: p['_id'],
+            product_name: p.product_name,
+            status: p.status,
+            is_delete: p.is_delete,
+          };
+        });
+      });
       return {
         id: table._id,
         table_name: table.table_name,
@@ -59,6 +98,8 @@ export class TableController {
         customer_num: table.order?.customer_num,
         create_time: table.order?.create_time,
         is_pay: table.order?.is_pay,
+        order_id: table.order ? table.order['_id'] : '',
+        order_detail,
       };
     });
     return { table_list };
