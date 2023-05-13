@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiExcludeEndpoint,
@@ -9,6 +18,7 @@ import {
 import { JwtGuard } from 'src/common/guards';
 import { TableService } from './table.service';
 import { CreateTableDto } from './dto/create-table.dto';
+import { UpdateTableDto } from './dto/update-table.dto';
 
 @ApiTags('Table')
 @UseGuards(JwtGuard)
@@ -110,5 +120,26 @@ export class TableController {
   @Post()
   async createTable(@Body() dto: CreateTableDto) {
     return await this.tableService.createTable(dto);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '更新桌況 - 安排入座 / 清潔完成' })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      example: {
+        status: 'success',
+        message: '成功',
+      },
+    },
+  })
+  @Patch('/:id')
+  async updateTable(
+    @Req() request,
+    @Param('id') id: string,
+    @Body() dto: UpdateTableDto,
+  ) {
+    const { user } = request;
+    await this.tableService.updateTable(id, dto, user);
   }
 }
