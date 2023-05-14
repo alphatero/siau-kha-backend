@@ -71,7 +71,7 @@ export class Order {
     type: [Types.ObjectId],
     ref: 'OrderDetail',
   })
-  order_detail: OrderDetail;
+  order_detail: OrderDetail[];
 
   @Prop({
     type: Types.ObjectId,
