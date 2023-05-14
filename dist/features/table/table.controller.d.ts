@@ -25,6 +25,7 @@
 /// <reference types="mongoose/types/inferschematype" />
 import { TableService } from './table.service';
 import { CreateTableDto } from './dto/create-table.dto';
+import { UpdateTableDto } from './dto/update-table.dto';
 export declare class TableController {
     private readonly tableService;
     constructor(tableService: TableService);
@@ -37,9 +38,18 @@ export declare class TableController {
             customer_num: number;
             create_time: Date;
             is_pay: boolean;
+            order_id: any;
+            order_detail: {
+                order_detail_id: any;
+                id: any;
+                product_name: string;
+                status: import("../../core/models/product-detail").ProductDetailStatus;
+                is_delete: boolean;
+            }[][];
         }[];
     }>;
     createTable(dto: CreateTableDto): Promise<import("mongoose").Document<unknown, {}, import("../../core/models/table-main").TableMainDocument> & Omit<import("../../core/models/table-main").TableMain & import("mongoose").Document<any, any, any> & {
         _id: import("mongoose").Types.ObjectId;
     }, never>>;
+    updateTable(request: any, id: string, dto: UpdateTableDto): Promise<void>;
 }

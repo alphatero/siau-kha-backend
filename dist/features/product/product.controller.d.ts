@@ -49,8 +49,13 @@ export declare class ProductController {
         }[];
     }>;
     getProduct(id: string): Promise<{
-        product: import("mongoose").Document<unknown, {}, import("../../core/models/product-list").ProductListDocument> & Omit<import("../../core/models/product-list").ProductList & import("mongoose").Document<any, any, any> & {
-            _id: import("mongoose").Types.ObjectId;
-        }, never>;
+        product: {
+            id: any;
+            product_name: string;
+            product_type: string;
+            product_tags: import("../../core/models/product-tags").ProductTags;
+            product_price: number;
+            product_note: string[];
+        };
     }>;
 }

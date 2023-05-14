@@ -39,7 +39,7 @@ export declare class Order {
     create_user: User;
     create_time: Date;
     updated_time: Date;
-    order_detail: OrderDetail;
+    order_detail: OrderDetail[];
     activities: Activities;
 }
 declare const OrderSchema: import("mongoose").Schema<Order, import("mongoose").Model<Order, any, any, any, Document<unknown, any, Order> & Omit<Order & {

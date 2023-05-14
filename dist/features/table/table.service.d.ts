@@ -22,16 +22,21 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { FilterQuery, Model } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
+import { OrderDocument } from 'src/core/models/order';
 import { TableMain, TableMainDocument } from 'src/core/models/table-main';
+import { IUserPayload } from '../auth';
 import { CreateTableDto } from './dto/create-table.dto';
+import { UpdateTableDto } from './dto/update-table.dto';
 export declare class TableService {
     private readonly tableMainModel;
-    constructor(tableMainModel: Model<TableMainDocument>);
+    private readonly orderModel;
+    constructor(tableMainModel: Model<TableMainDocument>, orderModel: Model<OrderDocument>);
     createTable(dto: CreateTableDto): Promise<import("mongoose").Document<unknown, {}, TableMainDocument> & Omit<TableMain & import("mongoose").Document<any, any, any> & {
-        _id: import("mongoose").Types.ObjectId;
+        _id: Types.ObjectId;
     }, never>>;
     getTableList(filters?: FilterQuery<TableMain>): Promise<(import("mongoose").Document<unknown, {}, TableMainDocument> & Omit<TableMain & import("mongoose").Document<any, any, any> & {
-        _id: import("mongoose").Types.ObjectId;
+        _id: Types.ObjectId;
     }, never>)[]>;
+    updateTable(id: string, dto: UpdateTableDto, user: IUserPayload): Promise<void>;
 }

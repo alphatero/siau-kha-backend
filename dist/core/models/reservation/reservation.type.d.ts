@@ -1,5 +1,5 @@
 export declare enum ReservationStatus {
-    WAIT = "WAIT ",
+    WAIT = "WAIT",
     CANCEL = "CANCEL",
-    SUCCESS = "SUCCESS "
+    SUCCESS = "SUCCESS"
 }

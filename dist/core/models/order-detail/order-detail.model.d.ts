@@ -30,7 +30,7 @@ import { OrderDetailStatus } from './order-detail.type';
 export type OrderDetailDocument = OrderDetail & Document;
 export declare class OrderDetail {
     order: Order;
-    product_detail: ProductDetail;
+    product_detail: ProductDetail[];
     total: number;
     status: OrderDetailStatus;
     create_user: User;

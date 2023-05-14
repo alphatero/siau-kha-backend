@@ -13,7 +13,6 @@ exports.OrderSchema = exports.Order = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const activities_1 = require("../activities");
-const order_detail_model_1 = require("../order-detail/order-detail.model");
 const table_main_1 = require("../table-main");
 const user_1 = require("../user");
 const order_type_1 = require("./order.type");
@@ -83,7 +82,7 @@ __decorate([
         type: [mongoose_2.Types.ObjectId],
         ref: 'OrderDetail',
     }),
-    __metadata("design:type", order_detail_model_1.OrderDetail)
+    __metadata("design:type", Array)
 ], Order.prototype, "order_detail", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
