@@ -7,7 +7,7 @@ export const postOrderDetailExample = {
     total: 2200,
     status: 'IN_PROGRESS',
     create_user: '644b1c251bdbf1f010dddaf9',
-    _id: '645be06707b72ad4a95c1f59',
+    id: '645be06707b72ad4a95c1f59',
     create_time: '2023-05-10T18:20:23.425Z',
     updatedAt: '2023-05-10T18:20:23.425Z',
   },

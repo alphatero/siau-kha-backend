@@ -15,12 +15,22 @@ import { ProductList, ProductListDocument } from 'src/core/models/product-list';
 import { Activities, ActivitiesDocument } from 'src/core/models/activities';
 import { User } from 'src/core/models/user';
 
-function validateObjectIds(...ids) {
-  for (const id of ids) {
-    if (!Types.ObjectId.isValid(id)) {
-      throw new BadRequestException('id格式輸入錯誤');
+function validateObjectIds(ids) {
+  Object.entries(ids).forEach(([key, value]: [string, string | any[]]) => {
+    if (Array.isArray(value)) {
+      value.forEach((val) => {
+        Object.entries(val).forEach(([k, v]: [string, string]) => {
+          if (!Types.ObjectId.isValid(v)) {
+            throw new BadRequestException(`${k}格式錯誤`);
+          }
+        });
+      });
+      return;
     }
-  }
+    if (!Types.ObjectId.isValid(value)) {
+      throw new BadRequestException(`${key}格式錯誤`);
+    }
+  });
 }
 
 @Injectable()
@@ -49,21 +59,30 @@ export class OrderDetailService {
    */
   public async OrderFlow(dto: CreateOrderDetailDto, order_id: string) {
     const { activitie_id } = dto;
-    if (!order_id) throw new BadRequestException('order_id 不存在');
+    const productIdsInRequest = dto.product_detail.map((product_detail) => ({
+      product_id: product_detail.product_id,
+    }));
+    validateObjectIds({
+      order_id,
+      activitie_id,
+      productIdsInRequest,
+    });
+    const order = await this.orderModel.findById(order_id).exec();
+    if (!order) {
+      throw new BadRequestException('找不到此筆訂單');
+    }
     if (
       dto.product_detail.some(
         (product_detail) => product_detail.product_quantity === 0,
       )
     ) {
-      throw new BadRequestException('商品數量 不得為 0');
+      throw new BadRequestException(`商品數量 不得為 0`);
     }
-
-    validateObjectIds(order_id, activitie_id);
     // 取得活動折扣
     let count;
     const activitie = await this.activitiesModel.findById(activitie_id).exec();
 
-    if (!activitie) throw new BadRequestException('activitie_id 不存在');
+    if (!activitie) throw new BadRequestException('找不到此優惠活動');
 
     if (activitie.discount_type === '0') {
       count = activitie.discount_rate / 100;
@@ -156,19 +175,42 @@ export class OrderDetailService {
     count: number,
     opts: { session: ClientSession },
   ) {
-    const productDetails = [];
+    // 取得所有的 product_id
+    const productIds = dto.product_detail.map((product) => product.product_id);
 
-    for (const product of dto.product_detail) {
-      const { product_id, product_quantity, product_note } = product;
-      const productData = await this.productListModel
-        .findById(product_id)
-        .exec();
+    // 一次性獲取所有的product
+    const productDatas = await this.productListModel
+      .find({ _id: { $in: productIds } })
+      .exec();
 
-      if (!productData) throw new BadRequestException(`product_id 不存在`);
+    const foundProductIds = productDatas.map((productData) =>
+      productData._id.toString(),
+    );
+    const notFoundProductIds = productIds.filter(
+      (productId) => !foundProductIds.includes(productId),
+    );
+
+    if (notFoundProductIds.length > 0) {
+      throw new BadRequestException(
+        `找不到此: ${notFoundProductIds.join(', ')} 商品`,
+      );
+    }
+
+    // 將 productDatas 轉換為以 id 為 key 的 map
+    const productDataMap = productDatas.reduce((map, productData) => {
+      map[productData._id] = productData;
+      return map;
+    }, {});
+
+    // 生成 product_detail
+    const productDetails = dto.product_detail.map((product) => {
+      const productData = productDataMap[product.product_id];
+      if (!productData) throw new BadRequestException(`找不到此筆單品`);
 
       const { product_name, product_price } = productData;
+      const { product_quantity, product_note } = product;
 
-      productDetails.push({
+      return {
         product_name: product_name,
         product_price: product_price,
         product_final_price: count
@@ -179,8 +221,8 @@ export class OrderDetailService {
         order_id: new Types.ObjectId(order_id),
         status: ProductDetailStatus.IN_PROGRESS,
         is_delete: false,
-      });
-    }
+      };
+    });
 
     return await this.productDetailModel.insertMany(productDetails, opts);
   }
@@ -237,21 +279,9 @@ export class OrderDetailService {
    * @returns
    */
   public async getOrderDetail(id: string) {
+    validateObjectIds({ oredr_id: id });
     try {
-      const order: OrderDocument = await this.orderModel
-        .findById(id)
-        ?.populate({
-          path: 'order_detail',
-          populate: {
-            path: 'product_detail',
-            populate: {
-              path: 'product_id',
-              select:
-                'id product_name product_price product_quantity product_note product_final_price status',
-            },
-          },
-        })
-        .exec();
+      const order: OrderDocument = await this.orderModel.findById(id).exec();
 
       const result = {
         order_detail: order.order_detail.map((detail: OrderDetailDocument) => ({
@@ -274,7 +304,7 @@ export class OrderDetailService {
 
       return result;
     } catch (error) {
-      throw new BadRequestException('無此訂單');
+      throw new BadRequestException('找不到此筆訂單');
     }
   }
 
@@ -292,7 +322,11 @@ export class OrderDetailService {
     detailId: string,
     pId: string,
   ) {
-    validateObjectIds(orderId, detailId, pId);
+    validateObjectIds({
+      order_id: orderId,
+      oreder_detail_id: detailId,
+      product_detail_id: pId,
+    });
 
     const productDetailSession =
       await this.productDetailModel.db.startSession();
@@ -303,11 +337,11 @@ export class OrderDetailService {
     orderSession.startTransaction();
     try {
       const order = await this.orderModel.findById(orderId).exec();
-      if (!order) throw new BadRequestException('無此訂單');
+      if (!order) throw new BadRequestException('找不到此筆訂單');
 
       // 取得order_detail
       const orderDetail = await this.orderDetailModel.findById(detailId).exec();
-      if (!orderDetail) throw new BadRequestException('無此訂單明細');
+      if (!orderDetail) throw new BadRequestException('無找不到此筆訂單明細');
 
       const { product_detail } = orderDetail;
 
@@ -316,7 +350,7 @@ export class OrderDetailService {
       );
 
       if (productDetailIsExist === -1) {
-        throw new BadRequestException('無此單品');
+        throw new BadRequestException('找不到此筆單品');
       }
 
       // 修改produce detail 狀態
@@ -397,18 +431,22 @@ export class OrderDetailService {
     detailId: string,
     pId: string,
   ) {
-    validateObjectIds(orderId, detailId, pId);
+    validateObjectIds({
+      order_id: orderId,
+      oreder_detail_id: detailId,
+      product_detail_id: pId,
+    });
 
     const order = await this.orderModel.findById(orderId).exec();
 
-    if (!order) throw new BadRequestException('無此訂單');
+    if (!order) throw new BadRequestException('找不到此筆訂單');
 
     const orderDetailIsExist = order.order_detail.findIndex(
       (detail: OrderDetailDocument) => detail._id.toString() === detailId,
     );
 
     if (orderDetailIsExist === -1) {
-      throw new BadRequestException('無此訂單明細');
+      throw new BadRequestException('找不到此筆訂單明細');
     }
 
     const orderDetail = order.order_detail[orderDetailIsExist];
@@ -420,7 +458,7 @@ export class OrderDetailService {
     );
 
     if (productDetailIsExist === -1) {
-      throw new BadRequestException('無此單品');
+      throw new BadRequestException('找不到此筆單品');
     }
 
     this.productDetailModel.findByIdAndUpdate(
