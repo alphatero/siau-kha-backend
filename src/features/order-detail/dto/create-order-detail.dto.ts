@@ -1,4 +1,5 @@
 // src/dtos/create-order.dto.ts
+import { BadRequestException } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsNotEmpty,
@@ -8,18 +9,27 @@ import {
   IsNumber,
   ArrayMinSize,
   IsOptional,
+  Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class ProductDetailInOrderDetail {
-  @ApiProperty({ description: '商品 id' })
+  @ApiProperty({
+    type: String,
+    description: '商品 id',
+  })
   @IsNotEmpty()
   @IsString()
   readonly product_id: string;
 
-  @ApiProperty({ description: '商品數量' })
+  @ApiProperty({ description: '商品數量', example: 2 })
   @IsNotEmpty()
   @IsNumber()
+  @Min(1, {
+    message: () => {
+      throw new BadRequestException('product_quantity 不得小於 1');
+    },
+  })
   readonly product_quantity: number;
 
   @ApiProperty({ type: [String], description: '商品註記', example: ['去冰'] })
@@ -38,7 +48,10 @@ export class CreateOrderDetailDto {
   @Type(() => ProductDetailInOrderDetail)
   readonly product_detail: ProductDetailInOrderDetail[];
 
-  @ApiProperty({ description: '活動 id' })
+  @ApiProperty({
+    type: String,
+    description: '活動 id',
+  })
   @IsNotEmpty()
   @IsString()
   readonly activitie_id: string;

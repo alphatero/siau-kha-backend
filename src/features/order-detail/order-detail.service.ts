@@ -71,13 +71,6 @@ export class OrderDetailService {
     if (!order) {
       throw new BadRequestException('找不到此筆訂單');
     }
-    if (
-      dto.product_detail.some(
-        (product_detail) => product_detail.product_quantity === 0,
-      )
-    ) {
-      throw new BadRequestException(`商品數量 不得為 0`);
-    }
     // 取得活動折扣
     let count;
     const activitie = await this.activitiesModel.findById(activitie_id).exec();
