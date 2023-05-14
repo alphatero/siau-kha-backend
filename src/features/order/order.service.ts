@@ -31,6 +31,10 @@ export class OrderService {
       throw new BadRequestException('找不到此筆訂單');
     }
 
+    if (operate_type === 'DELETE' && !order.activities) {
+      throw new BadRequestException('此訂單無加入優惠活動');
+    }
+
     const activities = await this.activitiesModel.findById(a_id).exec();
     if (!activities) {
       throw new BadRequestException('找不到此優惠活動');
