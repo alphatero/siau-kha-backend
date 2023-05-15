@@ -23,14 +23,6 @@ export class Activities {
   })
   discount_type: string;
 
-  // 最低消費金額
-  @Prop({
-    type: Number,
-    required: true,
-    default: 0,
-  })
-  min_spend: number;
-
   // 計算類型
   // 0-折扣, 1-折讓
   @Prop({
@@ -39,6 +31,18 @@ export class Activities {
     enum: ['0', '1'],
   })
   charge_type: string;
+
+  // 最低消費金額
+  @Prop({
+    type: Number,
+    required: true,
+    default: 0,
+  })
+  min_spend: number;
+
+  // 折扣/折讓數
+  @Prop({ type: Number })
+  discount: number;
 
   // 是否為期間限定
   @Prop({ default: false })

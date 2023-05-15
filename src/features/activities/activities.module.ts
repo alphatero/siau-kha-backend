@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ActivitiesController } from './activities.controller';
 import { ActivitiesService } from './activities.service';
@@ -20,6 +20,8 @@ import { ActivitiesMiddleware } from 'src/common/middleware';
 })
 export class ActivitiesModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(ActivitiesMiddleware).forRoutes('POST', 'activities');
+    consumer
+      .apply(ActivitiesMiddleware)
+      .forRoutes({ path: 'activities', method: RequestMethod.POST });
   }
 }
