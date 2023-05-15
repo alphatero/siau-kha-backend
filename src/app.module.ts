@@ -17,6 +17,8 @@ import { TableModule } from './features/table';
 import { ImageModule } from './features/image';
 import { ActivitiesModule } from './features/activities';
 import { ProductModule } from './features/product';
+import { OrderModule } from './features/order';
+import { ReservationModule } from './features/reservation';
 
 @Module({
   imports: [
@@ -37,7 +39,9 @@ import { ProductModule } from './features/product';
     TableModule,
     ProductModule,
     ActivitiesModule,
+    ReservationModule,
     ImageModule,
+    OrderModule,
   ],
   controllers: [],
   providers: [
