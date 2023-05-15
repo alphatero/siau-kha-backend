@@ -72,14 +72,9 @@ export class OrderDetailService {
       throw new BadRequestException('找不到此筆訂單');
     }
     // 取得活動折扣
-    let count;
     const activitie = await this.activitiesModel.findById(activitie_id).exec();
 
     if (!activitie) throw new BadRequestException('找不到此優惠活動');
-
-    if (activitie.discount_type === '0') {
-      count = activitie.discount_rate / 100;
-    }
 
     // productDetail transaction
     const productDetailSession =
@@ -96,13 +91,12 @@ export class OrderDetailService {
       const createdProductDetails = await this.createProductDetail(
         dto,
         order_id,
-        count,
         { session: productDetailSession },
       );
 
       // 取得新增product_detail的id []
       const product_detail = createdProductDetails.map(
-        (productDetail) => productDetail._id,
+        (productDetail: ProductDetailDocument) => productDetail._id,
       );
 
       // 取得新增order_detail的總額 (未折扣)
@@ -113,18 +107,7 @@ export class OrderDetailService {
         return acc;
       }, 0);
 
-      // 取得實際金額的總額
-      const order_detail_final_total = createdProductDetails.reduce(
-        (acc, cur) => {
-          if (!cur.is_delete) {
-            return acc + cur.product_final_price * cur.product_quantity;
-          }
-          return acc;
-        },
-        0,
-      );
-
-      // 取得該張order的create_user、total、final_total
+      // 取得該張order的create_user、total
       const order = await this.orderModel.findById(order_id).exec();
       const { create_user } = order;
 
@@ -137,13 +120,9 @@ export class OrderDetailService {
           { session: orderDetailSession },
         );
 
-      await this.updateOrder(
-        order_id,
-        order_detail_total,
-        order_detail_final_total,
-        createdOrderDetail,
-        { session: orderSession },
-      );
+      await this.updateOrder(order_id, order_detail_total, createdOrderDetail, {
+        session: orderSession,
+      });
       await productDetailSession.commitTransaction();
       await orderDetailSession.commitTransaction();
       await orderSession.commitTransaction();
@@ -165,7 +144,6 @@ export class OrderDetailService {
   public async createProductDetail(
     dto: CreateOrderDetailDto,
     order_id: string,
-    count: number,
     opts: { session: ClientSession },
   ) {
     // 取得所有的 product_id
@@ -206,9 +184,7 @@ export class OrderDetailService {
       return {
         product_name: product_name,
         product_price: product_price,
-        product_final_price: count
-          ? Math.round(product_price * count)
-          : product_price,
+        product_final_price: product_price,
         product_quantity: product_quantity,
         product_note: product_note,
         order_id: new Types.ObjectId(order_id),
@@ -222,7 +198,7 @@ export class OrderDetailService {
 
   public async createOrderDetail(
     order_id: string,
-    product_detail: unknown[],
+    product_detail: ProductDetail[],
     order_detail_total: number,
     create_user: User,
     opts: { session: ClientSession },
@@ -246,18 +222,16 @@ export class OrderDetailService {
   public async updateOrder(
     order_id: string,
     order_detail_total: number,
-    order_detail_final_total: number,
     createdOrderDetail: OrderDetailDocument[],
     opts: { session: ClientSession },
   ) {
     const order = await this.orderModel.findById(order_id).exec();
-    const { total, final_total } = order;
+    const { total } = order;
 
     return await this.orderModel.findByIdAndUpdate(
       order_id,
       {
         total: total + order_detail_total,
-        final_total: final_total + order_detail_final_total,
         $push: { order_detail: new Types.ObjectId(createdOrderDetail[0]._id) },
       },
       {
@@ -286,7 +260,6 @@ export class OrderDetailService {
               product_price: product.product_price,
               product_quantity: product.product_quantity,
               product_note: product.product_note,
-              product_final_price: product.product_final_price,
               status: product.status,
             }),
           ),
@@ -357,18 +330,13 @@ export class OrderDetailService {
         { new: true, session: productDetailSession },
       );
 
-      // 應扣除額 (已折扣)
-      const final_deduct =
-        product_detail[productDetailIsExist].product_final_price *
-        product_detail[productDetailIsExist].product_quantity;
-
       // 應扣除額 (未折扣)
       const deduct =
         product_detail[productDetailIsExist].product_price *
         product_detail[productDetailIsExist].product_quantity;
       // 修改order-detail total
       const { total: orderDetailTotal } = orderDetail;
-      const newOrderDetailTotal = orderDetailTotal - final_deduct;
+      const newOrderDetailTotal = orderDetailTotal - deduct;
       await this.orderDetailModel.findByIdAndUpdate(
         detailId,
         {
@@ -380,15 +348,13 @@ export class OrderDetailService {
       );
 
       // 修改order final_total total
-      const { total: OrderTotal, final_total: OrderFinalTotal } = order;
-      const newOrderFinalTotal = OrderFinalTotal - final_deduct;
+      const { total: OrderTotal } = order;
       const newOrderTotal = OrderTotal - deduct;
 
       await this.orderModel.findByIdAndUpdate(
         orderId,
         {
           $set: {
-            final_total: newOrderFinalTotal,
             total: newOrderTotal,
           },
         },
