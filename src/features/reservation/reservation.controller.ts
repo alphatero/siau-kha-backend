@@ -98,12 +98,15 @@ export class ReservationController {
       },
     },
   })
-  @Patch('/:id')
-  async arrangeSetting(@Param('id') id: string) {
-    // 安排入座
+  @Patch('/:id/:table_id')
+  async arrangeSetting(
+    @Param('id') id: string,
+    @Param('table_id') tableId: string,
+  ) {
     await this.reservationService.changeReservationStatus(
       id,
       ReservationStatus.SUCCESS,
+      tableId,
     );
   }
 
