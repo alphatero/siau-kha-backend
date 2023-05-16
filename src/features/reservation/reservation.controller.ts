@@ -6,7 +6,7 @@ import {
   Param,
   Patch,
   Post,
-  Request,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -36,10 +36,7 @@ export class ReservationController {
     },
   })
   @Post()
-  async createReservation(
-    @Request() request,
-    @Body() dto: CreateReservationDto,
-  ) {
+  async createReservation(@Req() request, @Body() dto: CreateReservationDto) {
     const { user } = request;
     // 寫入候位資訊
     await this.reservationService.createReservation(dto, user.id);
@@ -81,13 +78,16 @@ export class ReservationController {
   })
   @Patch('/:id/:table_id')
   async arrangeSetting(
+    @Req() request,
     @Param('id') id: string,
     @Param('table_id') tableId: string,
   ) {
+    const { user } = request;
     await this.reservationService.changeReservationStatus(
       id,
       ReservationStatus.SUCCESS,
       tableId,
+      user,
     );
   }
 
