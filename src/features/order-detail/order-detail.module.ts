@@ -39,5 +39,6 @@ import { Activities, ActivitiesSchema } from 'src/core/models/activities';
   ],
   providers: [OrderDetailService],
   controllers: [OrderDetailController],
+  exports: [OrderDetailService],
 })
 export class OrderDetailModule {}
