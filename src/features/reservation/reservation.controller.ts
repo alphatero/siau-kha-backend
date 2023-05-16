@@ -19,6 +19,7 @@ import { ReservationService } from './reservation.service';
 import { JwtGuard } from 'src/common/guards';
 import { CreateReservationDto } from './dto/check-in-reservation.dto';
 import { ReservationStatus } from 'src/core/models/reservation';
+import { basicExample, getReservationWaitListExample } from './apiExample';
 
 @ApiTags('Reservation')
 @UseGuards(JwtGuard)
@@ -31,10 +32,7 @@ export class ReservationController {
   @ApiResponse({
     status: 200,
     schema: {
-      example: {
-        status: 'success',
-        message: '成功',
-      },
+      example: basicExample,
     },
   })
   @Post()
@@ -52,21 +50,7 @@ export class ReservationController {
   @ApiResponse({
     status: 200,
     schema: {
-      example: {
-        status: 'success',
-        message: '成功',
-        data: {
-          reservation_list: [
-            {
-              id: '645b579334c423887ff962ea',
-              name: '陳先生',
-              customer_num: 3,
-              create_time: '2023-05-10T08:36:35.509Z',
-              status: 'WAIT',
-            },
-          ],
-        },
-      },
+      example: getReservationWaitListExample,
     },
   })
   @Get()
@@ -92,10 +76,7 @@ export class ReservationController {
   @ApiResponse({
     status: 200,
     schema: {
-      example: {
-        status: 'success',
-        message: '成功',
-      },
+      example: basicExample,
     },
   })
   @Patch('/:id/:table_id')
@@ -115,10 +96,7 @@ export class ReservationController {
   @ApiResponse({
     status: 200,
     schema: {
-      example: {
-        status: 'success',
-        message: '成功',
-      },
+      example: basicExample,
     },
   })
   @Delete('/:id')
