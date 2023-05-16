@@ -16,7 +16,7 @@ import { UserModule } from './features/user';
 import { TableModule } from './features/table';
 import { ImageModule } from './features/image';
 import { ProductModule } from './features/product';
-import { OrderSocketModule } from './features/order-socket/order-socket.module';
+import { OrderSocketModule } from './features/order-socket';
 
 @Module({
   imports: [
