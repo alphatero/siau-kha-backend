@@ -26,21 +26,7 @@ export class ActivitiesController {
   })
   @Get('/list')
   async getActivity() {
-    const documents = await this.activitiesService.getActivitiesList();
-    const activities = documents.map((doc) => {
-      const activity = doc.toJSON();
-      return {
-        id: activity._id,
-        activities_name: activity.activities_name,
-        discount_type: activity.discount_type,
-        min_spend: activity.min_spend,
-        is_period: activity.is_period,
-        start_time: activity.start_time,
-        end_time: activity.end_time,
-        act_products_list: activity.act_products_list,
-      };
-    });
-    return { activities };
+    return await this.activitiesService.getActivitiesList();
   }
 
   @ApiExcludeEndpoint()

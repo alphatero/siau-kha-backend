@@ -2,7 +2,7 @@ export const getActivityExample = {
   status: 'success',
   message: '成功',
   activities: {
-    table_list: [
+    activities: [
       {
         id: '6459e2c4f30c49fdcfeff467',
         activities_name: '打卡優惠活動',
