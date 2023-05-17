@@ -18,7 +18,7 @@ import { ImageModule } from './features/image';
 import { ProductModule } from './features/product';
 import { OrderModule } from './features/order';
 import { ReservationModule } from './features/reservation';
-import { CheckOutModule } from './features/check-out/check-out.module';
+import { CheckOutModule } from './features/check-out';
 
 @Module({
   imports: [
