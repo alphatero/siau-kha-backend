@@ -9,7 +9,6 @@ import { NextFunction } from 'express';
 export class ActivitiesMiddleware implements NestMiddleware {
   use(req: any, _: any, next: NextFunction) {
     const reqBody = req.body;
-    console.log('ActivitiesMiddleware');
     // 需先判斷 act_product_list 是否為陣列，否則後續「計算類別」判斷會出錯
     if (!Array.isArray(reqBody.act_products_list)) {
       throw new BadRequestException('act_products_list 必須為陣列');

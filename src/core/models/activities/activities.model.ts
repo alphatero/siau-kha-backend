@@ -41,7 +41,7 @@ export class Activities {
   min_spend: number;
 
   // 折扣/折讓數
-  @Prop({ type: Number })
+  @Prop({ type: Number, required: true })
   discount: number;
 
   // 是否為期間限定

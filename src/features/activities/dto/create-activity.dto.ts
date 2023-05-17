@@ -4,9 +4,9 @@ import {
   IsBoolean,
   IsDateString,
   IsIn,
+  IsInt,
   IsMongoId,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   Min,
   ValidateIf,
@@ -31,21 +31,6 @@ export class CreateActivityDto {
   // 0-全單優惠 1-指定商品
   public readonly discount_type: string;
 
-  @ApiProperty({
-    required: true,
-    type: Number,
-    default: 0,
-    description: '最低消費金額',
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  @Min(0, {
-    message: () => {
-      throw new BadRequestException('min_spend 不得為負數');
-    },
-  })
-  public readonly min_spend: number;
-
   @ApiProperty({ description: '計算類型' })
   @IsNotEmpty()
   @IsIn(['0', '1'], {
@@ -55,6 +40,34 @@ export class CreateActivityDto {
   })
   // 0-折扣 1-折讓
   public readonly charge_type: string;
+
+  @ApiProperty({
+    required: true,
+    type: Number,
+    default: 0,
+    description: '最低消費金額',
+  })
+  @IsNotEmpty()
+  @IsInt({
+    message: () => {
+      throw new BadRequestException('min_spend 需為 正整數');
+    },
+  })
+  @Min(0, {
+    message: () => {
+      throw new BadRequestException('min_spend 不得為負數');
+    },
+  })
+  public readonly min_spend: number;
+
+  @ApiProperty({ required: true, type: Number, description: '折扣/折讓' })
+  @IsNotEmpty()
+  @IsInt({
+    message: () => {
+      throw new BadRequestException('discount 需為 正整數');
+    },
+  })
+  public readonly discount: number;
 
   @ApiProperty({
     required: false,
@@ -132,7 +145,7 @@ export class CreateActivityDto {
   @IsOptional()
   @IsBoolean({
     message: () => {
-      throw new BadRequestException('status 為 true 或 false');
+      throw new BadRequestException('status 需為 true 或 false');
     },
   })
   public readonly status?: boolean;
@@ -146,7 +159,7 @@ export class CreateActivityDto {
   @IsOptional()
   @IsBoolean({
     message: () => {
-      throw new BadRequestException('is_delete 為 true 或 false');
+      throw new BadRequestException('is_delete 需為 true 或 false');
     },
   })
   public readonly is_delete?: boolean;
