@@ -1,7 +1,7 @@
 export const getActivityExample = {
   status: 'success',
   message: '成功',
-  activities: {
+  data: {
     activities: [
       {
         id: '6459e2c4f30c49fdcfeff467',
