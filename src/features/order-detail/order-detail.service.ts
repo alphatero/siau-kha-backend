@@ -58,23 +58,17 @@ export class OrderDetailService {
    * @returns
    */
   public async OrderFlow(dto: CreateOrderDetailDto, order_id: string) {
-    const { activitie_id } = dto;
     const productIdsInRequest = dto.product_detail.map((product_detail) => ({
       product_id: product_detail.product_id,
     }));
     validateObjectIds({
       order_id,
-      activitie_id,
       productIdsInRequest,
     });
     const order = await this.orderModel.findById(order_id).exec();
     if (!order) {
       throw new BadRequestException('找不到此筆訂單');
     }
-    // 取得活動折扣
-    const activitie = await this.activitiesModel.findById(activitie_id).exec();
-
-    if (!activitie) throw new BadRequestException('找不到此優惠活動');
 
     // productDetail transaction
     const productDetailSession =
@@ -123,10 +117,20 @@ export class OrderDetailService {
       await this.updateOrder(order_id, order_detail_total, createdOrderDetail, {
         session: orderSession,
       });
+
+      const result = createdOrderDetail.map((item) => ({
+        order: item.order,
+        product_detail: item.product_detail,
+        total: item.total,
+        id: item._id,
+        create_time: item.create_time,
+        updateAt: item.update_time,
+      }));
+
       await productDetailSession.commitTransaction();
       await orderDetailSession.commitTransaction();
       await orderSession.commitTransaction();
-      return createdOrderDetail;
+      return result;
     } catch (error) {
       // 有錯誤就roll back
       await productDetailSession.abortTransaction();
@@ -135,9 +139,9 @@ export class OrderDetailService {
       throw error;
     } finally {
       // 結束session
-      await productDetailSession.endSession();
-      await orderDetailSession.endSession();
       await orderSession.endSession();
+      await orderDetailSession.endSession();
+      await productDetailSession.endSession();
     }
   }
 
@@ -182,6 +186,7 @@ export class OrderDetailService {
       const { product_quantity, product_note } = product;
 
       return {
+        product_id: product.product_id,
         product_name: product_name,
         product_price: product_price,
         product_final_price: product_price,
@@ -210,7 +215,6 @@ export class OrderDetailService {
           product_detail: product_detail,
           total: order_detail_total,
           create_user: create_user,
-          status: OrderDetailStatus.IN_PROGRESS,
         },
       ],
       {

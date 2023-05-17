@@ -47,12 +47,4 @@ export class CreateOrderDetailDto {
   @ValidateNested({ each: true })
   @Type(() => ProductDetailInOrderDetail)
   readonly product_detail: ProductDetailInOrderDetail[];
-
-  @ApiProperty({
-    type: String,
-    description: '活動 id',
-  })
-  @IsNotEmpty()
-  @IsString()
-  readonly activitie_id: string;
 }
