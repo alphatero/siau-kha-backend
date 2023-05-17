@@ -18,6 +18,7 @@ import { ImageModule } from './features/image';
 import { ProductModule } from './features/product';
 import { OrderModule } from './features/order';
 import { ReservationModule } from './features/reservation';
+import { CheckOutModule } from './features/check-out/check-out.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ReservationModule } from './features/reservation';
     ReservationModule,
     ImageModule,
     OrderModule,
+    CheckOutModule,
   ],
   controllers: [],
   providers: [
