@@ -77,18 +77,20 @@ export class ReservationController {
       example: basicExample,
     },
   })
-  @Patch('/:id/:table_id')
-  async arrangeSetting(
+  @Patch('/:id/:table_id/:customer_num')
+  async arrangeSeating(
     @Req() request,
     @Param('id') id: string,
     @Param('table_id') tableId: string,
+    @Param('customer_num') customerNum: number,
   ) {
     const { user } = request;
     await this.reservationService.changeReservationStatus(
       id,
       ReservationStatus.SUCCESS,
-      tableId,
       user,
+      tableId,
+      customerNum,
     );
   }
 

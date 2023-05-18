@@ -61,8 +61,9 @@ export class ReservationService {
   public async changeReservationStatus(
     id: string,
     action: ReservationStatus,
-    tableId?: string,
     user?: IUserPayload,
+    tableId?: string,
+    customerNum?: number,
   ) {
     if (action === ReservationStatus.CANCEL) {
       validateObjectIds({ id });
@@ -78,11 +79,11 @@ export class ReservationService {
     } else {
       // 安排入座
       // 1. [v] 檢查id, tableId格式。
-      // 2. [v] 檢查預約是否存在，且狀態為WAIT，並取得相關資訊(用餐人數)。
-      // 3. [v] 檢查桌號是否存在。
-      // 4. [v] 檢查桌號是否為空閒。
-      // 5. [v] 檢查目標預約是否為今日。
-      // 6. [v] 檢查用餐人數是否符合。
+      // 2. [v] 檢查用餐人數格式是否為正整數，且大於0。
+      // 3. [v] 檢查預約是否存在，且狀態為WAIT，並取得相關資訊(用餐人數)。
+      // 4. [v] 檢查桌號是否存在。
+      // 5. [v] 檢查桌號是否為空閒。
+      // 6. [v] 檢查目標預約是否為今日。
       // 7. [v] 檢查用餐人數是否超過用餐人數上限。
       // 8. [v] 因為會對 reservation、TableMain、Order 三個不同的 collection 進行操作，每個 collection 都要開 session。
       // 9. [v] 透過 session.withTransaction() 來執行交易事務。
@@ -94,6 +95,14 @@ export class ReservationService {
       // [v] 最後結束session。
 
       validateObjectIds({ id, table_id: tableId });
+
+      if (Number.isInteger(customerNum)) {
+        throw new BadRequestException('用餐人數需為正整數');
+      }
+
+      if (customerNum <= 0) {
+        throw new BadRequestException('用餐人數不得小於1');
+      }
 
       const target_reservation: ReservationDocument =
         await this.reservationModel.findById(id).exec();
@@ -122,11 +131,7 @@ export class ReservationService {
         throw new BadRequestException('此桌次為用餐中, 無法安排入座');
       }
 
-      if (target_reservation.customer_num <= 0) {
-        throw new BadRequestException('用餐人數不得為0');
-      }
-
-      if (target_reservation.customer_num > table_main.seat_max + 2) {
+      if (customerNum > table_main.seat_max + 2) {
         throw new BadRequestException(
           `預設可容納人數為 ${table_main.seat_max}, 實際人數可超過「預設可容納人數」最多兩位`,
         );
@@ -143,8 +148,11 @@ export class ReservationService {
       try {
         // 1. 更新reservation
         await this.reservationModel.findOneAndUpdate(
-          { _id: id, status: ReservationStatus.WAIT },
-          { status: action },
+          {
+            _id: id,
+            status: ReservationStatus.WAIT,
+          },
+          { status: action, customer_num: customerNum },
           { session: reservationSession, new: true },
         );
 
@@ -153,7 +161,7 @@ export class ReservationService {
           [
             {
               table_main: new Types.ObjectId(tableId),
-              customer_num: target_reservation.customer_num,
+              customer_num: customerNum,
               status: OrderStatus.IN_PROGRESS,
               create_user: new Types.ObjectId(user.id),
             },
