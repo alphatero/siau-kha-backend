@@ -38,6 +38,7 @@ export class AuthController {
           user_account: 'enzokao01',
           user_role: 'admin',
           token: 'JWT',
+          exp: 1684483505000,
         },
       },
     },

@@ -56,6 +56,14 @@ export class AuthService {
 
   public generateJwt(payload: Record<string, string>) {
     const token = this.jwtService.sign(payload);
-    return { token };
+    const jwtSecret = process.env.JWT_SECRET;
+    const decodedToken = this.jwtService.verify(token, {
+      secret: jwtSecret,
+    }) as {
+      exp: number;
+    };
+    const exp = decodedToken.exp * 1000;
+    console.log(exp);
+    return { token, exp };
   }
 }
