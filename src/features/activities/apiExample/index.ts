@@ -1,6 +1,7 @@
+import { basicExample } from 'src/common/utils/apiExample';
+
 export const getActivityExample = {
-  status: 'success',
-  message: '成功',
+  ...basicExample,
   data: {
     activities: [
       {
