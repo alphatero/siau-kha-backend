@@ -11,6 +11,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { checkExample, signInExample } from './apiExample';
+import { basicExample } from 'src/common/utils/apiExample';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -35,18 +37,7 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     schema: {
-      example: {
-        status: 'success',
-        message: '成功',
-        data: {
-          id: '644a6def9a4dcd031e9e3c78',
-          user_name: 'Enzo',
-          user_account: 'enzokao01',
-          user_role: 'admin',
-          token: 'JWT',
-          exp: 1684483505000,
-        },
-      },
+      example: signInExample,
     },
   })
   @Post('sign-in')
@@ -65,6 +56,12 @@ export class AuthController {
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: '檢查 token 是否過期' })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      example: checkExample,
+    },
+  })
   @Get('check')
   async checkTokenExp(@Req() request) {
     const { user } = request;
@@ -74,6 +71,12 @@ export class AuthController {
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: '登出' })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      example: basicExample,
+    },
+  })
   @Get('sign-out')
   async signOut(@Headers('authorization') authorizationHeader: string) {
     const jwt = authorizationHeader.replace('Bearer ', '');
