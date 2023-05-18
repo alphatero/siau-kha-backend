@@ -6,7 +6,7 @@ import {
   Param,
   Patch,
   Post,
-  Request,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -19,6 +19,8 @@ import { ReservationService } from './reservation.service';
 import { JwtGuard } from 'src/common/guards';
 import { CreateReservationDto } from './dto/check-in-reservation.dto';
 import { ReservationStatus } from 'src/core/models/reservation';
+import { getReservationWaitListExample } from './apiExample';
+import { basicExample } from 'src/common/utils/apiExample';
 
 @ApiTags('Reservation')
 @UseGuards(JwtGuard)
@@ -31,17 +33,11 @@ export class ReservationController {
   @ApiResponse({
     status: 200,
     schema: {
-      example: {
-        status: 'success',
-        message: '成功',
-      },
+      example: basicExample,
     },
   })
   @Post()
-  async createReservation(
-    @Request() request,
-    @Body() dto: CreateReservationDto,
-  ) {
+  async createReservation(@Req() request, @Body() dto: CreateReservationDto) {
     const { user } = request;
     // 寫入候位資訊
     await this.reservationService.createReservation(dto, user.id);
@@ -52,21 +48,7 @@ export class ReservationController {
   @ApiResponse({
     status: 200,
     schema: {
-      example: {
-        status: 'success',
-        message: '成功',
-        data: {
-          reservation_list: [
-            {
-              id: '645b579334c423887ff962ea',
-              name: '陳先生',
-              customer_num: 3,
-              create_time: '2023-05-10T08:36:35.509Z',
-              status: 'WAIT',
-            },
-          ],
-        },
-      },
+      example: getReservationWaitListExample,
     },
   })
   @Get()
@@ -92,18 +74,23 @@ export class ReservationController {
   @ApiResponse({
     status: 200,
     schema: {
-      example: {
-        status: 'success',
-        message: '成功',
-      },
+      example: basicExample,
     },
   })
-  @Patch('/:id')
-  async arrangeSetting(@Param('id') id: string) {
-    // 安排入座
+  @Patch('/:id/:table_id/:customer_num')
+  async arrangeSeating(
+    @Req() request,
+    @Param('id') id: string,
+    @Param('table_id') tableId: string,
+    @Param('customer_num') customerNum: number,
+  ) {
+    const { user } = request;
     await this.reservationService.changeReservationStatus(
       id,
       ReservationStatus.SUCCESS,
+      user,
+      tableId,
+      customerNum,
     );
   }
 
@@ -112,10 +99,7 @@ export class ReservationController {
   @ApiResponse({
     status: 200,
     schema: {
-      example: {
-        status: 'success',
-        message: '成功',
-      },
+      example: basicExample,
     },
   })
   @Delete('/:id')
