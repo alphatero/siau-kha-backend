@@ -4,7 +4,6 @@ import { Model, Types, ClientSession } from 'mongoose';
 import { CreateOrderDetailDto } from './dto/create-order-detail.dto';
 
 import { ProductDetailStatus } from 'src/core/models/product-detail';
-import { OrderDetailStatus } from 'src/core/models/order-detail';
 import {
   ProductDetail,
   ProductDetailDocument,
@@ -12,7 +11,6 @@ import {
 import { Order, OrderDocument } from 'src/core/models/order';
 import { OrderDetail, OrderDetailDocument } from 'src/core/models/order-detail';
 import { ProductList, ProductListDocument } from 'src/core/models/product-list';
-import { Activities, ActivitiesDocument } from 'src/core/models/activities';
 import { User } from 'src/core/models/user';
 
 function validateObjectIds(ids) {
@@ -44,12 +42,9 @@ export class OrderDetailService {
     private readonly productDetailModel: Model<ProductDetailDocument>,
     @InjectModel(ProductList.name)
     private readonly productListModel: Model<ProductListDocument>,
-    @InjectModel(Activities.name)
-    private readonly activitiesModel: Model<ActivitiesDocument>,
   ) {}
 
   /** B-10 送出餐點紀錄
-   * 透過 order_id 取得 活動折扣
    * 新增 product_detail
    * 新增 order_detail
    * 修改 order 總額 實際總額
