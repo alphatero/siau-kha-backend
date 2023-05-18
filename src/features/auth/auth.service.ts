@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { UserService } from '../user';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -63,7 +67,6 @@ export class AuthService {
       exp: number;
     };
     const exp = decodedToken.exp * 1000;
-    console.log(exp);
     return { token, exp };
   }
 }

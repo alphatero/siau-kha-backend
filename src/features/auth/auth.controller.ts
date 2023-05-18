@@ -1,10 +1,16 @@
-import { Controller, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { UserPayload } from './decorators/payload.decorator';
 import { IUserPayload } from './models/payload.model';
-import { LocalGuard } from 'src/common/guards';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { JwtGuard, LocalGuard } from 'src/common/guards';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -54,5 +60,14 @@ export class AuthController {
       ),
     );
     return user_info;
+  }
+
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '檢查 token 是否過期' })
+  @Get('check')
+  async checkTokenExp(@Req() request) {
+    const { user } = request;
+    return { hasExpired: false, exp: user.exp };
   }
 }
