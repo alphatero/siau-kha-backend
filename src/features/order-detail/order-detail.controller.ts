@@ -43,7 +43,7 @@ export class OrderDetailController {
     @Param('order_id') orderId: string,
     @Body() orderDetail: CreateOrderDetailDto,
   ) {
-    return await this.orderDetailService.orderFlow(orderDetail, orderId);
+    await this.orderDetailService.orderFlow(orderDetail, orderId);
   }
 
   // B-8 單一餐點上菜
@@ -61,11 +61,7 @@ export class OrderDetailController {
     @Param('detail_id') detailId: string,
     @Param('p_id') pId: string,
   ) {
-    return await this.orderDetailService.patchOrderDetail(
-      orderId,
-      detailId,
-      pId,
-    );
+    await this.orderDetailService.patchOrderDetail(orderId, detailId, pId);
   }
 
   // B-7 單一餐點退點
@@ -83,11 +79,7 @@ export class OrderDetailController {
     @Param('detail_id') detailId: string,
     @Param('p_id') pId: string,
   ) {
-    return await this.orderDetailService.deleteOrderDetail(
-      orderId,
-      detailId,
-      pId,
-    );
+    await this.orderDetailService.deleteOrderDetail(orderId, detailId, pId);
   }
 
   // B-6 取得此桌訂單紀錄
