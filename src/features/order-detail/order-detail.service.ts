@@ -318,6 +318,23 @@ export class OrderDetailService {
         throw new BadRequestException('找不到此筆單品');
       }
 
+      // 如果是已完成的訂單或已刪除訂單，則不可退點
+      if (
+        product_detail[productDetailIsExist].status ===
+        ProductDetailStatus.FINISH
+      ) {
+        throw new BadRequestException('此訂單已完成，不可退點');
+      }
+      if (
+        product_detail[productDetailIsExist].status ===
+        ProductDetailStatus.SUCCESS
+      ) {
+        throw new BadRequestException('此訂單已送出，不可退點');
+      }
+      if (product_detail[productDetailIsExist].is_delete) {
+        throw new BadRequestException('此訂單已刪除，不可退點');
+      }
+
       // 修改produce detail 狀態
       await this.productDetailModel.findByIdAndUpdate(
         pId,
@@ -417,6 +434,14 @@ export class OrderDetailService {
 
     if (productDetailIsExist === -1) {
       throw new BadRequestException('找不到此筆單品');
+    }
+
+    // 如果此單品已經上菜過，則不可再次上菜
+    if (
+      product_detail[productDetailIsExist].status ===
+      ProductDetailStatus.SUCCESS
+    ) {
+      throw new BadRequestException('此單品已經上菜過');
     }
 
     await this.productDetailModel.findByIdAndUpdate(
