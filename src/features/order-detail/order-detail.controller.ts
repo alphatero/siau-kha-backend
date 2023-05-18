@@ -20,11 +20,8 @@ import { JwtGuard } from 'src/common/guards';
 import { OrderDetailService } from './order-detail.service';
 import { CreateOrderDetailDto } from './dto/create-order-detail.dto';
 
-import {
-  postOrderDetailExample,
-  getOrderDetailExample,
-  commonExample,
-} from './apiExample';
+import { getOrderDetailExample } from './apiExample';
+import { basicExample } from 'src/common/utils/apiExample';
 
 // B-10 送出餐點紀錄
 @ApiTags('OrderDetail')
@@ -38,7 +35,7 @@ export class OrderDetailController {
   @ApiResponse({
     status: 200,
     schema: {
-      example: postOrderDetailExample,
+      example: basicExample,
     },
   })
   @Post('/:order_id')
@@ -55,7 +52,7 @@ export class OrderDetailController {
   @ApiResponse({
     status: 200,
     schema: {
-      example: commonExample,
+      example: basicExample,
     },
   })
   @Patch('/:order_id/:detail_id/:p_id')
@@ -77,7 +74,7 @@ export class OrderDetailController {
   @ApiResponse({
     status: 200,
     schema: {
-      example: commonExample,
+      example: basicExample,
     },
   })
   @Delete('/:order_id/:detail_id/:p_id')
