@@ -30,6 +30,7 @@ export class ProductDetail {
 
   @Prop({
     type: Array<string>,
+    default: [],
   })
   product_note: Array<string>;
 

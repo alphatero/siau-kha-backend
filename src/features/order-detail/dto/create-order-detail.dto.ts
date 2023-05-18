@@ -35,7 +35,7 @@ export class ProductDetailInOrderDetail {
   @ApiProperty({ type: [String], description: '商品註記', example: ['去冰'] })
   @IsOptional()
   @IsArray()
-  @ArrayMinSize(1)
+  @ArrayMinSize(0)
   @IsString({ each: true })
   readonly product_note: string[];
 }
