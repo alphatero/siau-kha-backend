@@ -1,6 +1,7 @@
+import { basicExample } from 'src/common/utils/apiExample';
+
 export const getReservationWaitListExample = {
-  status: 'success',
-  message: '成功',
+  ...basicExample,
   data: {
     reservation_list: [
       {
@@ -12,9 +13,4 @@ export const getReservationWaitListExample = {
       },
     ],
   },
-};
-
-export const basicExample = {
-  status: 'success',
-  message: '成功',
 };

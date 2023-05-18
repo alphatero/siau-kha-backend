@@ -1,6 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { isToday } from 'src/common/utils/time';
+import { validateObjectIds } from 'src/common/utils/validate';
 import { Order, OrderDocument, OrderStatus } from 'src/core/models/order';
 import {
   Reservation,
@@ -14,26 +16,6 @@ import {
 } from 'src/core/models/table-main';
 import { IUserPayload } from '../auth';
 import { CreateReservationDto } from './dto/check-in-reservation.dto';
-
-function validateObjectIds(ids) {
-  Object.entries(ids).forEach(([key, value]: [string, string]) => {
-    if (!Types.ObjectId.isValid(value)) {
-      throw new BadRequestException(`${key}格式錯誤`);
-    }
-  });
-}
-
-function isToday(create_time) {
-  const today = new Date();
-  const createTime = new Date(create_time);
-
-  // 比較 create_time 的年、月、日是否與今天相同
-  return (
-    createTime.getFullYear() === today.getFullYear() &&
-    createTime.getMonth() === today.getMonth() &&
-    createTime.getDate() === today.getDate()
-  );
-}
 
 @Injectable()
 export class ReservationService {

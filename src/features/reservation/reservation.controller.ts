@@ -19,7 +19,8 @@ import { ReservationService } from './reservation.service';
 import { JwtGuard } from 'src/common/guards';
 import { CreateReservationDto } from './dto/check-in-reservation.dto';
 import { ReservationStatus } from 'src/core/models/reservation';
-import { basicExample, getReservationWaitListExample } from './apiExample';
+import { getReservationWaitListExample } from './apiExample';
+import { basicExample } from 'src/common/utils/apiExample';
 
 @ApiTags('Reservation')
 @UseGuards(JwtGuard)
