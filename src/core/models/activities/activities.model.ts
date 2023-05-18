@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
+import { ProductList } from '../product-list';
 
 export type ActivitiesDocument = Activities & Document;
 
@@ -22,14 +23,6 @@ export class Activities {
   })
   discount_type: string;
 
-  // 最低消費金額
-  @Prop({
-    type: Number,
-    required: true,
-    default: 0,
-  })
-  min_spend: number;
-
   // 計算類型
   // 0-折扣, 1-折讓
   @Prop({
@@ -42,16 +35,33 @@ export class Activities {
   // 折扣比率
   @Prop({ required: false })
   discount_rate: number;
+  // 最低消費金額
+  @Prop({
+    type: Number,
+    required: true,
+    default: 0,
+  })
+  min_spend: number;
+
+  // 折扣/折讓數
+  @Prop({ type: Number, required: true })
+  discount: number;
 
   // 是否為期間限定
   @Prop({ default: false })
   is_period: boolean;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   start_time: Date;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   end_time: Date;
+
+  @Prop({
+    type: [Types.ObjectId],
+    ref: 'ProductList',
+  })
+  act_products_list: ProductList;
 
   @Prop()
   create_time: Date;

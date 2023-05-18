@@ -15,8 +15,11 @@ import { AuthModule } from './features/auth';
 import { UserModule } from './features/user';
 import { TableModule } from './features/table';
 import { ImageModule } from './features/image';
+import { ActivitiesModule } from './features/activities';
 import { ProductModule } from './features/product';
 import { OrderDetailModule } from './features/order-detail';
+import { OrderModule } from './features/order';
+import { ReservationModule } from './features/reservation';
 
 @Module({
   imports: [
@@ -36,8 +39,11 @@ import { OrderDetailModule } from './features/order-detail';
     UserModule,
     TableModule,
     ProductModule,
+    ActivitiesModule,
+    ReservationModule,
     ImageModule,
     OrderDetailModule,
+    OrderModule,
   ],
   controllers: [],
   providers: [
