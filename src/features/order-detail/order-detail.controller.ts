@@ -46,7 +46,7 @@ export class OrderDetailController {
     @Param('order_id') orderId: string,
     @Body() orderDetail: CreateOrderDetailDto,
   ) {
-    return await this.orderDetailService.OrderFlow(orderDetail, orderId);
+    return await this.orderDetailService.orderFlow(orderDetail, orderId);
   }
 
   // B-8 單一餐點上菜

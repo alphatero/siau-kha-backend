@@ -52,7 +52,7 @@ export class OrderDetailService {
    * @param order_id
    * @returns
    */
-  public async OrderFlow(dto: CreateOrderDetailDto, order_id: string) {
+  public async orderFlow(dto: CreateOrderDetailDto, order_id: string) {
     const productIdsInRequest = dto.product_detail.map((product_detail) => ({
       product_id: product_detail.product_id,
     }));
@@ -419,7 +419,7 @@ export class OrderDetailService {
       throw new BadRequestException('找不到此筆單品');
     }
 
-    this.productDetailModel.findByIdAndUpdate(
+    await this.productDetailModel.findByIdAndUpdate(
       pId,
       {
         $set: {
