@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, UseGuards, Headers } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { UserPayload } from './decorators/payload.decorator';
@@ -69,5 +69,14 @@ export class AuthController {
   async checkTokenExp(@Req() request) {
     const { user } = request;
     return { hasExpired: false, exp: user.exp };
+  }
+
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '登出' })
+  @Get('sign-out')
+  async signOut(@Headers('authorization') authorizationHeader: string) {
+    const jwt = authorizationHeader.replace('Bearer ', '');
+    return this.authService.setJwtToBlacklist(jwt);
   }
 }
