@@ -96,7 +96,7 @@ export class ReservationService {
 
       validateObjectIds({ id, table_id: tableId });
 
-      if (Number.isInteger(customerNum)) {
+      if (!Number.isInteger(customerNum)) {
         throw new BadRequestException('用餐人數需為正整數');
       }
 
