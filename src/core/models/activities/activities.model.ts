@@ -32,9 +32,6 @@ export class Activities {
   })
   charge_type: string;
 
-  // 折扣比率
-  @Prop({ required: false })
-  discount_rate: number;
   // 最低消費金額
   @Prop({
     type: Number,
