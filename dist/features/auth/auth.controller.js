@@ -43,6 +43,22 @@ __decorate([
             required: ['user_account', 'user_mima'],
         },
     }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        schema: {
+            example: {
+                status: 'success',
+                message: '成功',
+                data: {
+                    id: '644a6def9a4dcd031e9e3c78',
+                    user_name: 'Enzo',
+                    user_account: 'enzokao01',
+                    user_role: 'admin',
+                    token: 'JWT',
+                },
+            },
+        },
+    }),
     (0, common_1.Post)('sign-in'),
     __param(0, (0, payload_decorator_1.UserPayload)()),
     __metadata("design:type", Function),

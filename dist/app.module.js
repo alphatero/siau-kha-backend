@@ -18,6 +18,7 @@ const auth_1 = require("./features/auth");
 const user_1 = require("./features/user");
 const table_1 = require("./features/table");
 const image_1 = require("./features/image");
+const activities_1 = require("./features/activities");
 const product_1 = require("./features/product");
 const order_1 = require("./features/order");
 const reservation_1 = require("./features/reservation");
@@ -41,6 +42,7 @@ AppModule = __decorate([
             user_1.UserModule,
             table_1.TableModule,
             product_1.ProductModule,
+            activities_1.ActivitiesModule,
             reservation_1.ReservationModule,
             image_1.ImageModule,
             order_1.OrderModule,

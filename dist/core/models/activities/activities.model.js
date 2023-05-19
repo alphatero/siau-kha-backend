@@ -11,6 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActivitiesSchema = exports.Activities = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
+const mongoose_2 = require("mongoose");
+const product_list_1 = require("../product-list");
 let Activities = class Activities {
 };
 __decorate([
@@ -27,14 +29,6 @@ __decorate([
 ], Activities.prototype, "discount_type", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
-        type: Number,
-        required: true,
-        default: 0,
-    }),
-    __metadata("design:type", Number)
-], Activities.prototype, "min_spend", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({
         required: true,
         default: 0,
         enum: ['0', '1'],
@@ -42,17 +36,36 @@ __decorate([
     __metadata("design:type", String)
 ], Activities.prototype, "charge_type", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({
+        type: Number,
+        required: true,
+        default: 0,
+    }),
+    __metadata("design:type", Number)
+], Activities.prototype, "min_spend", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Number, required: true }),
+    __metadata("design:type", Number)
+], Activities.prototype, "discount", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)
 ], Activities.prototype, "is_period", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)({ required: false }),
     __metadata("design:type", Date)
 ], Activities.prototype, "start_time", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)({ required: false }),
     __metadata("design:type", Date)
 ], Activities.prototype, "end_time", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        type: [mongoose_2.Types.ObjectId],
+        ref: 'ProductList',
+    }),
+    __metadata("design:type", product_list_1.ProductList)
+], Activities.prototype, "act_products_list", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", Date)

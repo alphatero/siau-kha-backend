@@ -22,25 +22,27 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Document, Types } from 'mongoose';
-import { ProductList } from '../product-list';
-export type ActivitiesDocument = Activities & Document;
-export declare class Activities {
-    activities_name: string;
-    discount_type: string;
-    charge_type: string;
-    min_spend: number;
-    discount: number;
-    is_period: boolean;
-    start_time: Date;
-    end_time: Date;
-    act_products_list: ProductList;
-    create_time: Date;
-    status: boolean;
-    is_delete: boolean;
+import { Model } from 'mongoose';
+import { Activities, ActivitiesDocument } from 'src/core/models/activities';
+import { CreateActivityDto } from './dto/create-activity.dto';
+export declare class ActivitiesService {
+    private readonly ActivitiesModel;
+    constructor(ActivitiesModel: Model<ActivitiesDocument>);
+    createActivity(dto: CreateActivityDto): Promise<import("mongoose").Document<unknown, {}, ActivitiesDocument> & Omit<Activities & import("mongoose").Document<any, any, any> & {
+        _id: import("mongoose").Types.ObjectId;
+    }, never>>;
+    getActivitiesList(): Promise<{
+        activities: {
+            id: any;
+            activities_name: string;
+            discount_type: string;
+            charge_type: string;
+            min_spend: number;
+            discount: number;
+            is_period: boolean;
+            start_time: Date;
+            end_time: Date;
+            act_products_list: import("mongoose").FlattenMaps<import("../../core/models/product-list").ProductList>;
+        }[];
+    }>;
 }
-export declare const ActivitiesSchema: import("mongoose").Schema<Activities, import("mongoose").Model<Activities, any, any, any, Document<unknown, any, Activities> & Omit<Activities & {
-    _id: Types.ObjectId;
-}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Activities, Document<unknown, {}, import("mongoose").FlatRecord<Activities>> & Omit<import("mongoose").FlatRecord<Activities> & {
-    _id: Types.ObjectId;
-}, never>>;

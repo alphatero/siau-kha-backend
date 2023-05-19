@@ -14,6 +14,6 @@ export declare class ReservationController {
             status: ReservationStatus;
         }[];
     }>;
-    arrangeSetting(id: string): Promise<void>;
+    arrangeSeating(request: any, id: string, tableId: string, customerNum: number): Promise<void>;
     deleteReservation(id: string): Promise<void>;
 }

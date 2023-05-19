@@ -12,6 +12,8 @@ const mongoose_1 = require("@nestjs/mongoose");
 const reservation_1 = require("../../core/models/reservation");
 const reservation_controller_1 = require("./reservation.controller");
 const reservation_service_1 = require("./reservation.service");
+const order_1 = require("../../core/models/order");
+const table_main_1 = require("../../core/models/table-main");
 let ReservationModule = class ReservationModule {
 };
 ReservationModule = __decorate([
@@ -21,6 +23,14 @@ ReservationModule = __decorate([
                 {
                     name: reservation_1.Reservation.name,
                     schema: reservation_1.ReservationSchema,
+                },
+                {
+                    name: table_main_1.TableMain.name,
+                    schema: table_main_1.TableMainSchema,
+                },
+                {
+                    name: order_1.Order.name,
+                    schema: order_1.OrderSchema,
                 },
             ]),
         ],

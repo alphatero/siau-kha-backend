@@ -19,6 +19,8 @@ const reservation_service_1 = require("./reservation.service");
 const guards_1 = require("../../common/guards");
 const check_in_reservation_dto_1 = require("./dto/check-in-reservation.dto");
 const reservation_1 = require("../../core/models/reservation");
+const apiExample_1 = require("./apiExample");
+const apiExample_2 = require("../../common/utils/apiExample");
 let ReservationController = class ReservationController {
     constructor(reservationService) {
         this.reservationService = reservationService;
@@ -41,8 +43,9 @@ let ReservationController = class ReservationController {
         });
         return { reservation_list };
     }
-    async arrangeSetting(id) {
-        await this.reservationService.changeReservationStatus(id, reservation_1.ReservationStatus.SUCCESS);
+    async arrangeSeating(request, id, tableId, customerNum) {
+        const { user } = request;
+        await this.reservationService.changeReservationStatus(id, reservation_1.ReservationStatus.SUCCESS, user, tableId, customerNum);
     }
     async deleteReservation(id) {
         await this.reservationService.changeReservationStatus(id, reservation_1.ReservationStatus.CANCEL);
@@ -54,14 +57,11 @@ __decorate([
     (0, swagger_1.ApiResponse)({
         status: 200,
         schema: {
-            example: {
-                status: 'success',
-                message: '成功',
-            },
+            example: apiExample_2.basicExample,
         },
     }),
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Request)()),
+    __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, check_in_reservation_dto_1.CreateReservationDto]),
@@ -73,21 +73,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({
         status: 200,
         schema: {
-            example: {
-                status: 'success',
-                message: '成功',
-                data: {
-                    reservation_list: [
-                        {
-                            id: '645b579334c423887ff962ea',
-                            name: '陳先生',
-                            customer_num: 3,
-                            create_time: '2023-05-10T08:36:35.509Z',
-                            status: 'WAIT',
-                        },
-                    ],
-                },
-            },
+            example: apiExample_1.getReservationWaitListExample,
         },
     }),
     (0, common_1.Get)(),
@@ -101,28 +87,25 @@ __decorate([
     (0, swagger_1.ApiResponse)({
         status: 200,
         schema: {
-            example: {
-                status: 'success',
-                message: '成功',
-            },
+            example: apiExample_2.basicExample,
         },
     }),
-    (0, common_1.Patch)('/:id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Patch)('/:id/:table_id/:customer_num'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __param(2, (0, common_1.Param)('table_id')),
+    __param(3, (0, common_1.Param)('customer_num')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object, String, String, Number]),
     __metadata("design:returntype", Promise)
-], ReservationController.prototype, "arrangeSetting", null);
+], ReservationController.prototype, "arrangeSeating", null);
 __decorate([
     (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiOperation)({ summary: '取消候位' }),
     (0, swagger_1.ApiResponse)({
         status: 200,
         schema: {
-            example: {
-                status: 'success',
-                message: '成功',
-            },
+            example: apiExample_2.basicExample,
         },
     }),
     (0, common_1.Delete)('/:id'),
