@@ -1,4 +1,4 @@
-import { Controller, Param, UseGuards, Get } from '@nestjs/common';
+import { Controller, Param, UseGuards, Get, Patch } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -6,6 +6,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtGuard } from 'src/common/guards';
+import { basicExample } from 'src/common/utils/apiExample';
 import { getCheckOutInfoExample } from './apiExample';
 import { CheckOutService } from './check-out.service';
 
@@ -29,5 +30,21 @@ export class CheckOutController {
   @Get('/:id')
   async getCheckOutInfo(@Param('id') id: string) {
     return this.checkOutService.getCheckOutInfo(id);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '結帳' })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      example: basicExample,
+    },
+  })
+  @Patch('/:id/:final_price')
+  async checkOut(
+    @Param('id') id: string,
+    @Param('final_price') final_price: number,
+  ) {
+    return this.checkOutService.checkOut(id, final_price);
   }
 }

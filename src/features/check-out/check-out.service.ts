@@ -11,6 +11,34 @@ export class CheckOutService {
     private readonly orderModel: Model<Order>,
   ) {}
 
+  public async checkOut(id: string, final_price: number) {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('id 格式錯誤');
+    }
+
+    if (!Number.isInteger(final_price) || final_price < 0) {
+      throw new BadRequestException('實收金額應為正整數');
+    }
+
+    const orderRes = await this.orderModel.findById(id);
+
+    if (!orderRes) {
+      throw new BadRequestException('無此訂單');
+    }
+
+    if (final_price !== orderRes.final_total) {
+      throw new BadRequestException(
+        `實收金額與應收金額不符；實收金額:${final_price}，應收金額:${orderRes.final_total}`,
+      );
+    }
+
+    await this.orderModel.findByIdAndUpdate(
+      id,
+      { status: OrderStatus.SUCCESS },
+      { new: true },
+    );
+  }
+
   public async getCheckOutInfo(id: string) {
     // 1. [v] 判斷id是否為有效的ObjectId。
     // 2. [v] 透過id查詢訂單資訊。
@@ -20,15 +48,16 @@ export class CheckOutService {
     // 6. [v] 判斷訂單明細資訊是否為空。
     // 7. [v] 透過訂單明細資訊中的product_detail欄位，取得餐點資訊。
     // 8. [v] 整理有效的 order_detail，order_detail.status === OrderDetailStatus.SUCCESS (已送出的訂單)
-    // 7. [v] 整理所有有效的餐點
+    // 9. [v] 整理所有有效的餐點
     //       a.[v] 計算每筆 order_detail 的總額加總，用來做應收金額的參考。
     //       b.[v] 整理有效餐點，及有效餐點應收金額，product_detail.status = ProductDetailStatus.SUCCESS (已上菜)、product_detail.is_delete = false。(未被退點)。
-    // 5. [v] 透過第2點的訂單資訊中的activities欄位，取得優惠活動資訊。
-    // 8. [v] 判斷 計算類別 discount_type 0-全單優惠 1-指定商品。
-    // 9. [v] 如果 計算類別為 1-指定商品 則需確認點餐清單內有該商品。
-    // 10.[v] 確認 計算類型 charge_type 0-折扣 1-折讓
-    // 11.[v] 依照計算類別及計算類型來計算訂單總金額。
-    // 12.[] 回傳前端需要的資訊。
+    // 10.[v] 透過第2點的訂單資訊中的activities欄位，取得優惠活動資訊。
+    // 11.[v] 判斷 計算類別 discount_type 0-全單優惠 1-指定商品。
+    // 12.[v] 如果 計算類別為 1-指定商品 則需確認點餐清單內有該商品。
+    // 13.[v] 確認 計算類型 charge_type 0-折扣 1-折讓
+    // 14.[v] 依照計算類別及計算類型來計算訂單總金額。
+    // 15.[v] 訂單總金額寫回order 作為結帳時檢查用
+    // 16.[v] 回傳前端需要的資訊。
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('id 格式錯誤');
     }
@@ -120,6 +149,11 @@ export class CheckOutService {
     } else {
       finalTotal = validTotal;
     }
+
+    await this.orderModel
+      .findByIdAndUpdate(id, { final_total: finalTotal }, { new: true })
+      .exec();
+
     const order = {
       customer_num: orderRes.customer_num,
       total: validTotal,
