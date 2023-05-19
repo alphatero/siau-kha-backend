@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Delete,
-  Param,
-  Post,
-  UseGuards,
-  Get,
-} from '@nestjs/common';
+import { Controller, Param, UseGuards, Get } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -20,7 +13,7 @@ import { CheckOutService } from './check-out.service';
 // 2. 結帳
 
 @ApiTags('Check-Out')
-//@UseGuards(JwtGuard)
+@UseGuards(JwtGuard)
 @Controller('check-out')
 export class CheckOutController {
   constructor(private readonly checkOutService: CheckOutService) {}

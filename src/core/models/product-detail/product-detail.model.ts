@@ -13,6 +13,9 @@ export class ProductDetail {
   @Prop({ required: true })
   product_name: string;
 
+  @Prop({ required: true })
+  product_id: string;
+
   @Prop({
     type: Number,
     required: true,

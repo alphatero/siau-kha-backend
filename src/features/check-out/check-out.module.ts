@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Activities, ActivitiesSchema } from 'src/core/models/activities';
 import { Order, OrderSchema } from 'src/core/models/order';
-import { OrderDetail, OrderDetailSchema } from 'src/core/models/order-detail';
 import { CheckOutController } from './check-out.controller';
 import { CheckOutService } from './check-out.service';
 
@@ -13,14 +11,6 @@ import { CheckOutService } from './check-out.service';
       {
         name: Order.name,
         schema: OrderSchema,
-      },
-      {
-        name: OrderDetail.name,
-        schema: OrderDetailSchema,
-      },
-      {
-        name: Activities.name,
-        schema: ActivitiesSchema,
       },
     ]),
   ],
