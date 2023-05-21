@@ -260,6 +260,7 @@ export class OrderDetailService {
               product_quantity: product.product_quantity,
               product_note: product.product_note,
               status: product.status,
+              is_delete: product.is_delete,
             }),
           ),
           create_time: detail.create_time,
@@ -435,6 +436,12 @@ export class OrderDetailService {
     if (productDetailIsExist === -1) {
       throw new BadRequestException('找不到此筆單品');
     }
+
+    // 如果此單品已退點，則不可上菜
+    if (product_detail[productDetailIsExist].is_delete) {
+      throw new BadRequestException('此單品已經退點，不可上菜');
+    }
+
     // 如果此單品尚未完成，則不可上菜
     if (
       product_detail[productDetailIsExist].status ===
@@ -449,11 +456,6 @@ export class OrderDetailService {
       ProductDetailStatus.SUCCESS
     ) {
       throw new BadRequestException('此單品已經上菜過');
-    }
-
-    // 如果此單品已退點，則不可上菜
-    if (product_detail[productDetailIsExist].is_delete) {
-      throw new BadRequestException('此單品已經退點，不可上菜');
     }
 
     await this.productDetailModel.findByIdAndUpdate(
