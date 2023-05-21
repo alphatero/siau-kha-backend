@@ -1,4 +1,4 @@
-import { Inject, UsePipes, UseFilters } from '@nestjs/common';
+import { UsePipes, UseFilters } from '@nestjs/common';
 import {
   SubscribeMessage,
   WebSocketGateway,
@@ -7,15 +7,18 @@ import {
   OnGatewayConnection,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { ConfigService } from '@nestjs/config';
 
 import { TableDataDto } from './dto/table-data.dto';
 import { WSValidationPipe } from '../../common/pipes';
 import { WebSocketExceptionFilter } from 'src/common/filters/websocket/ws-exception.filter';
-import { corsOrigin, gatewayPort as port } from 'src/common/gateways';
+import {
+  corsOrigin,
+  gatewayPort as port,
+  GATEWAY_NAMESPACE,
+} from 'src/core/gateways';
 
-// * 設定 namespace
-const namespace = 'order-product-details';
+// 設定 namespace
+const namespace = GATEWAY_NAMESPACE.ORDER_PRODUCT_DETAILS;
 
 @WebSocketGateway(port[namespace], {
   namespace,
@@ -26,10 +29,6 @@ const namespace = 'order-product-details';
 export class OrderSocketGateway implements OnGatewayConnection {
   @WebSocketServer()
   server: Server;
-
-  constructor(
-    @Inject(ConfigService) private readonly configService: ConfigService,
-  ) {}
 
   @UseFilters(WebSocketExceptionFilter)
   @UsePipes(new WSValidationPipe())

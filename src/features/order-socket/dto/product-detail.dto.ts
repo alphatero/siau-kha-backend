@@ -4,7 +4,9 @@ import {
   IsPositive,
   IsString,
   IsEnum,
+  IsArray,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { ProductDetailStatus } from 'src/core/models/product-detail';
 
 export class ProductDetailDto {
@@ -21,9 +23,9 @@ export class ProductDetailDto {
   @IsPositive()
   public readonly product_quantity: number;
 
-  @IsNotEmpty()
-  @IsString()
-  public readonly product_note: string;
+  @IsArray()
+  @Type(() => String)
+  public readonly product_note: Array<string>;
 
   @IsNotEmpty()
   @IsEnum(ProductDetailStatus)
