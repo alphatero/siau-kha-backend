@@ -9,7 +9,6 @@ export class WSValidationPipe extends ValidationPipe {
         return new WsException('Bad request');
       }
       const errors = this.flattenValidationErrors(validationErrors);
-      console.log('errors', errors);
 
       return new WsException(errors);
     };
