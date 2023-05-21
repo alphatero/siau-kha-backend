@@ -13,6 +13,9 @@ export class ProductDetail {
   @Prop({ required: true })
   product_name: string;
 
+  @Prop({ required: true })
+  product_id: string;
+
   @Prop({
     type: Number,
     required: true,
@@ -27,6 +30,7 @@ export class ProductDetail {
 
   @Prop({
     type: Array<string>,
+    default: [],
   })
   product_note: Array<string>;
 
