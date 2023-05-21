@@ -9,11 +9,12 @@ export class WebSocketExceptionFilter implements WsExceptionFilter {
     const client = ctx.getClient<Socket>();
 
     // 取得錯誤訊息
-    // const wsError = exception.getError();
+    const wsError = exception.getError();
 
     const message = 'socket error';
 
-    // 发送错误消息给客户端
+    console.log('wsError', wsError);
+    // 發送錯誤訊息給客戶端
     client.emit('onError', { status: 'error', message });
   }
 }
