@@ -1,13 +1,21 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { UserService } from '../user';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-
+import { BlackList, BlackListDocument } from 'src/core/models/black-list';
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    @InjectModel(BlackList.name)
+    private readonly BlackListModel: Model<BlackListDocument>,
   ) {}
 
   /**
@@ -56,6 +64,34 @@ export class AuthService {
 
   public generateJwt(payload: Record<string, string>) {
     const token = this.jwtService.sign(payload);
-    return { token };
+    const jwtSecret = process.env.JWT_SECRET;
+    const decodedToken = this.jwtService.verify(token, {
+      secret: jwtSecret,
+    }) as {
+      exp: number;
+    };
+    const exp = decodedToken.exp * 1000;
+    return { token, exp };
+  }
+
+  public async setJwtToBlacklist(token: string) {
+    try {
+      await this.BlackListModel.create({ token });
+    } catch (error) {
+      throw new BadRequestException('token寫入失敗');
+    }
+  }
+
+  public async findTokenInBlackList(token: string) {
+    const today = new Date();
+    const twoDaysBefore = new Date();
+    twoDaysBefore.setDate(today.getDate() - 2);
+
+    const blackListRecord = await this.BlackListModel.findOne({
+      token,
+      create_time: { $gte: twoDaysBefore, $lte: today },
+    }).exec();
+
+    return blackListRecord;
   }
 }
