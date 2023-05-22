@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 export type BlackListDocument = BlackList & Document;
 
-// 點餐紀錄
+// token黑名單
 @Schema({
   timestamps: {
     createdAt: 'create_time',

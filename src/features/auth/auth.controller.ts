@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Req, UseGuards, Headers } from '@nestjs/common';
+import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { UserPayload } from './decorators/payload.decorator';
@@ -78,8 +78,8 @@ export class AuthController {
     },
   })
   @Get('sign-out')
-  async signOut(@Headers('authorization') authorizationHeader: string) {
-    const jwt = authorizationHeader.replace('Bearer ', '');
+  async signOut(@Req() request) {
+    const jwt = request.headers.authorization.replace('Bearer ', '');
     return this.authService.setJwtToBlacklist(jwt);
   }
 }
