@@ -4,4 +4,5 @@ export interface IUserPayload {
     user_name: string;
     user_account: string;
     user_role: Role;
+    exp: number;
 }

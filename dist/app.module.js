@@ -20,6 +20,8 @@ const table_1 = require("./features/table");
 const image_1 = require("./features/image");
 const activities_1 = require("./features/activities");
 const product_1 = require("./features/product");
+const order_socket_1 = require("./features/order-socket");
+const order_detail_1 = require("./features/order-detail");
 const order_1 = require("./features/order");
 const reservation_1 = require("./features/reservation");
 let AppModule = class AppModule {
@@ -45,6 +47,8 @@ AppModule = __decorate([
             activities_1.ActivitiesModule,
             reservation_1.ReservationModule,
             image_1.ImageModule,
+            order_socket_1.OrderSocketModule,
+            order_detail_1.OrderDetailModule,
             order_1.OrderModule,
         ],
         controllers: [],

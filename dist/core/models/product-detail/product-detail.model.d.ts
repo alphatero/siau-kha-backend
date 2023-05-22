@@ -28,6 +28,7 @@ export type ProductDetailDocument = ProductDetail & Document;
 export declare class ProductDetail {
     order_id: string;
     product_name: string;
+    product_id: string;
     product_price: number;
     product_quantity: number;
     product_note: Array<string>;

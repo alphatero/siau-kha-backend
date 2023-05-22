@@ -11,8 +11,10 @@ const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
+const mongoose_1 = require("@nestjs/mongoose");
 const auth_controller_1 = require("./auth.controller");
 const auth_service_1 = require("./auth.service");
+const black_list_1 = require("../../core/models/black-list");
 const user_1 = require("../user");
 const local_strategies_1 = require("./strategies/local.strategies");
 const jwt_strategies_1 = require("./strategies/jwt.strategies");
@@ -33,11 +35,18 @@ AuthModule = __decorate([
                     signOptions: { expiresIn: '1d' },
                 }),
             }),
+            mongoose_1.MongooseModule.forFeature([
+                {
+                    name: black_list_1.BlackList.name,
+                    schema: black_list_1.BlackListSchema,
+                },
+            ]),
             user_1.UserModule,
             passport_1.PassportModule,
         ],
         controllers: [auth_controller_1.AuthController],
         providers: [auth_service_1.AuthService, local_strategies_1.LocalStrategy, jwt_strategies_1.JwtStrategy],
+        exports: [auth_service_1.AuthService],
     })
 ], AuthModule);
 exports.AuthModule = AuthModule;

@@ -19,6 +19,8 @@ const auth_service_1 = require("./auth.service");
 const payload_decorator_1 = require("./decorators/payload.decorator");
 const guards_1 = require("../../common/guards");
 const swagger_1 = require("@nestjs/swagger");
+const apiExample_1 = require("./apiExample");
+const apiExample_2 = require("../../common/utils/apiExample");
 let AuthController = class AuthController {
     constructor(userService, authService) {
         this.userService = userService;
@@ -28,6 +30,14 @@ let AuthController = class AuthController {
         await this.userService.updateUserSignInTime(payload.id);
         const user_info = Object.assign({}, payload, this.authService.generateJwt(payload));
         return user_info;
+    }
+    async checkTokenExp(request) {
+        const { user } = request;
+        return { hasExpired: false, exp: user.exp };
+    }
+    async signOut(request) {
+        const jwt = request.headers.authorization.replace('Bearer ', '');
+        return this.authService.setJwtToBlacklist(jwt);
     }
 };
 __decorate([
@@ -46,17 +56,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({
         status: 200,
         schema: {
-            example: {
-                status: 'success',
-                message: '成功',
-                data: {
-                    id: '644a6def9a4dcd031e9e3c78',
-                    user_name: 'Enzo',
-                    user_account: 'enzokao01',
-                    user_role: 'admin',
-                    token: 'JWT',
-                },
-            },
+            example: apiExample_1.signInExample,
         },
     }),
     (0, common_1.Post)('sign-in'),
@@ -65,6 +65,38 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "signIn", null);
+__decorate([
+    (0, common_1.UseGuards)(guards_1.JwtGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: '檢查 token 是否過期' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        schema: {
+            example: apiExample_1.checkExample,
+        },
+    }),
+    (0, common_1.Get)('check'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "checkTokenExp", null);
+__decorate([
+    (0, common_1.UseGuards)(guards_1.JwtGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: '登出' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        schema: {
+            example: apiExample_2.basicExample,
+        },
+    }),
+    (0, common_1.Get)('sign-out'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "signOut", null);
 AuthController = __decorate([
     (0, swagger_1.ApiTags)('Auth'),
     (0, common_1.Controller)('auth'),

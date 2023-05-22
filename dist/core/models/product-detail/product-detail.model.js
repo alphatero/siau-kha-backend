@@ -23,6 +23,10 @@ __decorate([
     __metadata("design:type", String)
 ], ProductDetail.prototype, "product_name", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], ProductDetail.prototype, "product_id", void 0);
+__decorate([
     (0, mongoose_1.Prop)({
         type: Number,
         required: true,
@@ -39,6 +43,7 @@ __decorate([
 __decorate([
     (0, mongoose_1.Prop)({
         type: (Array),
+        default: [],
     }),
     __metadata("design:type", Array)
 ], ProductDetail.prototype, "product_note", void 0);

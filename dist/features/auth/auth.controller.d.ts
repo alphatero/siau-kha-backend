@@ -7,5 +7,11 @@ export declare class AuthController {
     constructor(userService: UserService, authService: AuthService);
     signIn(payload: IUserPayload): Promise<IUserPayload & {
         token: string;
+        exp: number;
     }>;
+    checkTokenExp(request: any): Promise<{
+        hasExpired: boolean;
+        exp: any;
+    }>;
+    signOut(request: any): Promise<void>;
 }
