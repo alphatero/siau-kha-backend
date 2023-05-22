@@ -9,7 +9,7 @@ export class TableDataDto {
 
   @IsNotEmpty()
   @IsString()
-  table_name: string;
+  order_id: string;
 
   @IsNotEmpty()
   @IsArray()
