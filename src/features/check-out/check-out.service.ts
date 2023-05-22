@@ -16,14 +16,18 @@ export class CheckOutService {
       throw new BadRequestException('id 格式錯誤');
     }
 
-    if (!Number.isInteger(final_price) || final_price < 0) {
-      throw new BadRequestException('實收金額應為正整數');
-    }
-
     const orderRes = await this.orderModel.findById(id);
 
     if (!orderRes) {
       throw new BadRequestException('無此訂單');
+    }
+
+    if (orderRes.status === OrderStatus.SUCCESS) {
+      throw new BadRequestException('此訂單已結帳');
+    }
+
+    if (!Number.isInteger(final_price) || final_price < 0) {
+      throw new BadRequestException('實收金額應為正整數');
     }
 
     if (final_price !== orderRes.final_total) {
@@ -62,16 +66,7 @@ export class CheckOutService {
       throw new BadRequestException('id 格式錯誤');
     }
 
-    const orderRes = await this.orderModel
-      .findById(id)
-      .populate({
-        path: 'order_detail',
-        populate: {
-          path: 'product_detail',
-          // match跟select沒有效，後續有空再研究
-        },
-      })
-      .populate('activities');
+    const orderRes = await this.orderModel.findById(id);
 
     if (!orderRes) {
       throw new BadRequestException('查無此訂單');
