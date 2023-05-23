@@ -17,6 +17,8 @@ import { TableModule } from './features/table';
 import { ImageModule } from './features/image';
 import { ActivitiesModule } from './features/activities';
 import { ProductModule } from './features/product';
+import { OrderSocketModule } from './features/order-socket';
+import { OrderDetailModule } from './features/order-detail';
 import { OrderModule } from './features/order';
 import { ReservationModule } from './features/reservation';
 import { CheckOutModule } from './features/check-out';
@@ -42,6 +44,8 @@ import { CheckOutModule } from './features/check-out';
     ActivitiesModule,
     ReservationModule,
     ImageModule,
+    OrderSocketModule,
+    OrderDetailModule,
     OrderModule,
     CheckOutModule,
   ],
