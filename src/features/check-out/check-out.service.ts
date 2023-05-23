@@ -148,17 +148,18 @@ export class CheckOutService {
     await this.orderModel
       .findByIdAndUpdate(id, { final_total: finalTotal }, { new: true })
       .exec();
-
     const order = {
       customer_num: orderRes.customer_num,
       total: validTotal,
       final_total: finalTotal,
       order_detail: order_detail_list,
-      activities: {
-        activities_name: orderRes.activities.activities_name,
-        discount_type: orderRes.activities.discount_type,
-        charge_type: orderRes.activities.charge_type,
-      },
+      activities: orderRes.activities
+        ? {
+            activities_name: orderRes.activities.activities_name,
+            discount_type: orderRes.activities.discount_type,
+            charge_type: orderRes.activities.charge_type,
+          }
+        : {},
     };
 
     return { order };
