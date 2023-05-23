@@ -21,9 +21,7 @@ import { OrderSocketModule } from './features/order-socket';
 import { OrderDetailModule } from './features/order-detail';
 import { OrderModule } from './features/order';
 import { ReservationModule } from './features/reservation';
-import { ProductController } from './features/manage/product/product.controller';
-import { ProductService } from './features/manage/product/product.service';
-import { ProductModule } from './features/manage/product/product.module';
+import { ManageProductModule } from './features/manage/manage-product';
 
 @Module({
   imports: [
@@ -49,8 +47,8 @@ import { ProductModule } from './features/manage/product/product.module';
     OrderSocketModule,
     OrderDetailModule,
     OrderModule,
+    ManageProductModule,
   ],
-  controllers: [ProductController],
   providers: [
     // * DTO 驗證
     GLOBAL_VALIDATION_PIPE,
@@ -58,7 +56,6 @@ import { ProductModule } from './features/manage/product/product.module';
     GLOBAL_RESPONSE_INTERCEPTOR,
     // * 全域錯誤處理
     GLOBAL_HTTP_EXCEPTION,
-    ProductService,
   ],
 })
 export class AppModule {}
