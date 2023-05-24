@@ -62,10 +62,10 @@ export class ManageProductController {
       example: basicExample,
     },
   })
-  @Patch('edit-tag/:id')
+  @Patch('edit-tag/:t_id')
   async editProductTag(
     @Req() request,
-    @Param('id') id: string,
+    @Param('t_id') id: string,
     @Body() dto: CreateTagDto,
   ) {
     const { user } = request;
@@ -80,9 +80,9 @@ export class ManageProductController {
       example: basicExample,
     },
   })
-  @Delete('edit-tag/:id')
-  async delProductTag(@Req() request, @Param('id') id: string) {
+  @Delete('close-tag/:t_id')
+  async closeProductTag(@Req() request, @Param('t_id') id: string) {
     const { user } = request;
-    return await this.manageProductService.delProductTag(id, user);
+    return await this.manageProductService.closeProductTag(id, user);
   }
 }

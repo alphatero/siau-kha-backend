@@ -83,7 +83,7 @@ export class ManageProductService {
     });
   }
 
-  public async delProductTag(id: string, user: IUserPayload) {
+  public async closeProductTag(id: string, user: IUserPayload) {
     // 1. [v] 檢查id格式。
     // 2. [v] 檢查商品類別是否存在。
     // 3. [v] 檢查商品類別是否已經被刪除。
