@@ -5,7 +5,5 @@ dotenv.config();
 
 // key: namespace, value: port
 export const gatewayPort = {
-  [GATEWAY_NAMESPACE.ORDER_PRODUCT_DETAILS]: parseInt(
-    process.env.ORDER_PRODUCT_DETAILS_PORT,
-  ),
+  [GATEWAY_NAMESPACE.ORDER]: parseInt(process.env.ORDER_PRODUCT_DETAILS_PORT),
 };
