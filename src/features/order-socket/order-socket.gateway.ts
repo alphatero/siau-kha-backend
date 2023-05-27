@@ -11,20 +11,17 @@ import { Server, Socket } from 'socket.io';
 import { TableDataDto } from './dto/table-data.dto';
 import { WSValidationPipe } from '../../common/pipes';
 import { WebSocketExceptionFilter } from 'src/common/filters/websocket/ws-exception.filter';
-import {
-  corsOrigin,
-  gatewayPort as port,
-  GATEWAY_NAMESPACE,
-} from 'src/core/gateways';
+import { corsOrigin, GATEWAY_NAMESPACE } from 'src/core/gateways';
 import { OrderDetailService } from 'src/features/order-detail';
 import { CreateOrderDetailDto } from 'src/features/order-detail/dto/create-order-detail.dto';
 import { SUBSCRIBE } from 'src/core/gateways/gateways.type';
 import { UpdateProductDetailDto } from './dto/update-product-detail.dto';
+import { DeleteProductDetailDto } from './dto/delete-product-detail.dto';
 
 // 設定 namespace
 const namespace = GATEWAY_NAMESPACE.ORDER;
 
-@WebSocketGateway(port[namespace], {
+@WebSocketGateway({
   namespace,
   cors: {
     origin: Object.values(corsOrigin),
@@ -68,11 +65,30 @@ export class OrderSocketGateway implements OnGatewayConnection {
    */
   @UseFilters(WebSocketExceptionFilter)
   @UsePipes(new WSValidationPipe())
-  @SubscribeMessage(SUBSCRIBE.PRODUCT_DETAILS)
-  async onProductDetail(@MessageBody() body: UpdateProductDetailDto) {
+  @SubscribeMessage(SUBSCRIBE.UPDATE_PRODUCT_DETAILS)
+  async onUpdateProductDetail(@MessageBody() body: UpdateProductDetailDto) {
     // TODO 出菜
     console.log(body.status);
-    this.server.emit('onProductDetail', {
+    this.server.emit('onUpdateProductDetail', {
+      ...body,
+    });
+  }
+
+  /**
+   * 外場 - 退點
+   * @param body
+   */
+  @UseFilters(WebSocketExceptionFilter)
+  @UsePipes(new WSValidationPipe())
+  @SubscribeMessage(SUBSCRIBE.DELETE_PRODUCT_DETAILS)
+  async onDeleteProductDetail(@MessageBody() body: DeleteProductDetailDto) {
+    console.log(body);
+    await this.orderDetailService.deleteOrderDetail(
+      body.order_id,
+      body.detail_id,
+      body.p_id,
+    );
+    this.server.emit('onDeleteProductDetail', {
       ...body,
     });
   }
