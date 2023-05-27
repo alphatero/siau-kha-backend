@@ -17,6 +17,7 @@ import { CreateOrderDetailDto } from 'src/features/order-detail/dto/create-order
 import { SUBSCRIBE } from 'src/core/gateways/gateways.type';
 import { UpdateProductDetailDto } from './dto/update-product-detail.dto';
 import { DeleteProductDetailDto } from './dto/delete-product-detail.dto';
+import { ProductDetailStatus } from 'src/core/models/product-detail';
 
 // 設定 namespace
 const namespace = GATEWAY_NAMESPACE.ORDER;
@@ -67,8 +68,12 @@ export class OrderSocketGateway implements OnGatewayConnection {
   @UsePipes(new WSValidationPipe())
   @SubscribeMessage(SUBSCRIBE.UPDATE_PRODUCT_DETAILS)
   async onUpdateProductDetail(@MessageBody() body: UpdateProductDetailDto) {
-    // TODO 出菜
-    console.log(body.status);
+    await this.orderDetailService.patchOrderDetail(
+      body.order_id,
+      body.detail_id,
+      body.p_id,
+      ProductDetailStatus.FINISH,
+    );
     this.server.emit('onUpdateProductDetail', {
       ...body,
     });
@@ -82,7 +87,6 @@ export class OrderSocketGateway implements OnGatewayConnection {
   @UsePipes(new WSValidationPipe())
   @SubscribeMessage(SUBSCRIBE.DELETE_PRODUCT_DETAILS)
   async onDeleteProductDetail(@MessageBody() body: DeleteProductDetailDto) {
-    console.log(body);
     await this.orderDetailService.deleteOrderDetail(
       body.order_id,
       body.detail_id,
