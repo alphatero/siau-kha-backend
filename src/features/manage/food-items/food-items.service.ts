@@ -7,10 +7,10 @@ import { FoodItem, FoodItemDocument } from 'src/core/models/food-item';
 export class FoodItemsService {
   constructor(
     @InjectModel(FoodItem.name)
-    private readonly FoodItemModel: Model<FoodItemDocument>,
+    private readonly foodItemModel: Model<FoodItemDocument>,
   ) {}
   public async getFoodItemsList() {
-    const documents = await this.FoodItemModel.find({
+    const documents = await this.foodItemModel.find({
       is_delete: false,
     });
     const foodItems = documents.map((doc) => {

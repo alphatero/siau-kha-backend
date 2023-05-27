@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { ProductTags } from '../product-tags';
 import { User } from '../user';
+import { FoodConsumption, ProductNote } from './product-list.type';
 
 export type ProductListDocument = ProductList & Document;
 
@@ -21,9 +22,9 @@ export class ProductList {
   // 0:單一商品, 1:套餐
   @Prop({
     required: true,
-    enum: ['0', '1'],
+    enum: [0, 1],
   })
-  product_type: string;
+  product_type: number;
 
   @Prop({
     type: Types.ObjectId,
@@ -40,17 +41,12 @@ export class ProductList {
   })
   product_price: number;
 
-  @Prop({
-    type: Array<string>,
-  })
-  product_note: Array<string>;
+  @Prop()
+  product_note: Array<ProductNote>;
 
   // 食材消耗
-  // @Prop({
-  //   type: Types.ObjectId,
-  //   ref: 'FoodItems',
-  // })
-  // food_consumption: FoodItems;
+  @Prop()
+  food_consumption_list: Array<FoodConsumption>;
 
   @Prop()
   create_time: Date;

@@ -8,7 +8,7 @@ import {
 import { JwtGuard } from 'src/common/guards';
 import { getFoodItemsExample } from './apiExample';
 import { FoodItemsService } from './food-items.service';
-@ApiTags('food-items')
+@ApiTags('FoodItems')
 @UseGuards(JwtGuard)
 @Controller('food-items')
 export class FoodItemsController {

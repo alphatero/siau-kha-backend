@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { FoodItem, FoodItemDocument } from 'src/core/models/food-item';
 import { ProductList, ProductListDocument } from 'src/core/models/product-list';
 import {
   ProductTags,
@@ -8,7 +9,7 @@ import {
   ProductTagStatus,
 } from 'src/core/models/product-tags';
 import { IUserPayload } from 'src/features/auth';
-import { CreateTagDto } from './dto';
+import { AddTagDto, AddProductDto } from './dto';
 @Injectable()
 export class ManageProductService {
   constructor(
@@ -16,6 +17,8 @@ export class ManageProductService {
     private readonly productTagsModel: Model<ProductTagsDocument>,
     @InjectModel(ProductList.name)
     private readonly productListModel: Model<ProductListDocument>,
+    @InjectModel(FoodItem.name)
+    private readonly foodItemModel: Model<FoodItemDocument>,
   ) {}
 
   public async getProductTags() {
@@ -32,7 +35,7 @@ export class ManageProductService {
     return { list };
   }
 
-  public async createProductTag(dto: CreateTagDto, user: IUserPayload) {
+  public async createProductTag(dto: AddTagDto, user: IUserPayload) {
     // 1. [v] 檢查id格式。
     // 2. [v] 取得所有的商品類別，並用 sort_no 排序。
     // 3. [v] 檢查是否有重複的商品類別名稱。
@@ -58,11 +61,7 @@ export class ManageProductService {
     }
   }
 
-  public async editProductTag(
-    dto: CreateTagDto,
-    id: string,
-    user: IUserPayload,
-  ) {
+  public async editProductTag(dto: AddTagDto, id: string, user: IUserPayload) {
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('id 格式錯誤');
     }
@@ -127,7 +126,7 @@ export class ManageProductService {
           $inc: { sort_no: -1 },
           $set: {
             set_state_time: new Date(),
-            set_state_user: new Types.ObjectId(user.id), // 根据实际情况更改
+            set_state_user: new Types.ObjectId(user.id),
           },
         },
         { session: tagSession, new: true },
@@ -139,6 +138,53 @@ export class ManageProductService {
     } finally {
       tagSession.endSession();
     }
+  }
+
+  public async addProduct(dto: AddProductDto, user: IUserPayload, middle_data) {
+    // 1. [v] 檢查商品類別是否存在。
+    // 2. [v] 取得所有食材清單，如果只有一種所耗食材，則直接問資料庫。(其實不太確定要一次取回來比對，還是針對每項都去資料庫確認，這兩種方式哪一個比較好)
+    // 3. [v] 檢查所耗食材是否存存在於食材清單。
+    // 4. [v] 組合資料，並新增商品。
+    const tagRes = await this.productTagsModel.findById(dto.product_tags);
+    if (!tagRes) {
+      throw new BadRequestException('商品類別不存在');
+    }
+
+    const foodLength = Object.keys(
+      middle_data.food_consumption_list_obj,
+    ).length;
+    if (foodLength > 1) {
+      const foodList = await this.foodItemModel.find({
+        is_delete: false,
+      });
+      Object.keys(middle_data.food_consumption_list_obj).forEach((key) => {
+        const exists = foodList.some((item) => item._id.toString() === key);
+        if (!exists) {
+          throw new BadRequestException('所耗食材不存在');
+        }
+      });
+    } else if (foodLength === 1) {
+      const exists = await this.foodItemModel.findById(
+        Object.keys(middle_data.food_consumption_list_obj)[0],
+        {
+          is_delete: false,
+        },
+      );
+      if (!exists) {
+        throw new BadRequestException('所耗食材不存在');
+      }
+    }
+
+    const createData = {
+      ...dto,
+      product_tags: new Types.ObjectId(dto.product_tags),
+      product_note: [...middle_data.product_note],
+      food_consumption_list: [...middle_data.food_consumption_list],
+      create_user: new Types.ObjectId(user.id),
+      is_delete: false,
+      set_state_user: new Types.ObjectId(user.id),
+    };
+    await this.productListModel.create(createData);
   }
 
   private async findTags() {
