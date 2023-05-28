@@ -21,6 +21,7 @@ import { OrderSocketModule } from './features/order-socket';
 import { OrderDetailModule } from './features/order-detail';
 import { OrderModule } from './features/order';
 import { ReservationModule } from './features/reservation';
+import { CheckOutModule } from './features/check-out';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { ReservationModule } from './features/reservation';
     OrderSocketModule,
     OrderDetailModule,
     OrderModule,
+    CheckOutModule,
   ],
   controllers: [],
   providers: [
