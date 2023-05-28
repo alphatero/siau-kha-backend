@@ -187,6 +187,186 @@ export class ManageProductService {
     await this.productListModel.create(createData);
   }
 
+  public async getProducts() {
+    const documents = await this.productListModel.find();
+    const foodItems = await this.foodItemModel.find({
+      is_delete: false,
+    });
+    const foodItemsObj = {};
+    foodItems.forEach((item) => {
+      foodItemsObj[item._id.toString()] = {
+        food_item_name: item.food_items_name,
+        group: item.group,
+        purchase_cost: item.purchase_cost,
+        item_stock: item.item_stock,
+        safety_stock: item.safety_stock,
+        status: item.status,
+        units: item.units,
+      };
+    });
+    const list = documents.map((doc: any) => {
+      const {
+        _id,
+        product_name,
+        product_type,
+        product_tags,
+        product_image,
+        product_note,
+        food_consumption_list,
+        is_delete,
+      } = doc.toJSON();
+
+      const finalFoodList = this.doCombineData(
+        food_consumption_list,
+        foodItemsObj,
+      );
+
+      product_note.forEach((item) => {
+        item.food_consumption_list = this.doCombineData(
+          item.food_consumption_list,
+          foodItemsObj,
+        );
+      });
+
+      return {
+        id: _id,
+        product_name,
+        product_type,
+        product_tags,
+        product_image,
+        product_note,
+        food_consumption_list: finalFoodList,
+        is_delete,
+      };
+    });
+    return { list };
+  }
+
+  public async getProduct(p_id: string) {
+    const document = await this.productListModel.findById(
+      new Types.ObjectId(p_id),
+    );
+    const foodItems = await this.foodItemModel.find({
+      is_delete: false,
+    });
+    const foodItemsObj = {};
+    foodItems.forEach((item) => {
+      foodItemsObj[item._id.toString()] = {
+        food_item_name: item.food_items_name,
+        group: item.group,
+        purchase_cost: item.purchase_cost,
+        item_stock: item.item_stock,
+        safety_stock: item.safety_stock,
+        status: item.status,
+        units: item.units,
+      };
+    });
+    const {
+      _id,
+      product_name,
+      product_type,
+      product_tags,
+      product_image,
+      product_note,
+      food_consumption_list,
+    } = document.toJSON();
+
+    const finalFoodList = this.doCombineData(
+      food_consumption_list,
+      foodItemsObj,
+    );
+
+    product_note.forEach((item) => {
+      item.food_consumption_list = this.doCombineData(
+        item.food_consumption_list,
+        foodItemsObj,
+      );
+    });
+
+    return {
+      id: _id,
+      product_name,
+      product_type,
+      product_tags,
+      product_image,
+      product_note,
+      food_consumption_list: finalFoodList,
+    };
+  }
+
+  public async editProduct(
+    dto: AddProductDto,
+    user: IUserPayload,
+    middle_data,
+    p_id: string,
+  ) {
+    // 1. [v] 檢查目標商品是否存在。
+    // 2. [v] 檢查商品類別是否存在。
+    // 3. [v] 取得所有食材清單，如果只有一種所耗食材，則直接問資料庫。(其實不太確定要一次取回來比對，還是針對每項都去資料庫確認，這兩種方式哪一個比較好)
+    // 4. [v] 檢查所耗食材是否存存在於食材清單。
+    // 5. [v] 組合資料，並更新整筆商品。
+    const productId = new Types.ObjectId(p_id);
+    const targetProduct = await this.productListModel.findById(productId);
+
+    if (!targetProduct) {
+      throw new BadRequestException('目標商品不存在');
+    }
+
+    const tagRes = await this.productTagsModel.findById(dto.product_tags);
+    if (!tagRes) {
+      throw new BadRequestException('商品類別不存在');
+    }
+
+    const foodLength = Object.keys(
+      middle_data.food_consumption_list_obj,
+    ).length;
+    if (foodLength > 1) {
+      const foodList = await this.foodItemModel.find({
+        is_delete: false,
+      });
+      Object.keys(middle_data.food_consumption_list_obj).forEach((key) => {
+        const exists = foodList.some((item) => item._id.toString() === key);
+        if (!exists) {
+          throw new BadRequestException('所耗食材不存在');
+        }
+      });
+    } else if (foodLength === 1) {
+      const exists = await this.foodItemModel.findById(
+        Object.keys(middle_data.food_consumption_list_obj)[0],
+        {
+          is_delete: false,
+        },
+      );
+      if (!exists) {
+        throw new BadRequestException('所耗食材不存在');
+      }
+    }
+
+    const updatedData = {
+      ...dto,
+      product_tags: new Types.ObjectId(dto.product_tags),
+      product_note: [...middle_data.product_note],
+      food_consumption_list: [...middle_data.food_consumption_list],
+      is_delete: false,
+      set_state_user: new Types.ObjectId(user.id),
+    };
+
+    await this.productListModel.findByIdAndUpdate(productId, updatedData);
+  }
+
+  public async closeProduct(p_id: string, user: IUserPayload) {
+    const productId = new Types.ObjectId(p_id);
+    const targetProduct = await this.productListModel.findById(productId);
+    if (!targetProduct) {
+      throw new BadRequestException('目標商品不存在');
+    }
+
+    await this.productListModel.findByIdAndUpdate(productId, {
+      is_delete: true,
+      set_state_user: new Types.ObjectId(user.id),
+    });
+  }
+
   private async findTags() {
     return this.productTagsModel
       .find({
@@ -197,5 +377,16 @@ export class ManageProductService {
 
   private async findTag(id: string) {
     return this.productTagsModel.findById(id);
+  }
+
+  private doCombineData(food_consumption_list, foodItemsObj) {
+    const combineData = food_consumption_list.map((item) => {
+      const targetId = item.id.toString();
+      return {
+        ...item,
+        ...foodItemsObj[targetId],
+      };
+    });
+    return combineData;
   }
 }

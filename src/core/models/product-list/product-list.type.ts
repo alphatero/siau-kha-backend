@@ -1,5 +1,4 @@
 export interface ProductNote {
-  id: string;
   note_title: string; // 註記描述
   use_money: number; // 影響金額
   is_food_consumption: boolean; // 是否消耗食材
@@ -8,5 +7,5 @@ export interface ProductNote {
 
 export interface FoodConsumption {
   id: string;
-  quantity: number; // 消耗數量
+  consumption_quantity: number; // 消耗數量
 }

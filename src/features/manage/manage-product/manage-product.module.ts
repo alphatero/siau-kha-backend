@@ -31,9 +31,15 @@ import { ManageProductService } from './manage-product.service';
 })
 export class ManageProductModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AddProductMiddleware).forRoutes({
-      path: 'manage/product/add-product',
-      method: RequestMethod.POST,
-    });
+    consumer.apply(AddProductMiddleware).forRoutes(
+      {
+        path: 'manage/product/add-product',
+        method: RequestMethod.POST,
+      },
+      {
+        path: 'manage/product/edit-product/:p_id',
+        method: RequestMethod.PUT,
+      },
+    );
   }
 }

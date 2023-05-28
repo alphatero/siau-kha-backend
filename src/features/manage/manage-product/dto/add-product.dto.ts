@@ -1,4 +1,4 @@
-import { BadRequestException, Type } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsNotEmpty,
