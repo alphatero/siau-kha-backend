@@ -15,11 +15,22 @@ export class ActivitiesService {
     return this.ActivitiesModel.create(dto);
   }
 
-  public async getActivitiesList() {
-    const query = await this.ActivitiesModel.find({
-      status: true,
-      is_delete: false,
-    });
+  public async getActivitiesList(role: string) {
+    let query;
+    if (role === 'admin') {
+      query = await this.ActivitiesModel.find({
+        is_delete: false,
+      });
+    } else {
+      const currentDate = new Date();
+      query = await this.ActivitiesModel.find({
+        start_time: { $lte: currentDate },
+        end_time: { $gte: currentDate },
+        status: true,
+        is_delete: false,
+      });
+    }
+
     const activities = query.map((doc) => {
       const activity = doc.toJSON();
       return {
