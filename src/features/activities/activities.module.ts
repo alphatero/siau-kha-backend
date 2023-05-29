@@ -17,6 +17,7 @@ import { ActivitiesMiddleware } from 'src/common/middleware';
   ],
   controllers: [ActivitiesController],
   providers: [ActivitiesService],
+  exports: [ActivitiesService],
 })
 export class ActivitiesModule {
   configure(consumer: MiddlewareConsumer) {
