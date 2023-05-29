@@ -13,6 +13,7 @@ const order_controller_1 = require("./order.controller");
 const order_1 = require("../../core/models/order");
 const mongoose_1 = require("@nestjs/mongoose");
 const activities_1 = require("../../core/models/activities");
+const order_detail_1 = require("../../core/models/order-detail");
 let OrderModule = class OrderModule {
 };
 OrderModule = __decorate([
@@ -22,6 +23,10 @@ OrderModule = __decorate([
                 {
                     name: order_1.Order.name,
                     schema: order_1.OrderSchema,
+                },
+                {
+                    name: order_detail_1.OrderDetail.name,
+                    schema: order_detail_1.OrderDetailSchema,
                 },
                 {
                     name: activities_1.Activities.name,

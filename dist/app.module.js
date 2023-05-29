@@ -24,6 +24,7 @@ const order_socket_1 = require("./features/order-socket");
 const order_detail_1 = require("./features/order-detail");
 const order_1 = require("./features/order");
 const reservation_1 = require("./features/reservation");
+const check_out_1 = require("./features/check-out");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -50,6 +51,7 @@ AppModule = __decorate([
             order_socket_1.OrderSocketModule,
             order_detail_1.OrderDetailModule,
             order_1.OrderModule,
+            check_out_1.CheckOutModule,
         ],
         controllers: [],
         providers: [

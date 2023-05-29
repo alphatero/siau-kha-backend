@@ -9,10 +9,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderSocketModule = void 0;
 const common_1 = require("@nestjs/common");
 const order_socket_gateway_1 = require("./order-socket.gateway");
+const order_detail_1 = require("../order-detail");
 let OrderSocketModule = class OrderSocketModule {
 };
 OrderSocketModule = __decorate([
     (0, common_1.Module)({
+        imports: [order_detail_1.OrderDetailModule],
         providers: [order_socket_gateway_1.OrderSocketGateway],
     })
 ], OrderSocketModule);

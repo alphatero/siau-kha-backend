@@ -1,6 +1,6 @@
 import { ProductDetailDto } from './product-detail.dto';
 export declare class TableDataDto {
     table_id: string;
-    table_name: string;
+    order_id: string;
     product_detail: ProductDetailDto[];
 }

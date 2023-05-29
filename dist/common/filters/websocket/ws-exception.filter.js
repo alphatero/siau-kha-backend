@@ -9,18 +9,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebSocketExceptionFilter = void 0;
 const common_1 = require("@nestjs/common");
 const websockets_1 = require("@nestjs/websockets");
-let WebSocketExceptionFilter = class WebSocketExceptionFilter {
+let WebSocketExceptionFilter = class WebSocketExceptionFilter extends websockets_1.BaseWsExceptionFilter {
     catch(exception, host) {
         const ctx = host.switchToWs();
         const client = ctx.getClient();
-        const wsError = exception.getError();
-        const message = 'socket error';
-        console.log('wsError', wsError);
-        client.emit('onError', { status: 'error', message });
+        const error = exception instanceof websockets_1.WsException
+            ? exception.getError()
+            : exception.getResponse();
+        const details = error instanceof Object ? Object.assign({}, error) : { message: error };
+        console.log('details', details);
+        client.emit('onError', { status: 'error', message: details.message });
     }
 };
 WebSocketExceptionFilter = __decorate([
-    (0, common_1.Catch)(websockets_1.WsException)
+    (0, common_1.Catch)(websockets_1.WsException, common_1.HttpException)
 ], WebSocketExceptionFilter);
 exports.WebSocketExceptionFilter = WebSocketExceptionFilter;
 //# sourceMappingURL=ws-exception.filter.js.map

@@ -12,14 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductDetailDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
-const product_detail_1 = require("../../../core/models/product-detail");
 class ProductDetailDto {
 }
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], ProductDetailDto.prototype, "order_id", void 0);
+], ProductDetailDto.prototype, "product_id", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
@@ -36,15 +35,5 @@ __decorate([
     (0, class_transformer_1.Type)(() => String),
     __metadata("design:type", Array)
 ], ProductDetailDto.prototype, "product_note", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsEnum)(product_detail_1.ProductDetailStatus),
-    __metadata("design:type", String)
-], ProductDetailDto.prototype, "status", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], ProductDetailDto.prototype, "create_time", void 0);
 exports.ProductDetailDto = ProductDetailDto;
 //# sourceMappingURL=product-detail.dto.js.map
