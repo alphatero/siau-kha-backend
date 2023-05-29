@@ -98,5 +98,5 @@ export declare class OrderDetailService {
         total: number;
     }>;
     deleteOrderDetail(orderId: string, detailId: string, pId: string): Promise<void>;
-    patchOrderDetail(orderId: string, detailId: string, pId: string): Promise<{}>;
+    patchOrderDetail(orderId: string, detailId: string, pId: string, actionType: ProductDetailStatus): Promise<{}>;
 }

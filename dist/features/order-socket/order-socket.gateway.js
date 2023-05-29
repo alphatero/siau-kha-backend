@@ -21,12 +21,15 @@ const pipes_1 = require("../../common/pipes");
 const ws_exception_filter_1 = require("../../common/filters/websocket/ws-exception.filter");
 const gateways_1 = require("../../core/gateways");
 const order_detail_1 = require("../order-detail");
-const namespace = gateways_1.GATEWAY_NAMESPACE.ORDER_PRODUCT_DETAILS;
+const update_product_detail_dto_1 = require("./dto/update-product-detail.dto");
+const delete_product_detail_dto_1 = require("./dto/delete-product-detail.dto");
+const product_detail_1 = require("../../core/models/product-detail");
+const namespace = gateways_1.GATEWAY_NAMESPACE.ORDER;
 let OrderSocketGateway = class OrderSocketGateway {
     constructor(orderDetailService) {
         this.orderDetailService = orderDetailService;
     }
-    async handleMessage(body) {
+    async onOrder(body) {
         const product_detail = body.product_detail.map((item) => {
             return {
                 product_id: item.product_id,
@@ -40,13 +43,21 @@ let OrderSocketGateway = class OrderSocketGateway {
         await this.orderDetailService.orderFlow(orderDetailDto, body.order_id);
         this.server.emit('onOrder', Object.assign({}, body));
     }
+    async onUpdateProductDetail(body) {
+        await this.orderDetailService.patchOrderDetail(body.order_id, body.detail_id, body.p_id, product_detail_1.ProductDetailStatus.FINISH);
+        this.server.emit('onUpdateProductDetail', Object.assign({}, body));
+    }
+    async onDeleteProductDetail(body) {
+        await this.orderDetailService.deleteOrderDetail(body.order_id, body.detail_id, body.p_id);
+        this.server.emit('onDeleteProductDetail', Object.assign({}, body));
+    }
     handleConnection(client) {
         console.log(`Client connected: ${client.id}`);
-        this.server.emit(' order-product-details-connected', { userId: client.id });
+        this.server.emit('order connected', { userId: client.id });
     }
     handleDisconnect(client) {
         console.log(`Client disconnected: ${client.id}`);
-        this.server.emit('order-product-details-disconnected', {
+        this.server.emit('order disconnected', {
             userId: client.id,
         });
     }
@@ -58,14 +69,32 @@ __decorate([
 __decorate([
     (0, common_1.UseFilters)(ws_exception_filter_1.WebSocketExceptionFilter),
     (0, common_1.UsePipes)(new pipes_1.WSValidationPipe()),
-    (0, websockets_1.SubscribeMessage)(namespace),
+    (0, websockets_1.SubscribeMessage)(gateways_1.SUBSCRIBE.ORDER_PRODUCT_DETAILS),
     __param(0, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [table_data_dto_1.TableDataDto]),
     __metadata("design:returntype", Promise)
-], OrderSocketGateway.prototype, "handleMessage", null);
+], OrderSocketGateway.prototype, "onOrder", null);
+__decorate([
+    (0, common_1.UseFilters)(ws_exception_filter_1.WebSocketExceptionFilter),
+    (0, common_1.UsePipes)(new pipes_1.WSValidationPipe()),
+    (0, websockets_1.SubscribeMessage)(gateways_1.SUBSCRIBE.UPDATE_PRODUCT_DETAILS),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [update_product_detail_dto_1.UpdateProductDetailDto]),
+    __metadata("design:returntype", Promise)
+], OrderSocketGateway.prototype, "onUpdateProductDetail", null);
+__decorate([
+    (0, common_1.UseFilters)(ws_exception_filter_1.WebSocketExceptionFilter),
+    (0, common_1.UsePipes)(new pipes_1.WSValidationPipe()),
+    (0, websockets_1.SubscribeMessage)(gateways_1.SUBSCRIBE.DELETE_PRODUCT_DETAILS),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [delete_product_detail_dto_1.DeleteProductDetailDto]),
+    __metadata("design:returntype", Promise)
+], OrderSocketGateway.prototype, "onDeleteProductDetail", null);
 OrderSocketGateway = __decorate([
-    (0, websockets_1.WebSocketGateway)(gateways_1.gatewayPort[namespace], {
+    (0, websockets_1.WebSocketGateway)({
         namespace,
         cors: {
             origin: Object.values(gateways_1.corsOrigin),

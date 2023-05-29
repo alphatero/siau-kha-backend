@@ -20,6 +20,7 @@ const order_detail_service_1 = require("./order-detail.service");
 const create_order_detail_dto_1 = require("./dto/create-order-detail.dto");
 const apiExample_1 = require("./apiExample");
 const apiExample_2 = require("../../common/utils/apiExample");
+const product_detail_1 = require("../../core/models/product-detail");
 let OrderDetailController = class OrderDetailController {
     constructor(orderDetailService) {
         this.orderDetailService = orderDetailService;
@@ -28,7 +29,7 @@ let OrderDetailController = class OrderDetailController {
         await this.orderDetailService.orderFlow(orderDetail, orderId);
     }
     async patchOrderDetail(orderId, detailId, pId) {
-        await this.orderDetailService.patchOrderDetail(orderId, detailId, pId);
+        await this.orderDetailService.patchOrderDetail(orderId, detailId, pId, product_detail_1.ProductDetailStatus.SUCCESS);
     }
     async deleteOrderDetail(orderId, detailId, pId) {
         await this.orderDetailService.deleteOrderDetail(orderId, detailId, pId);

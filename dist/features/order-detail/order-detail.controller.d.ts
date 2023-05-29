@@ -1,5 +1,6 @@
 import { OrderDetailService } from './order-detail.service';
 import { CreateOrderDetailDto } from './dto/create-order-detail.dto';
+import { ProductDetailStatus } from 'src/core/models/product-detail';
 export declare class OrderDetailController {
     private readonly orderDetailService;
     constructor(orderDetailService: OrderDetailService);
@@ -15,7 +16,7 @@ export declare class OrderDetailController {
                 product_price: number;
                 product_quantity: number;
                 product_note: string[];
-                status: import("../../core/models/product-detail").ProductDetailStatus;
+                status: ProductDetailStatus;
                 is_delete: boolean;
             }[];
             create_time: Date;

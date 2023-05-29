@@ -21,23 +21,7 @@ const product_detail_2 = require("../../core/models/product-detail");
 const order_1 = require("../../core/models/order");
 const order_detail_1 = require("../../core/models/order-detail");
 const product_list_1 = require("../../core/models/product-list");
-function validateObjectIds(ids) {
-    Object.entries(ids).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-            value.forEach((val) => {
-                Object.entries(val).forEach(([k, v]) => {
-                    if (!mongoose_2.Types.ObjectId.isValid(v)) {
-                        throw new common_1.BadRequestException(`${k}格式錯誤`);
-                    }
-                });
-            });
-            return;
-        }
-        if (!mongoose_2.Types.ObjectId.isValid(value)) {
-            throw new common_1.BadRequestException(`${key}格式錯誤`);
-        }
-    });
-}
+const validate_1 = require("../../common/utils/validate");
 let OrderDetailService = class OrderDetailService {
     constructor(orderModel, orderDetailModel, productDetailModel, productListModel) {
         this.orderModel = orderModel;
@@ -49,7 +33,7 @@ let OrderDetailService = class OrderDetailService {
         const productIdsInRequest = dto.product_detail.map((product_detail) => ({
             product_id: product_detail.product_id,
         }));
-        validateObjectIds({
+        (0, validate_1.validateObjectIds)({
             order_id,
             productIdsInRequest,
         });
@@ -161,7 +145,7 @@ let OrderDetailService = class OrderDetailService {
         });
     }
     async getOrderDetail(id) {
-        validateObjectIds({ oredr_id: id });
+        (0, validate_1.validateObjectIds)({ oredr_id: id });
         try {
             const order = await this.orderModel.findById(id).exec();
             const result = {
@@ -187,9 +171,9 @@ let OrderDetailService = class OrderDetailService {
         }
     }
     async deleteOrderDetail(orderId, detailId, pId) {
-        validateObjectIds({
+        (0, validate_1.validateObjectIds)({
             order_id: orderId,
-            oreder_detail_id: detailId,
+            order_detail_id: detailId,
             product_detail_id: pId,
         });
         const productDetailSession = await this.productDetailModel.db.startSession();
@@ -258,10 +242,10 @@ let OrderDetailService = class OrderDetailService {
             orderSession.endSession();
         }
     }
-    async patchOrderDetail(orderId, detailId, pId) {
-        validateObjectIds({
+    async patchOrderDetail(orderId, detailId, pId, actionType) {
+        (0, validate_1.validateObjectIds)({
             order_id: orderId,
-            oreder_detail_id: detailId,
+            order_detail_id: detailId,
             product_detail_id: pId,
         });
         const order = await this.orderModel.findById(orderId).exec();
@@ -277,20 +261,35 @@ let OrderDetailService = class OrderDetailService {
         if (productDetailIsExist === -1) {
             throw new common_1.BadRequestException('找不到此筆單品');
         }
-        if (product_detail[productDetailIsExist].is_delete) {
-            throw new common_1.BadRequestException('此單品已經退點，不可上菜');
+        if (actionType === product_detail_1.ProductDetailStatus.SUCCESS) {
+            if (product_detail[productDetailIsExist].is_delete) {
+                throw new common_1.BadRequestException('此單品已經退點，不可上菜');
+            }
+            if (product_detail[productDetailIsExist].status ===
+                product_detail_1.ProductDetailStatus.IN_PROGRESS) {
+                throw new common_1.BadRequestException('此單品尚未完成，不可上菜');
+            }
+            if (product_detail[productDetailIsExist].status ===
+                product_detail_1.ProductDetailStatus.SUCCESS) {
+                throw new common_1.BadRequestException('此單品已經上菜過');
+            }
         }
-        if (product_detail[productDetailIsExist].status ===
-            product_detail_1.ProductDetailStatus.IN_PROGRESS) {
-            throw new common_1.BadRequestException('此單品尚未完成，不可上菜');
-        }
-        if (product_detail[productDetailIsExist].status ===
-            product_detail_1.ProductDetailStatus.SUCCESS) {
-            throw new common_1.BadRequestException('此單品已經上菜過');
+        else if (actionType === product_detail_1.ProductDetailStatus.FINISH) {
+            if (product_detail[productDetailIsExist].is_delete) {
+                throw new common_1.BadRequestException('此單品已經退點，不可出菜');
+            }
+            if (product_detail[productDetailIsExist].status ===
+                product_detail_1.ProductDetailStatus.SUCCESS) {
+                throw new common_1.BadRequestException('此單品已上菜，不可出菜');
+            }
+            if (product_detail[productDetailIsExist].status ===
+                product_detail_1.ProductDetailStatus.FINISH) {
+                throw new common_1.BadRequestException('此單品已經出菜過');
+            }
         }
         await this.productDetailModel.findByIdAndUpdate(pId, {
             $set: {
-                status: product_detail_1.ProductDetailStatus.SUCCESS,
+                status: actionType,
             },
         }, { new: true });
         return {};

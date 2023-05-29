@@ -1,10 +1,21 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GATEWAY_NAMESPACE = exports.corsOrigin = exports.gatewayPort = void 0;
-var gateway_port_1 = require("./gateway-port");
-Object.defineProperty(exports, "gatewayPort", { enumerable: true, get: function () { return gateway_port_1.gatewayPort; } });
+exports.corsOrigin = void 0;
 var cors_origin_1 = require("./cors-origin");
 Object.defineProperty(exports, "corsOrigin", { enumerable: true, get: function () { return cors_origin_1.corsOrigin; } });
-var gateways_type_1 = require("./gateways.type");
-Object.defineProperty(exports, "GATEWAY_NAMESPACE", { enumerable: true, get: function () { return gateways_type_1.GATEWAY_NAMESPACE; } });
+__exportStar(require("./gateways.type"), exports);
 //# sourceMappingURL=index.js.map
