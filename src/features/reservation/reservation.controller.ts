@@ -54,19 +54,7 @@ export class ReservationController {
   @Get()
   async getReservation() {
     // 取得候位資訊
-    const documents = await this.reservationService.getReservationWaitList();
-    const reservation_list = documents.map((doc) => {
-      const reservation = doc.toJSON();
-      return {
-        id: reservation._id,
-        name: reservation.name,
-        customer_num: reservation.customer_num,
-        create_time: reservation.create_time,
-        status: reservation.status,
-      };
-    });
-
-    return { reservation_list };
+    return await this.reservationService.getReservationWaitList();
   }
 
   @ApiBearerAuth()
