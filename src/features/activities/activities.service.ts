@@ -17,7 +17,7 @@ export class ActivitiesService {
 
   public async getActivitiesList(role: string) {
     let query;
-    if (role === 'admin') {
+    if (role === 'manager') {
       query = await this.ActivitiesModel.find({
         is_delete: false,
       });
