@@ -3,6 +3,7 @@ export declare const getReservationWaitListExample: {
         reservation_list: {
             id: string;
             name: string;
+            phone: string;
             customer_num: number;
             create_time: string;
             status: string;

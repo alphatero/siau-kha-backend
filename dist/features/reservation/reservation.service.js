@@ -37,7 +37,7 @@ let ReservationService = class ReservationService {
         const tomorrow = new Date();
         tomorrow.setDate(today.getDate() + 1);
         tomorrow.setHours(0, 0, 0, 0);
-        const query = this.reservationModel
+        const query = await this.reservationModel
             .find({
             status: reservation_1.ReservationStatus.WAIT,
             create_time: {
@@ -46,7 +46,18 @@ let ReservationService = class ReservationService {
             },
         })
             .sort({ create_time: 1 });
-        return query;
+        const reservation_list = query.map((doc) => {
+            const reservation = doc.toJSON();
+            return {
+                id: reservation._id,
+                name: reservation.name,
+                phone: reservation.phone,
+                customer_num: reservation.customer_num,
+                create_time: reservation.create_time,
+                status: reservation.status,
+            };
+        });
+        return { reservation_list };
     }
     async changeReservationStatus(id, action, user, tableId, customerNum) {
         if (action === reservation_1.ReservationStatus.CANCEL) {

@@ -30,18 +30,7 @@ let ReservationController = class ReservationController {
         await this.reservationService.createReservation(dto, user.id);
     }
     async getReservation() {
-        const documents = await this.reservationService.getReservationWaitList();
-        const reservation_list = documents.map((doc) => {
-            const reservation = doc.toJSON();
-            return {
-                id: reservation._id,
-                name: reservation.name,
-                customer_num: reservation.customer_num,
-                create_time: reservation.create_time,
-                status: reservation.status,
-            };
-        });
-        return { reservation_list };
+        return await this.reservationService.getReservationWaitList();
     }
     async arrangeSeating(request, id, tableId, customerNum) {
         const { user } = request;

@@ -9,6 +9,7 @@ export declare class ReservationController {
         reservation_list: {
             id: any;
             name: string;
+            phone: string;
             customer_num: number;
             create_time: Date;
             status: ReservationStatus;

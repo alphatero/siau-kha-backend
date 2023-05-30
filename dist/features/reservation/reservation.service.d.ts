@@ -36,8 +36,15 @@ export declare class ReservationService {
     createReservation(dto: CreateReservationDto, userId: string): Promise<import("mongoose").Document<unknown, {}, ReservationDocument> & Omit<Reservation & import("mongoose").Document<any, any, any> & {
         _id: Types.ObjectId;
     }, never>>;
-    getReservationWaitList(): Promise<(import("mongoose").Document<unknown, {}, ReservationDocument> & Omit<Reservation & import("mongoose").Document<any, any, any> & {
-        _id: Types.ObjectId;
-    }, never>)[]>;
+    getReservationWaitList(): Promise<{
+        reservation_list: {
+            id: any;
+            name: string;
+            phone: string;
+            customer_num: number;
+            create_time: Date;
+            status: ReservationStatus;
+        }[];
+    }>;
     changeReservationStatus(id: string, action: ReservationStatus, user?: IUserPayload, tableId?: string, customerNum?: number): Promise<void>;
 }
