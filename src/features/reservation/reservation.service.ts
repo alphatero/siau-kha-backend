@@ -46,7 +46,7 @@ export class ReservationService {
     tomorrow.setDate(today.getDate() + 1);
     tomorrow.setHours(0, 0, 0, 0); // 設定時間為明天的起始時間
 
-    const query = this.reservationModel
+    const query = await this.reservationModel
       .find({
         status: ReservationStatus.WAIT,
         create_time: {
@@ -55,7 +55,20 @@ export class ReservationService {
         },
       })
       .sort({ create_time: 1 });
-    return query;
+
+    const reservation_list = query.map((doc) => {
+      const reservation = doc.toJSON();
+      return {
+        id: reservation._id,
+        name: reservation.name,
+        phone: reservation.phone,
+        customer_num: reservation.customer_num,
+        create_time: reservation.create_time,
+        status: reservation.status,
+      };
+    });
+
+    return { reservation_list };
   }
 
   public async changeReservationStatus(
