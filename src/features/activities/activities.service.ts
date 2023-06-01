@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Activities, ActivitiesDocument } from 'src/core/models/activities';
+import { Role } from 'src/core/models/user';
 import { CreateActivityDto } from './dto/create-activity.dto';
 
 @Injectable()
@@ -17,7 +18,7 @@ export class ActivitiesService {
 
   public async getActivitiesList(role: string) {
     let query;
-    if (role === 'manager') {
+    if (role === Role.ADMIN || role === Role.MANAGER) {
       query = await this.ActivitiesModel.find({
         is_delete: false,
       });

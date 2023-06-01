@@ -7,6 +7,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtGuard } from 'src/common/guards';
+import { Role } from 'src/core/models/user';
 import { ActivitiesService } from './activities.service';
 import { getActivityExample } from './apiExample';
 import { CreateActivityDto } from './dto/create-activity.dto';
@@ -26,7 +27,7 @@ export class ActivitiesController {
   })
   @Get('/list')
   async getActivity() {
-    return await this.activitiesService.getActivitiesList('order');
+    return await this.activitiesService.getActivitiesList(Role.WAITER);
   }
 
   @ApiExcludeEndpoint()
