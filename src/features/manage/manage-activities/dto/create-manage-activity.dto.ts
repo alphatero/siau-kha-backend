@@ -10,6 +10,7 @@ import {
   IsOptional,
   Min,
   ValidateIf,
+  ArrayNotEmpty,
 } from 'class-validator';
 
 export class CreateManageActivityDto {
@@ -127,6 +128,12 @@ export class CreateManageActivityDto {
 
   @ApiProperty({
     description: '指定商品',
+  })
+  @ValidateIf((o) => o.discount_type === '1')
+  @ArrayNotEmpty({
+    message: () => {
+      throw new BadRequestException('act_products_list 不得為空');
+    },
   })
   @IsMongoId({
     each: true,
