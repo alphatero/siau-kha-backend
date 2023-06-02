@@ -37,7 +37,12 @@ export class ManageActivitiesService {
         is_period: activity.is_period,
         start_time: activity.start_time,
         end_time: activity.end_time,
-        act_products_list: activity.act_products_list,
+        act_products_list: activity.act_products_list.map(
+          (product: ProductListDocument) => ({
+            ...product,
+            id: product._id,
+          }),
+        ),
         status: activity.status,
       };
     });
@@ -65,12 +70,12 @@ export class ManageActivitiesService {
       );
       throw new BadRequestException(`找不到此商品ID: ${notFoundIds.join(',')}`);
     }
-    const createActivitie = {
+    const createActivities = {
       ...dto,
       status: true,
       is_delete: false,
     };
-    return this.activitiesModel.create(createActivitie);
+    return this.activitiesModel.create(createActivities);
   }
 
   // c-30 修改活動內容
@@ -79,9 +84,10 @@ export class ManageActivitiesService {
 
     const updateDto = {
       ...dto,
-      ...(dto.act_products_list && {
-        $addToSet: { act_products_list: dto.act_products_list },
-      }),
+      ...(dto.act_products_list &&
+        dto.act_products_list.length > 0 && {
+          $addToSet: { act_products_list: dto.act_products_list },
+        }),
     };
 
     // 驗證productIds是否存在
