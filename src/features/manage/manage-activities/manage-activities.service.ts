@@ -15,16 +15,21 @@ export class ManageActivitiesService {
     @InjectModel(ProductList.name)
     private readonly productListModel: Model<ProductListDocument>,
   ) {}
-  // c-27 取得活動清單
-  async getActivitiesList() {
-    const query = await this.activitiesModel
-      .find({
-        is_delete: false,
-      })
-      .populate({
-        path: 'act_products_list',
-        select: '_id product_name product_type product_price',
-      });
+  // c-27 取得活動清單 isManagement = true 後台管理用
+  async getActivitiesList(isManagement: boolean) {
+    const actQueryFilter = isManagement
+      ? {
+          is_delete: false,
+        }
+      : {
+          status: true,
+          is_delete: false,
+        };
+
+    const query = await this.activitiesModel.find(actQueryFilter).populate({
+      path: 'act_products_list',
+      select: '_id product_name product_type product_price',
+    });
     const activities = query.map((doc) => {
       const activity = doc.toJSON();
       return {

@@ -4,6 +4,7 @@ import { ActivitiesController } from './activities.controller';
 import { ActivitiesService } from './activities.service';
 import { Activities, ActivitiesSchema } from 'src/core/models/activities';
 import { ActivitiesMiddleware } from 'src/common/middleware';
+import { ManageActivitiesModule } from '../manage/manage-activities';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ActivitiesMiddleware } from 'src/common/middleware';
         schema: ActivitiesSchema,
       },
     ]),
+    ManageActivitiesModule,
   ],
   controllers: [ActivitiesController],
   providers: [ActivitiesService],

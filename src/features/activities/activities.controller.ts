@@ -10,11 +10,15 @@ import { JwtGuard } from 'src/common/guards';
 import { ActivitiesService } from './activities.service';
 import { getActivityExample } from './apiExample';
 import { CreateActivityDto } from './dto/create-activity.dto';
+import { ManageActivitiesService } from '../manage/manage-activities/manage-activities.service';
 @ApiTags('activities')
 @UseGuards(JwtGuard)
 @Controller('activities')
 export class ActivitiesController {
-  constructor(private readonly activitiesService: ActivitiesService) {}
+  constructor(
+    private readonly activitiesService: ActivitiesService,
+    private readonly manageActivitiesService: ManageActivitiesService,
+  ) {}
 
   @ApiBearerAuth()
   @ApiOperation({ summary: '取得所有活動' })
@@ -26,7 +30,7 @@ export class ActivitiesController {
   })
   @Get('/list')
   async getActivity() {
-    return await this.activitiesService.getActivitiesList();
+    return await this.manageActivitiesService.getActivitiesList(false);
   }
 
   @ApiExcludeEndpoint()

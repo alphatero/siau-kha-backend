@@ -37,7 +37,7 @@ export class ManageActivitiesController {
   })
   @Get('/act-manage/acts')
   getActivitiesList() {
-    return this.manageActivitiesService.getActivitiesList();
+    return this.manageActivitiesService.getActivitiesList(true);
   }
 
   @ApiOperation({ summary: '新增活動' })
