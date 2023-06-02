@@ -20,7 +20,7 @@ import { JwtGuard } from 'src/common/guards';
 import { getActivitiesExample } from './apiExample';
 import { basicExample } from 'src/common/utils/apiExample';
 
-@ApiTags('manage-activities')
+@ApiTags('Manage-activities')
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
 @Controller('manage')
