@@ -46,9 +46,7 @@ __decorate([
     __metadata("design:type", Number)
 ], ProductList.prototype, "product_price", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({
-        type: (Array),
-    }),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", Array)
 ], ProductList.prototype, "product_note", void 0);
 __decorate([

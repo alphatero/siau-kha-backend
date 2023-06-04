@@ -16,6 +16,7 @@ exports.ProductController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const guards_1 = require("../../common/guards");
+const apiExample_1 = require("./apiExample");
 const create_product_tag_dto_1 = require("./dto/create-product-tag.dto");
 const product_service_1 = require("./product.service");
 let ProductController = class ProductController {
@@ -44,7 +45,7 @@ let ProductController = class ProductController {
             product_name,
         });
         const product_list = documents.map((doc) => {
-            const { _id, product_name, product_type, product_tags, product_image, product_price, } = doc.toJSON();
+            const { _id, product_name, product_type, product_tags, product_image, product_price, product_note, } = doc.toJSON();
             return {
                 id: _id,
                 product_name,
@@ -52,6 +53,7 @@ let ProductController = class ProductController {
                 product_tags,
                 product_image,
                 product_price,
+                product_note,
             };
         });
         return { product_list };
@@ -77,19 +79,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({
         status: 200,
         schema: {
-            example: {
-                status: 'success',
-                message: '成功',
-                data: {
-                    product_tags: [
-                        {
-                            id: '64568af83e7dc038127b7f19',
-                            tag_name: '主廚特選套餐',
-                            sort_no: 1,
-                        },
-                    ],
-                },
-            },
+            example: apiExample_1.getProductTagsExample,
         },
     }),
     (0, common_1.Get)('/tags'),
@@ -115,22 +105,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({
         status: 200,
         schema: {
-            example: {
-                status: 'success',
-                message: '成功',
-                data: {
-                    product_list: [
-                        {
-                            id: '6457444fb88d606c8c658f74',
-                            product_name: 'A5 日本和牛套餐',
-                            product_type: '2',
-                            product_tags: '64568af83e7dc038127b7f19',
-                            product_image: 'https://storage.googleapis.com/nestjsproject-image.appspot.com/images/44402f8c-3819-4408-9306-c2b1c9f26908.jpg?GoogleAccessId=firebase-adminsdk-at27n%40nestjsproject-image.iam.gserviceaccount.com&Expires=16730294400&Signature=WPwLE4ksKcwudcfwZeIxN8DCG9H6s3zJHecTfr7q%2F1cmHmHDXpKHBiotJsd730e62dGYyrz%2BXK9J325Xnqo8J4KWm9M3FJK6idrxDbU7zRQaqlJBsI5xhK8Qzf%2BUI2DigyZd%2Bvc8iGHTuLTvMlcEw3hKnXD8N5LIuriypbIgMa%2FIEpejymxpRFcG9tCbsr1BdaDebCX93X2UdVYZgI50mPxz7j2yGtOK6JwArCtZEofm0LWBagqB2D3DxsGAajPg50i9KDU%2BBNtrrPFxxvKAlZFw3dsJc%2B3l8OK5q9uTBDOmO03pbVoADlFyGl2Ww7yhBtPLkk1EgZN0iQg2yPCtBg%3D%3D',
-                            product_price: 2200,
-                        },
-                    ],
-                },
-            },
+            example: apiExample_1.getProductListExample,
         },
     }),
     (0, common_1.Get)('/list'),
@@ -146,20 +121,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({
         status: 200,
         schema: {
-            example: {
-                status: 'success',
-                message: '成功',
-                data: {
-                    product: {
-                        id: '6457444fb88d606c8c658f74',
-                        product_name: 'A5 日本和牛套餐',
-                        product_type: '2',
-                        product_tags: '64568af83e7dc038127b7f19',
-                        product_price: 2200,
-                        product_note: ['飯少', '瘦肉多一點'],
-                    },
-                },
-            },
+            example: apiExample_1.getProductExample,
         },
     }),
     (0, common_1.Get)('/:id'),

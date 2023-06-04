@@ -32,6 +32,7 @@ ActivitiesModule = __decorate([
         ],
         controllers: [activities_controller_1.ActivitiesController],
         providers: [activities_service_1.ActivitiesService],
+        exports: [activities_service_1.ActivitiesService],
     })
 ], ActivitiesModule);
 exports.ActivitiesModule = ActivitiesModule;

@@ -31,18 +31,7 @@ export declare class ActivitiesService {
     createActivity(dto: CreateActivityDto): Promise<import("mongoose").Document<unknown, {}, ActivitiesDocument> & Omit<Activities & import("mongoose").Document<any, any, any> & {
         _id: import("mongoose").Types.ObjectId;
     }, never>>;
-    getActivitiesList(): Promise<{
-        activities: {
-            id: any;
-            activities_name: string;
-            discount_type: string;
-            charge_type: string;
-            min_spend: number;
-            discount: number;
-            is_period: boolean;
-            start_time: Date;
-            end_time: Date;
-            act_products_list: import("mongoose").FlattenMaps<import("../../core/models/product-list").ProductList>;
-        }[];
+    getActivitiesList(role: string): Promise<{
+        activities: any;
     }>;
 }

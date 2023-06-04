@@ -16,6 +16,7 @@ exports.ActivitiesController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const guards_1 = require("../../common/guards");
+const user_1 = require("../../core/models/user");
 const activities_service_1 = require("./activities.service");
 const apiExample_1 = require("./apiExample");
 const create_activity_dto_1 = require("./dto/create-activity.dto");
@@ -24,7 +25,7 @@ let ActivitiesController = class ActivitiesController {
         this.activitiesService = activitiesService;
     }
     async getActivity() {
-        return await this.activitiesService.getActivitiesList();
+        return await this.activitiesService.getActivitiesList(user_1.Role.WAITER);
     }
     async createActivity(dto) {
         return await this.activitiesService.createActivity(dto);
@@ -54,7 +55,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ActivitiesController.prototype, "createActivity", null);
 ActivitiesController = __decorate([
-    (0, swagger_1.ApiTags)('activities'),
+    (0, swagger_1.ApiTags)('Activities'),
     (0, common_1.UseGuards)(guards_1.JwtGuard),
     (0, common_1.Controller)('activities'),
     __metadata("design:paramtypes", [activities_service_1.ActivitiesService])

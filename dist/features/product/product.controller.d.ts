@@ -46,6 +46,7 @@ export declare class ProductController {
             product_tags: import("mongoose").FlattenMaps<import("../../core/models/product-tags").ProductTags>;
             product_image: string;
             product_price: number;
+            product_note: import("mongoose").FlattenMaps<import("../../core/models/product-list/product-list.type").ProductNote>[];
         }[];
     }>;
     getProduct(id: string): Promise<{
@@ -55,7 +56,7 @@ export declare class ProductController {
             product_type: string;
             product_tags: import("../../core/models/product-tags").ProductTags;
             product_price: number;
-            product_note: string[];
+            product_note: import("../../core/models/product-list/product-list.type").ProductNote[];
         };
     }>;
 }

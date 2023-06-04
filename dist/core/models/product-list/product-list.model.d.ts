@@ -25,6 +25,7 @@
 import { Document, Types } from 'mongoose';
 import { ProductTags } from '../product-tags';
 import { User } from '../user';
+import { ProductNote } from './product-list.type';
 export type ProductListDocument = ProductList & Document;
 export declare class ProductList {
     product_name: string;
@@ -32,7 +33,7 @@ export declare class ProductList {
     product_tags: ProductTags;
     product_image: string;
     product_price: number;
-    product_note: Array<string>;
+    product_note: Array<ProductNote>;
     create_time: Date;
     create_user: User;
     is_delete: boolean;

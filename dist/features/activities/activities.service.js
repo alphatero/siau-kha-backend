@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const activities_1 = require("../../core/models/activities");
+const user_1 = require("../../core/models/user");
 let ActivitiesService = class ActivitiesService {
     constructor(ActivitiesModel) {
         this.ActivitiesModel = ActivitiesModel;
@@ -24,11 +25,22 @@ let ActivitiesService = class ActivitiesService {
     async createActivity(dto) {
         return this.ActivitiesModel.create(dto);
     }
-    async getActivitiesList() {
-        const query = await this.ActivitiesModel.find({
-            status: true,
-            is_delete: false,
-        });
+    async getActivitiesList(role) {
+        let query;
+        if (role === user_1.Role.ADMIN || role === user_1.Role.MANAGER) {
+            query = await this.ActivitiesModel.find({
+                is_delete: false,
+            });
+        }
+        else {
+            const currentDate = new Date();
+            query = await this.ActivitiesModel.find({
+                start_time: { $lte: currentDate },
+                end_time: { $gte: currentDate },
+                status: true,
+                is_delete: false,
+            });
+        }
         const activities = query.map((doc) => {
             const activity = doc.toJSON();
             return {
