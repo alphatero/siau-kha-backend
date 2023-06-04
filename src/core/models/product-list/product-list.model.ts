@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { ProductTags } from '../product-tags';
 import { User } from '../user';
+import { ProductNote } from './product-list.type';
 
 export type ProductListDocument = ProductList & Document;
 
@@ -40,10 +41,8 @@ export class ProductList {
   })
   product_price: number;
 
-  @Prop({
-    type: Array<string>,
-  })
-  product_note: Array<string>;
+  @Prop()
+  product_note: Array<ProductNote>;
 
   // 食材消耗
   // @Prop({
