@@ -49,7 +49,7 @@ export const getProductListExample = {
   },
 };
 
-export const getProductxample = {
+export const getProductExample = {
   ...basicExample,
   data: {
     product: {

@@ -20,7 +20,7 @@ import { JwtGuard } from 'src/common/guards';
 import {
   getProductListExample,
   getProductTagsExample,
-  getProductxample,
+  getProductExample,
 } from './apiExample';
 import { CreateProductTagDto } from './dto/create-product-tag.dto';
 import { ProductService } from './product.service';
@@ -108,7 +108,7 @@ export class ProductController {
   @ApiResponse({
     status: 200,
     schema: {
-      example: getProductxample,
+      example: getProductExample,
     },
   })
   @Get('/:id')
