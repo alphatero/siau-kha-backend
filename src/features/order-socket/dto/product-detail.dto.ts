@@ -3,16 +3,14 @@ import {
   IsNumber,
   IsPositive,
   IsString,
-  IsEnum,
   IsArray,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { ProductDetailStatus } from 'src/core/models/product-detail';
 
 export class ProductDetailDto {
   @IsNotEmpty()
   @IsString()
-  public readonly order_id: string;
+  public readonly product_id: string;
 
   @IsNotEmpty()
   @IsString()
@@ -26,12 +24,4 @@ export class ProductDetailDto {
   @IsArray()
   @Type(() => String)
   public readonly product_note: Array<string>;
-
-  @IsNotEmpty()
-  @IsEnum(ProductDetailStatus)
-  public readonly status: ProductDetailStatus;
-
-  @IsNotEmpty()
-  @IsString()
-  public readonly create_time: string;
 }

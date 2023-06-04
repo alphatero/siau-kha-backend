@@ -19,6 +19,7 @@ import { ManageActivitiesModule } from '../manage/manage-activities';
   ],
   controllers: [ActivitiesController],
   providers: [ActivitiesService],
+  exports: [ActivitiesService],
 })
 export class ActivitiesModule {
   configure(consumer: MiddlewareConsumer) {

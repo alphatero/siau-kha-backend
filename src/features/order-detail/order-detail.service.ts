@@ -12,24 +12,7 @@ import { Order, OrderDocument } from 'src/core/models/order';
 import { OrderDetail, OrderDetailDocument } from 'src/core/models/order-detail';
 import { ProductList, ProductListDocument } from 'src/core/models/product-list';
 import { User } from 'src/core/models/user';
-
-function validateObjectIds(ids) {
-  Object.entries(ids).forEach(([key, value]: [string, string | any[]]) => {
-    if (Array.isArray(value)) {
-      value.forEach((val) => {
-        Object.entries(val).forEach(([k, v]: [string, string]) => {
-          if (!Types.ObjectId.isValid(v)) {
-            throw new BadRequestException(`${k}格式錯誤`);
-          }
-        });
-      });
-      return;
-    }
-    if (!Types.ObjectId.isValid(value)) {
-      throw new BadRequestException(`${key}格式錯誤`);
-    }
-  });
-}
+import { validateObjectIds } from 'src/common/utils/validate';
 
 @Injectable()
 export class OrderDetailService {
@@ -290,7 +273,7 @@ export class OrderDetailService {
   ) {
     validateObjectIds({
       order_id: orderId,
-      oreder_detail_id: detailId,
+      order_detail_id: detailId,
       product_detail_id: pId,
     });
 
@@ -393,23 +376,26 @@ export class OrderDetailService {
     }
   }
 
-  /** B-8 單一餐點上菜
+  /** B-8 單一餐點上菜 & B-14 單一餐點出菜
    * 驗證 order 是否有此訂單明細 -> order_detail
    * 驗證 order_detail 是否有此產品明細 -> product_detail
-   * 修改此單品狀態 status -> SUCCESS
+   * actionType = SUCCESS： 單一餐點上菜, 修改此單品狀態 status -> SUCCESS
+   * actionType = FINISH：  單一餐點出菜：修改此單品狀態 status -> FINISH
    * @param orderId
    * @param detailId
    * @param pId
+   * @param actionType
    * @returns {Promise<ProductDetailDocument>}
    */
   public async patchOrderDetail(
     orderId: string,
     detailId: string,
     pId: string,
+    actionType: ProductDetailStatus,
   ) {
     validateObjectIds({
       order_id: orderId,
-      oreder_detail_id: detailId,
+      order_detail_id: detailId,
       product_detail_id: pId,
     });
 
@@ -437,32 +423,57 @@ export class OrderDetailService {
       throw new BadRequestException('找不到此筆單品');
     }
 
-    // 如果此單品已退點，則不可上菜
-    if (product_detail[productDetailIsExist].is_delete) {
-      throw new BadRequestException('此單品已經退點，不可上菜');
-    }
+    if (actionType === ProductDetailStatus.SUCCESS) {
+      // ============== 上菜 ==============
 
-    // 如果此單品尚未完成，則不可上菜
-    if (
-      product_detail[productDetailIsExist].status ===
-      ProductDetailStatus.IN_PROGRESS
-    ) {
-      throw new BadRequestException('此單品尚未完成，不可上菜');
-    }
+      // 如果此單品已退點，則不可上菜
+      if (product_detail[productDetailIsExist].is_delete) {
+        throw new BadRequestException('此單品已經退點，不可上菜');
+      }
+      // 如果此單品尚未完成，則不可上菜
+      if (
+        product_detail[productDetailIsExist].status ===
+        ProductDetailStatus.IN_PROGRESS
+      ) {
+        throw new BadRequestException('此單品尚未完成，不可上菜');
+      }
 
-    // 如果此單品已經上菜過，則不可再次上菜
-    if (
-      product_detail[productDetailIsExist].status ===
-      ProductDetailStatus.SUCCESS
-    ) {
-      throw new BadRequestException('此單品已經上菜過');
+      // 如果此單品已經上菜過，則不可再次上菜
+      if (
+        product_detail[productDetailIsExist].status ===
+        ProductDetailStatus.SUCCESS
+      ) {
+        throw new BadRequestException('此單品已經上菜過');
+      }
+    } else if (actionType === ProductDetailStatus.FINISH) {
+      // ============== 出菜 ==============
+
+      // 如果此單品已退點，則不可出菜
+      if (product_detail[productDetailIsExist].is_delete) {
+        throw new BadRequestException('此單品已經退點，不可出菜');
+      }
+      // 如果此單品已上菜，則不可出菜
+      if (
+        product_detail[productDetailIsExist].status ===
+        ProductDetailStatus.SUCCESS
+      ) {
+        throw new BadRequestException('此單品已上菜，不可出菜');
+      }
+
+      // 如果此單品已經出菜過，則不可再次出菜
+      if (
+        product_detail[productDetailIsExist].status ===
+        ProductDetailStatus.FINISH
+      ) {
+        throw new BadRequestException('此單品已經出菜過');
+      }
     }
 
     await this.productDetailModel.findByIdAndUpdate(
       pId,
       {
         $set: {
-          status: ProductDetailStatus.SUCCESS,
+          status: actionType,
         },
       },
       { new: true },

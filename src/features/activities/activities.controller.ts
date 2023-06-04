@@ -11,7 +11,7 @@ import { ActivitiesService } from './activities.service';
 import { getActivityExample } from './apiExample';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { ManageActivitiesService } from '../manage/manage-activities/manage-activities.service';
-@ApiTags('activities')
+@ApiTags('Activities')
 @UseGuards(JwtGuard)
 @Controller('activities')
 export class ActivitiesController {
