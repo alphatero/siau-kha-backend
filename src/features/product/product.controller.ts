@@ -17,6 +17,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtGuard } from 'src/common/guards';
+import {
+  getProductListExample,
+  getProductTagsExample,
+  getProductExample,
+} from './apiExample';
 import { CreateProductTagDto } from './dto/create-product-tag.dto';
 import { ProductService } from './product.service';
 
@@ -31,19 +36,7 @@ export class ProductController {
   @ApiResponse({
     status: 200,
     schema: {
-      example: {
-        status: 'success',
-        message: '成功',
-        data: {
-          product_tags: [
-            {
-              id: '64568af83e7dc038127b7f19',
-              tag_name: '主廚特選套餐',
-              sort_no: 1,
-            },
-          ],
-        },
-      },
+      example: getProductTagsExample,
     },
   })
   @Get('/tags')
@@ -75,23 +68,7 @@ export class ProductController {
   @ApiResponse({
     status: 200,
     schema: {
-      example: {
-        status: 'success',
-        message: '成功',
-        data: {
-          product_list: [
-            {
-              id: '6457444fb88d606c8c658f74',
-              product_name: 'A5 日本和牛套餐',
-              product_type: '2',
-              product_tags: '64568af83e7dc038127b7f19',
-              product_image:
-                'https://storage.googleapis.com/nestjsproject-image.appspot.com/images/44402f8c-3819-4408-9306-c2b1c9f26908.jpg?GoogleAccessId=firebase-adminsdk-at27n%40nestjsproject-image.iam.gserviceaccount.com&Expires=16730294400&Signature=WPwLE4ksKcwudcfwZeIxN8DCG9H6s3zJHecTfr7q%2F1cmHmHDXpKHBiotJsd730e62dGYyrz%2BXK9J325Xnqo8J4KWm9M3FJK6idrxDbU7zRQaqlJBsI5xhK8Qzf%2BUI2DigyZd%2Bvc8iGHTuLTvMlcEw3hKnXD8N5LIuriypbIgMa%2FIEpejymxpRFcG9tCbsr1BdaDebCX93X2UdVYZgI50mPxz7j2yGtOK6JwArCtZEofm0LWBagqB2D3DxsGAajPg50i9KDU%2BBNtrrPFxxvKAlZFw3dsJc%2B3l8OK5q9uTBDOmO03pbVoADlFyGl2Ww7yhBtPLkk1EgZN0iQg2yPCtBg%3D%3D',
-              product_price: 2200,
-            },
-          ],
-        },
-      },
+      example: getProductListExample,
     },
   })
   @Get('/list')
@@ -111,6 +88,7 @@ export class ProductController {
         product_tags,
         product_image,
         product_price,
+        product_note,
       } = doc.toJSON();
       return {
         id: _id,
@@ -119,6 +97,7 @@ export class ProductController {
         product_tags,
         product_image,
         product_price,
+        product_note,
       };
     });
     return { product_list };
@@ -129,20 +108,7 @@ export class ProductController {
   @ApiResponse({
     status: 200,
     schema: {
-      example: {
-        status: 'success',
-        message: '成功',
-        data: {
-          product: {
-            id: '6457444fb88d606c8c658f74',
-            product_name: 'A5 日本和牛套餐',
-            product_type: '2',
-            product_tags: '64568af83e7dc038127b7f19',
-            product_price: 2200,
-            product_note: ['飯少', '瘦肉多一點'],
-          },
-        },
-      },
+      example: getProductExample,
     },
   })
   @Get('/:id')
