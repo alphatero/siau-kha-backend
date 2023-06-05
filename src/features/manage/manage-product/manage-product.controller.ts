@@ -48,7 +48,7 @@ export class ManageProductController {
       example: getTagsExample,
     },
   })
-  @Get('tags')
+  @Get('/tags')
   async getProductTags() {
     return await this.manageProductService.getProductTags();
   }
@@ -61,7 +61,7 @@ export class ManageProductController {
       example: basicExample,
     },
   })
-  @Post('tag')
+  @Post('/tag')
   async createProductTag(@Req() request, @Body() dto: AddTagDto) {
     const { user } = request;
     return await this.manageProductService.createProductTag(dto, user);
@@ -93,7 +93,7 @@ export class ManageProductController {
       example: basicExample,
     },
   })
-  @Patch('tags/status/:t_id')
+  @Patch('/tags/status/:t_id')
   async handleProductTagStatus(
     @Req() request,
     @Param('t_id') id: string,
@@ -129,10 +129,10 @@ export class ManageProductController {
       example: basicExample,
     },
   })
-  @Patch('tags/sorting')
+  @Patch('/tags/sorting')
   async changeProductTagSortNo(@Req() request, @Body() dto: SortingDto) {
     const { user } = request;
-    return await this.manageProductService.changeProductTagSortNo(dto);
+    return await this.manageProductService.changeProductTagSortNo(dto, user);
   }
 
   @ApiOperation({ summary: '管理端-新增商品' })
@@ -143,7 +143,7 @@ export class ManageProductController {
       example: basicExample,
     },
   })
-  @Post('add-product')
+  @Post('')
   async addProduct(@Req() request, @Body() dto: AddProductDto) {
     const { user, middle_data } = request;
     return await this.manageProductService.addProduct(dto, user, middle_data);
@@ -168,23 +168,23 @@ export class ManageProductController {
     return await this.manageProductService.getProducts();
   }
 
-  // @ApiOperation({ summary: '管理端-取得單一商品' })
-  // @ApiBearerAuth()
-  // @ApiParam({
-  //   name: 'p_id',
-  //   description: '商品id',
-  //   required: true,
-  // })
-  // @ApiResponse({
-  //   status: 200,
-  //   schema: {
-  //     example: getProductExample,
-  //   },
-  // })
-  // @Get('/:p_id')
-  // async getProduct(@Param('p_id') p_id: string) {
-  //   return await this.manageProductService.getProduct(p_id);
-  // }
+  @ApiOperation({ summary: '管理端-取得單一商品' })
+  @ApiBearerAuth()
+  @ApiParam({
+    name: 'p_id',
+    description: '商品id',
+    required: true,
+  })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      example: getProductExample,
+    },
+  })
+  @Get('/:p_id')
+  async getProduct(@Param('p_id') p_id: string) {
+    return await this.manageProductService.getProduct(p_id);
+  }
 
   @ApiOperation({ summary: '管理端-編輯商品' })
   @ApiBearerAuth()
@@ -194,7 +194,7 @@ export class ManageProductController {
       example: basicExample,
     },
   })
-  @Put('edit-product/:p_id')
+  @Put('/:p_id')
   async editProduct(
     @Req() request,
     @Param('p_id') p_id: string,
@@ -217,7 +217,7 @@ export class ManageProductController {
       example: basicExample,
     },
   })
-  @Patch('close-product/:p_id')
+  @Patch('/:p_id')
   async closeProduct(@Req() request, @Param('p_id') p_id: string) {
     const { user } = request;
     return await this.manageProductService.closeProduct(p_id, user);

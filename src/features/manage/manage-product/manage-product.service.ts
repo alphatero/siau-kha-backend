@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { FoodItem, FoodItemDocument } from 'src/core/models/food-item';
 import { ProductList, ProductListDocument } from 'src/core/models/product-list';
 import {
@@ -217,7 +217,7 @@ export class ManageProductService {
     }
   }
 
-  public async changeProductTagSortNo(idList: SortingDto) {
+  public async changeProductTagSortNo(idList: SortingDto, user: IUserPayload) {
     // 1. [v] 檢查是否有重複。
     // 2. [v] 檢查是否有不存在的商品類別(status === ENABLE)。
     // 3. [v] 透過 session.withTransaction() 來執行交易事務。
@@ -262,6 +262,8 @@ export class ManageProductService {
           {
             $set: {
               sort_no: index + 1,
+              set_state_time: new Date(),
+              set_state_user: new Types.ObjectId(user.id),
             },
           },
           {
@@ -450,7 +452,6 @@ export class ManageProductService {
     if (!targetProduct) {
       throw new BadRequestException('目標商品不存在');
     }
-
     const tagRes = await this.productTagsModel.findById(dto.product_tags);
     if (!tagRes) {
       throw new BadRequestException('商品類別不存在');
