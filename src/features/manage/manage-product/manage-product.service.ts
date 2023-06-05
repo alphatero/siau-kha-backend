@@ -69,7 +69,7 @@ export class ManageProductService {
     if (!targetTag) {
       throw new BadRequestException('商品類別不存在');
     }
-    if (targetTag.status === ProductTagStatus.DELETE) {
+    if (targetTag.status === ProductTagStatus.DISABLE) {
       throw new BadRequestException('商品類別已被刪除');
     }
     const updatedData = {
@@ -85,10 +85,10 @@ export class ManageProductService {
   public async closeProductTag(id: string, user: IUserPayload) {
     // 1. [v] 檢查id格式。
     // 2. [v] 檢查商品類別是否存在。
-    // 3. [v] 檢查商品類別是否已經被刪除。
-    // 4. [v] 提取要刪除的商品類別的 sort_no。
+    // 3. [v] 檢查商品類別是否已經被停用。
+    // 4. [v] 提取要停用的商品類別的 sort_no。
     // 5. [v] 透過 session.withTransaction() 來執行交易事務。
-    // 6. [v] 將目標商品類別的狀態改為刪除以及sort_no=0。
+    // 6. [v] 將目標商品類別的狀態改為停用以及sort_no=0。
     // 7. [v] 將所有 sort_no > 目標商品類別的 sort_no 都 -1。
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('id 格式錯誤');
@@ -97,15 +97,15 @@ export class ManageProductService {
     if (!targetTag) {
       throw new BadRequestException('商品類別不存在');
     }
-    if (targetTag.status === ProductTagStatus.DELETE) {
-      throw new BadRequestException('商品類別已經被刪除');
+    if (targetTag.status === ProductTagStatus.DISABLE) {
+      throw new BadRequestException('商品類別已經被停用');
     }
     const sortNo = targetTag.sort_no;
     const tagSession = await this.productTagsModel.db.startSession();
     tagSession.startTransaction();
     try {
       const data = {
-        status: ProductTagStatus.DELETE,
+        status: ProductTagStatus.DISABLE,
         sort_no: 0,
         set_state_time: new Date(),
         set_state_user: new Types.ObjectId(user.id),
@@ -120,6 +120,49 @@ export class ManageProductService {
           new: true,
         },
       );
+      await this.productTagsModel.updateMany(
+        { sort_no: { $gt: sortNo } },
+        {
+          $inc: { sort_no: -1 },
+          $set: {
+            set_state_time: new Date(),
+            set_state_user: new Types.ObjectId(user.id),
+          },
+        },
+        { session: tagSession, new: true },
+      );
+      await tagSession.commitTransaction();
+    } catch (error) {
+      await tagSession.abortTransaction();
+      throw error;
+    } finally {
+      tagSession.endSession();
+    }
+  }
+
+  public async deleteProductTag(id: string, user: IUserPayload) {
+    // 1. [v] 檢查id格式。
+    // 2. [v] 檢查商品類別是否存在。
+    // 3. [v] 檢查商品類別是否已經被停用。
+    // 4. [v] 提取要停用的商品類別的 sort_no。
+    // 5. [v] 透過 session.withTransaction() 來執行交易事務。
+    // 6. [v] 將目標商品類別刪除。
+    // 7. [v] 將所有 sort_no > 目標商品類別的 sort_no 都 -1。
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('id 格式錯誤');
+    }
+    const targetTag = await this.findTag(id);
+    if (!targetTag) {
+      throw new BadRequestException('商品類別不存在');
+    }
+    if (targetTag.status === ProductTagStatus.DISABLE) {
+      throw new BadRequestException('商品類別已經被停用');
+    }
+    const sortNo = targetTag.sort_no;
+    const tagSession = await this.productTagsModel.db.startSession();
+    tagSession.startTransaction();
+    try {
+      await this.productTagsModel.findByIdAndRemove(id);
       await this.productTagsModel.updateMany(
         { sort_no: { $gt: sortNo } },
         {
@@ -370,7 +413,7 @@ export class ManageProductService {
   private async findTags() {
     return this.productTagsModel
       .find({
-        status: { $ne: ProductTagStatus.DELETE },
+        status: { $ne: ProductTagStatus.DISABLE },
       })
       .sort({ sort_no: 1 });
   }

@@ -89,7 +89,7 @@ export class ManageProductController {
   @Delete('/:t_id')
   async deleteProductTag(@Req() request, @Param('t_id') id: string) {
     const { user } = request;
-    return await this.manageProductService.closeProductTag(id, user);
+    return await this.manageProductService.deleteProductTag(id, user);
   }
 
   @ApiOperation({ summary: '管理端-停用商品類別' })
