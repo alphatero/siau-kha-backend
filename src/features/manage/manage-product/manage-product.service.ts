@@ -9,7 +9,12 @@ import {
   ProductTagStatus,
 } from 'src/core/models/product-tags';
 import { IUserPayload } from 'src/features/auth';
-import { AddTagDto, AddProductDto, SortingDto } from './dto';
+import {
+  AddTagDto,
+  AddProductDto,
+  SortingDto,
+  ChangeTagStatusDto,
+} from './dto';
 @Injectable()
 export class ManageProductService {
   constructor(
@@ -83,9 +88,8 @@ export class ManageProductService {
   }
 
   public async handleProductTagStatus(
-    id: string,
+    dto: ChangeTagStatusDto,
     user: IUserPayload,
-    action: ProductTagStatus,
   ) {
     // 1. [v] 檢查id格式。
     // 2. [v] 檢查商品類別是否存在。
@@ -99,30 +103,30 @@ export class ManageProductService {
     // 6. [v] 狀態為啟用：
     //  a. [v] 取得所有的啟動狀態的商品類別數量。
     //  b. [v] 將目標商品類別的狀態更新為啟用以及排序為 a + 1(移到最後一個)。
-    if (!Types.ObjectId.isValid(id)) {
+    if (!Types.ObjectId.isValid(dto.tag_id)) {
       throw new BadRequestException('id 格式錯誤');
     }
-    const targetTag = await this.findTag(id);
+    const targetTag = await this.findTag(dto.tag_id);
     if (!targetTag) {
       throw new BadRequestException('商品類別不存在');
     }
-    if (action === targetTag.status) {
-      throw new BadRequestException(`商品類別已經處於 ${action} 狀態`);
+    if (dto.action === targetTag.status) {
+      throw new BadRequestException(`商品類別已經處於 ${dto.action} 狀態`);
     }
 
-    if (action === ProductTagStatus.DISABLE) {
+    if (dto.action === ProductTagStatus.DISABLE) {
       const sortNo = targetTag.sort_no;
       const tagSession = await this.productTagsModel.db.startSession();
       tagSession.startTransaction();
       try {
         const data = {
-          status: action,
+          status: dto.action,
           sort_no: 0,
           set_state_time: new Date(),
           set_state_user: new Types.ObjectId(user.id),
         };
         await this.productTagsModel.findByIdAndUpdate(
-          id,
+          dto.tag_id,
           {
             $set: data,
           },
@@ -152,13 +156,13 @@ export class ManageProductService {
     } else {
       const documents = await this.findEnableTags();
       const data = {
-        status: action,
+        status: dto.action,
         sort_no: documents[documents.length - 1].sort_no + 1,
         set_state_time: new Date(),
         set_state_user: new Types.ObjectId(user.id),
       };
       await this.productTagsModel.findByIdAndUpdate(
-        id,
+        dto.tag_id,
         {
           $set: data,
         },

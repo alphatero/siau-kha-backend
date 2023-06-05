@@ -26,7 +26,12 @@ import {
   getProductListExample,
   getProductExample,
 } from './apiExample';
-import { AddTagDto, AddProductDto, SortingDto } from './dto';
+import {
+  AddTagDto,
+  AddProductDto,
+  SortingDto,
+  ChangeTagStatusDto,
+} from './dto';
 import { ManageProductService } from './manage-product.service';
 
 @ApiTags('ManageProduct')
@@ -94,7 +99,7 @@ export class ManageProductController {
     return await this.manageProductService.deleteProductTag(t_id, user);
   }
 
-  @ApiOperation({ summary: '管理端-管理商品類別狀態' })
+  @ApiOperation({ summary: '管理端-編輯商品類別狀態' })
   @ApiBearerAuth()
   @ApiResponse({
     status: 200,
@@ -102,18 +107,13 @@ export class ManageProductController {
       example: basicExample,
     },
   })
-  @Patch()
+  @Patch('tags/status')
   async handleProductTagStatus(
     @Req() request,
-    @Query('tag_id') t_id: string,
-    @Query('action') action: ProductTagStatus,
+    @Body() dto: ChangeTagStatusDto,
   ) {
     const { user } = request;
-    return await this.manageProductService.handleProductTagStatus(
-      t_id,
-      user,
-      action,
-    );
+    return await this.manageProductService.handleProductTagStatus(dto, user);
   }
 
   @ApiOperation({ summary: '管理端-調整商品類別排序' })
