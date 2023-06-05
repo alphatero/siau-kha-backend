@@ -85,6 +85,28 @@ export class ManageProductController {
     return await this.manageProductService.editProductTag(dto, id, user);
   }
 
+  @ApiOperation({ summary: '管理端-編輯商品類別狀態' })
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 200,
+    schema: {
+      example: basicExample,
+    },
+  })
+  @Patch('tags/status/:t_id')
+  async handleProductTagStatus(
+    @Req() request,
+    @Param('t_id') id: string,
+    @Body() dto: ChangeTagStatusDto,
+  ) {
+    const { user } = request;
+    return await this.manageProductService.handleProductTagStatus(
+      dto,
+      id,
+      user,
+    );
+  }
+
   @ApiOperation({ summary: '管理端-刪除商品類別' })
   @ApiBearerAuth()
   @ApiResponse({
@@ -97,23 +119,6 @@ export class ManageProductController {
   async deleteProductTag(@Req() request, @Param('t_id') t_id: string) {
     const { user } = request;
     return await this.manageProductService.deleteProductTag(t_id, user);
-  }
-
-  @ApiOperation({ summary: '管理端-編輯商品類別狀態' })
-  @ApiBearerAuth()
-  @ApiResponse({
-    status: 200,
-    schema: {
-      example: basicExample,
-    },
-  })
-  @Patch('tags/status')
-  async handleProductTagStatus(
-    @Req() request,
-    @Body() dto: ChangeTagStatusDto,
-  ) {
-    const { user } = request;
-    return await this.manageProductService.handleProductTagStatus(dto, user);
   }
 
   @ApiOperation({ summary: '管理端-調整商品類別排序' })

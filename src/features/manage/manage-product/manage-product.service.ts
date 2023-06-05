@@ -89,6 +89,7 @@ export class ManageProductService {
 
   public async handleProductTagStatus(
     dto: ChangeTagStatusDto,
+    id: string,
     user: IUserPayload,
   ) {
     // 1. [v] 檢查id格式。
@@ -103,10 +104,10 @@ export class ManageProductService {
     // 6. [v] 狀態為啟用：
     //  a. [v] 取得所有的啟動狀態的商品類別數量。
     //  b. [v] 將目標商品類別的狀態更新為啟用以及排序為 a + 1(移到最後一個)。
-    if (!Types.ObjectId.isValid(dto.tag_id)) {
+    if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('id 格式錯誤');
     }
-    const targetTag = await this.findTag(dto.tag_id);
+    const targetTag = await this.findTag(id);
     if (!targetTag) {
       throw new BadRequestException('商品類別不存在');
     }
@@ -126,7 +127,7 @@ export class ManageProductService {
           set_state_user: new Types.ObjectId(user.id),
         };
         await this.productTagsModel.findByIdAndUpdate(
-          dto.tag_id,
+          id,
           {
             $set: data,
           },
@@ -162,7 +163,7 @@ export class ManageProductService {
         set_state_user: new Types.ObjectId(user.id),
       };
       await this.productTagsModel.findByIdAndUpdate(
-        dto.tag_id,
+        id,
         {
           $set: data,
         },

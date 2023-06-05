@@ -12,5 +12,5 @@ export class SortingDto {
       throw new BadRequestException('必須傳入MongoID格式的字串');
     },
   })
-  public list: string[];
+  public readonly list: string[];
 }
