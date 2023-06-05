@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -19,6 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from 'src/common/guards';
 import { basicExample } from 'src/common/utils/apiExample';
+import { ProductTagStatus } from 'src/core/models/product-tags';
 import {
   getTagsExample,
   getProductListExample,
@@ -87,12 +89,12 @@ export class ManageProductController {
     },
   })
   @Delete('/:t_id')
-  async deleteProductTag(@Req() request, @Param('t_id') id: string) {
+  async deleteProductTag(@Req() request, @Param('t_id') t_id: string) {
     const { user } = request;
-    return await this.manageProductService.deleteProductTag(id, user);
+    return await this.manageProductService.deleteProductTag(t_id, user);
   }
 
-  @ApiOperation({ summary: '管理端-停用商品類別' })
+  @ApiOperation({ summary: '管理端-管理商品類別狀態' })
   @ApiBearerAuth()
   @ApiResponse({
     status: 200,
@@ -100,9 +102,18 @@ export class ManageProductController {
       example: basicExample,
     },
   })
-  @Patch('/:t_id')
-  async closeProductTag(@Req() request, @Param('t_id') id: string) {
+  @Patch()
+  async handleProductTagStatus(
+    @Req() request,
+    @Query('tag_id') t_id: string,
+    @Query('action') action: ProductTagStatus,
+  ) {
     const { user } = request;
+    return await this.manageProductService.handleProductTagStatus(
+      t_id,
+      user,
+      action,
+    );
   }
 
   @ApiOperation({ summary: '管理端-新增商品' })

@@ -22,7 +22,7 @@ export class ManageProductService {
   ) {}
 
   public async getProductTags() {
-    const documents = await this.findTags();
+    const documents = await this.findEnableTags();
     // 排除刪除，只回傳啟用的
     const list = documents.map((doc) => {
       const { _id, tag_name, sort_no } = doc.toJSON();
@@ -41,7 +41,7 @@ export class ManageProductService {
     // 3. [v] 檢查是否有重複的商品類別名稱。
     // 4. [v] 取得最大的 sort_no，並 +1。
     // 5. [v] 新增商品類別。
-    const documents = await this.findTags();
+    const documents = await this.findEnableTags();
     const repeat = documents.find((doc) => doc.tag_name === dto.tag_name);
     if (repeat) {
       throw new BadRequestException('商品類別名稱重複');
@@ -82,14 +82,23 @@ export class ManageProductService {
     });
   }
 
-  public async closeProductTag(id: string, user: IUserPayload) {
+  public async handleProductTagStatus(
+    id: string,
+    user: IUserPayload,
+    action: ProductTagStatus,
+  ) {
     // 1. [v] 檢查id格式。
     // 2. [v] 檢查商品類別是否存在。
-    // 3. [v] 檢查商品類別是否已經被停用。
-    // 4. [v] 提取要停用的商品類別的 sort_no。
-    // 5. [v] 透過 session.withTransaction() 來執行交易事務。
-    // 6. [v] 將目標商品類別的狀態改為停用以及sort_no=0。
-    // 7. [v] 將所有 sort_no > 目標商品類別的 sort_no 都 -1。
+    // 3. [v] 檢查預計變更狀態跟商品類別目前狀態是否相同。
+    // 4. [v] 判斷預計變更狀態
+    // 5. [v] 狀態為停用：
+    //  a. [v] 提取要停用的商品類別的 sort_no。
+    //  b. [v] 透過 session.withTransaction() 來執行交易事務。
+    //  c. [v] 將目標商品類別的狀態改為停用以及sort_no=0。
+    //  d. [v] 將所有 sort_no > 目標商品類別的 sort_no 都 -1。
+    // 6. [v] 狀態為啟用：
+    //  a. [v] 取得所有的啟動狀態的商品類別數量。
+    //  b. [v] 將目標商品類別的狀態更新為啟用以及排序為 a + 1(移到最後一個)。
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('id 格式錯誤');
     }
@@ -97,16 +106,54 @@ export class ManageProductService {
     if (!targetTag) {
       throw new BadRequestException('商品類別不存在');
     }
-    if (targetTag.status === ProductTagStatus.DISABLE) {
-      throw new BadRequestException('商品類別已經被停用');
+    if (action === targetTag.status) {
+      throw new BadRequestException(`商品類別已經處於 ${action} 狀態`);
     }
-    const sortNo = targetTag.sort_no;
-    const tagSession = await this.productTagsModel.db.startSession();
-    tagSession.startTransaction();
-    try {
+
+    if (action === ProductTagStatus.DISABLE) {
+      const sortNo = targetTag.sort_no;
+      const tagSession = await this.productTagsModel.db.startSession();
+      tagSession.startTransaction();
+      try {
+        const data = {
+          status: action,
+          sort_no: 0,
+          set_state_time: new Date(),
+          set_state_user: new Types.ObjectId(user.id),
+        };
+        await this.productTagsModel.findByIdAndUpdate(
+          id,
+          {
+            $set: data,
+          },
+          {
+            session: tagSession,
+            new: true,
+          },
+        );
+        await this.productTagsModel.updateMany(
+          { sort_no: { $gt: sortNo } },
+          {
+            $inc: { sort_no: -1 },
+            $set: {
+              set_state_time: new Date(),
+              set_state_user: new Types.ObjectId(user.id),
+            },
+          },
+          { session: tagSession, new: true },
+        );
+        await tagSession.commitTransaction();
+      } catch (error) {
+        await tagSession.abortTransaction();
+        throw error;
+      } finally {
+        tagSession.endSession();
+      }
+    } else {
+      const documents = await this.findEnableTags();
       const data = {
-        status: ProductTagStatus.DISABLE,
-        sort_no: 0,
+        status: action,
+        sort_no: documents[documents.length - 1].sort_no + 1,
         set_state_time: new Date(),
         set_state_user: new Types.ObjectId(user.id),
       };
@@ -116,27 +163,9 @@ export class ManageProductService {
           $set: data,
         },
         {
-          session: tagSession,
           new: true,
         },
       );
-      await this.productTagsModel.updateMany(
-        { sort_no: { $gt: sortNo } },
-        {
-          $inc: { sort_no: -1 },
-          $set: {
-            set_state_time: new Date(),
-            set_state_user: new Types.ObjectId(user.id),
-          },
-        },
-        { session: tagSession, new: true },
-      );
-      await tagSession.commitTransaction();
-    } catch (error) {
-      await tagSession.abortTransaction();
-      throw error;
-    } finally {
-      tagSession.endSession();
     }
   }
 
@@ -410,7 +439,7 @@ export class ManageProductService {
     });
   }
 
-  private async findTags() {
+  private async findEnableTags() {
     return this.productTagsModel
       .find({
         status: { $ne: ProductTagStatus.DISABLE },
