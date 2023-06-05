@@ -21,8 +21,8 @@ import { OrderSocketModule } from './features/order-socket';
 import { OrderDetailModule } from './features/order-detail';
 import { OrderModule } from './features/order';
 import { ReservationModule } from './features/reservation';
-import { ManageActivitiesModule } from './features/manage/manage-activities/manage-activities.module';
 import { CheckOutModule } from './features/check-out';
+import { ManageActivitiesModule } from './features/manage/manage-activities/manage-activities.module';
 
 @Module({
   imports: [
@@ -48,8 +48,8 @@ import { CheckOutModule } from './features/check-out';
     OrderSocketModule,
     OrderDetailModule,
     OrderModule,
-    ManageActivitiesModule,
     CheckOutModule,
+    ManageActivitiesModule,
   ],
   controllers: [],
   providers: [
