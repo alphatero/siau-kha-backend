@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model, ObjectId, Types } from 'mongoose';
 import { FoodItem, FoodItemDocument } from 'src/core/models/food-item';
 import { ProductList, ProductListDocument } from 'src/core/models/product-list';
 import {
@@ -9,7 +9,7 @@ import {
   ProductTagStatus,
 } from 'src/core/models/product-tags';
 import { IUserPayload } from 'src/features/auth';
-import { AddTagDto, AddProductDto } from './dto';
+import { AddTagDto, AddProductDto, SortingDto } from './dto';
 @Injectable()
 export class ManageProductService {
   constructor(
@@ -209,6 +209,68 @@ export class ManageProductService {
       throw error;
     } finally {
       tagSession.endSession();
+    }
+  }
+
+  public async changeProductTagSortNo(idList: SortingDto) {
+    // 1. [v] 檢查是否有重複。
+    // 2. [v] 檢查是否有不存在的商品類別(status === ENABLE)。
+    // 3. [v] 透過 session.withTransaction() 來執行交易事務。
+    // 4. [v] 重新寫入所有商品類別的 sort_no。
+    const duplicateList: string[] = [];
+    const uniqueList = [];
+
+    for (const item of idList.list) {
+      if (duplicateList.includes(item)) {
+        throw new BadRequestException(`id: ${item} 重複`);
+      } else {
+        duplicateList.push(item);
+        uniqueList.push(new Types.ObjectId(item));
+      }
+    }
+
+    const tags = await this.productTagsModel
+      .find({
+        _id: { $in: uniqueList },
+        status: ProductTagStatus.ENABLE,
+      })
+      .select('_id');
+
+    if (tags.length !== uniqueList.length) {
+      const canChangeList = tags.map((doc) => {
+        const { _id } = doc.toJSON();
+        return _id;
+      });
+      throw new BadRequestException(
+        `目標列表中，可正常取得的啟用商品類別為 [${canChangeList.toString()}]，請重新檢查是否輸入正確id、id格式及目標id資料的狀態`,
+      );
+    }
+
+    const tagSortingSession = await this.productTagsModel.db.startSession();
+    tagSortingSession.startTransaction();
+
+    try {
+      for (let index = 0; index < uniqueList.length; index++) {
+        const id = uniqueList[index];
+        await this.productTagsModel.findByIdAndUpdate(
+          id,
+          {
+            $set: {
+              sort_no: index + 1,
+            },
+          },
+          {
+            session: tagSortingSession,
+            new: true,
+          },
+        );
+      }
+      await tagSortingSession.commitTransaction();
+    } catch (error) {
+      await tagSortingSession.abortTransaction();
+      throw error;
+    } finally {
+      tagSortingSession.endSession();
     }
   }
 

@@ -26,7 +26,7 @@ import {
   getProductListExample,
   getProductExample,
 } from './apiExample';
-import { AddTagDto, AddProductDto } from './dto';
+import { AddTagDto, AddProductDto, SortingDto } from './dto';
 import { ManageProductService } from './manage-product.service';
 
 @ApiTags('ManageProduct')
@@ -114,6 +114,20 @@ export class ManageProductController {
       user,
       action,
     );
+  }
+
+  @ApiOperation({ summary: '管理端-調整商品類別排序' })
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 200,
+    schema: {
+      example: basicExample,
+    },
+  })
+  @Patch('tags/sorting')
+  async changeProductTagSortNo(@Req() request, @Body() dto: SortingDto) {
+    const { user } = request;
+    return await this.manageProductService.changeProductTagSortNo(dto);
   }
 
   @ApiOperation({ summary: '管理端-新增商品' })
