@@ -23,6 +23,7 @@ import { OrderModule } from './features/order';
 import { ReservationModule } from './features/reservation';
 import { ManageProductModule } from './features/manage/manage-product';
 import { FoodItemsModule } from './features/manage/food-items';
+import { CheckOutModule } from './features/check-out';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { FoodItemsModule } from './features/manage/food-items';
     OrderModule,
     ManageProductModule,
     FoodItemsModule,
+    CheckOutModule,
   ],
   providers: [
     // * DTO 驗證

@@ -22,6 +22,7 @@ import { CreateOrderDetailDto } from './dto/create-order-detail.dto';
 
 import { getOrderDetailExample } from './apiExample';
 import { basicExample } from 'src/common/utils/apiExample';
+import { ProductDetailStatus } from 'src/core/models/product-detail';
 
 // B-10 送出餐點紀錄
 @ApiTags('OrderDetail')
@@ -61,7 +62,12 @@ export class OrderDetailController {
     @Param('detail_id') detailId: string,
     @Param('p_id') pId: string,
   ) {
-    await this.orderDetailService.patchOrderDetail(orderId, detailId, pId);
+    await this.orderDetailService.patchOrderDetail(
+      orderId,
+      detailId,
+      pId,
+      ProductDetailStatus.SUCCESS,
+    );
   }
 
   // B-7 單一餐點退點
