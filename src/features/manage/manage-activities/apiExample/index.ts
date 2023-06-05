@@ -15,7 +15,7 @@ export const getActivitiesExample = {
         end_time: '2023-06-30T11:22:22.000Z',
         act_products_list: [
           {
-            _id: '6460e424ced82fe876a13e38',
+            id: '6460e424ced82fe876a13e38',
             product_name: '經典霜降牛套餐',
             product_type: '1',
             product_price: 1880,
@@ -35,7 +35,7 @@ export const getActivitiesExample = {
         end_time: '2023-06-30T11:22:22.000Z',
         act_products_list: [
           {
-            _id: '6460e424ced82fe876a13e38',
+            id: '6460e424ced82fe876a13e38',
             product_name: '經典霜降牛套餐',
             product_type: '1',
             product_price: 1880,
