@@ -1,6 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty } from 'class-validator';
 import { ProductTagStatus } from 'src/core/models/product-tags';
 
 export class ChangeTagStatusDto {
