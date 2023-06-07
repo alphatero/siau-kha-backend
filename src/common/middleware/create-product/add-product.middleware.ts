@@ -176,10 +176,10 @@ const checkSubFieldsExist = (
       } else {
         if (
           !Number.isInteger(subFields.consumption_quantity) ||
-          subFields.consumption_quantity < 0
+          subFields.consumption_quantity !== 0
         ) {
           throw new BadRequestException(
-            `「${noteTitle}」註記內的 ${fieldName} 內的 consumption_quantity 欄位必須為正整數`,
+            `「${noteTitle}」註記內的 ${fieldName} 內的 consumption_quantity 欄位必須為整數且不等於0`,
           );
         }
       }
