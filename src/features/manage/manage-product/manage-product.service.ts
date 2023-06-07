@@ -345,7 +345,7 @@ export class ManageProductService {
         units: item.units,
       };
     });
-    const list = documents.map((doc: any) => {
+    const list = documents.map((doc: ProductListDocument) => {
       const {
         _id,
         product_name,
