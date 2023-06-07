@@ -163,8 +163,7 @@ export class ManageProductController {
     },
   })
   @Get()
-  async getProducts(@Param('p_id') p_id: string) {
-    console.log(p_id);
+  async getProducts() {
     return await this.manageProductService.getProducts();
   }
 
