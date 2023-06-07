@@ -7,7 +7,6 @@ import {
   Patch,
   Post,
   Put,
-  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -20,7 +19,6 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from 'src/common/guards';
 import { basicExample } from 'src/common/utils/apiExample';
-import { ProductTagStatus } from 'src/core/models/product-tags';
 import {
   getTagsExample,
   getProductListExample,
@@ -31,6 +29,7 @@ import {
   AddProductDto,
   SortingDto,
   ChangeTagStatusDto,
+  UpdateProductDto,
 } from './dto';
 import { ManageProductService } from './manage-product.service';
 
@@ -194,13 +193,13 @@ export class ManageProductController {
     },
   })
   @Put('/:p_id')
-  async editProduct(
+  async updateProduct(
     @Req() request,
     @Param('p_id') p_id: string,
-    @Body() dto: AddProductDto,
+    @Body() dto: UpdateProductDto,
   ) {
     const { user, middle_data } = request;
-    return await this.manageProductService.editProduct(
+    return await this.manageProductService.updateProduct(
       dto,
       user,
       middle_data,

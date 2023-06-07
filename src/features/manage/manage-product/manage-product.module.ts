@@ -1,6 +1,9 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AddProductMiddleware } from 'src/common/middleware';
+import {
+  AddProductMiddleware,
+  UpdateProductMiddleware,
+} from 'src/common/middleware';
 import { FoodItem, FoodItemSchema } from 'src/core/models/food-item';
 import { ProductList, ProductListSchema } from 'src/core/models/product-list';
 import { ProductTags, ProductTagsSchema } from 'src/core/models/product-tags';
@@ -31,15 +34,16 @@ import { ManageProductService } from './manage-product.service';
 })
 export class ManageProductModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AddProductMiddleware).forRoutes(
-      {
-        path: 'manage/product/add-product',
+    consumer
+      .apply(AddProductMiddleware)
+      .forRoutes({
+        path: 'manage/product',
         method: RequestMethod.POST,
-      },
-      {
-        path: 'manage/product/edit-product/:p_id',
+      })
+      .apply(UpdateProductMiddleware)
+      .forRoutes({
+        path: 'manage/product/:p_id',
         method: RequestMethod.PUT,
-      },
-    );
+      });
   }
 }

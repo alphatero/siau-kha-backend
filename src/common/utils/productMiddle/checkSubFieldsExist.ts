@@ -1,86 +1,19 @@
-import {
-  BadRequestException,
-  Injectable,
-  NestMiddleware,
-} from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { Types } from 'mongoose';
-
-@Injectable()
-export class AddProductMiddleware implements NestMiddleware {
-  use(req: any, _: any, next: () => void) {
-    // 1. [] 檢查 product_tags 是否為 ObjectId
-    const reqBody = req.body;
-
-    if (reqBody.product_tags) {
-      if (!Types.ObjectId.isValid(reqBody.product_tags)) {
-        throw new BadRequestException('product_tags 欄位必須為 ObjectId');
-      }
-    }
-    const food_consumption_list_obj = {};
-    if (reqBody.product_note) {
-      if (!Array.isArray(reqBody.product_note)) {
-        throw new BadRequestException('product_note 必須為陣列');
-      }
-      const note_title_obj = {};
-      if (reqBody.product_note.length > 0) {
-        reqBody.product_note.forEach((note) => {
-          checkSubFieldsExist('product_note', note, food_consumption_list_obj);
-          checkNoteTitleRepeat(note_title_obj, note.note_title);
-        });
-      }
-    }
-
-    if (!Array.isArray(reqBody.food_consumption_list)) {
-      throw new BadRequestException('food_consumption_list 必須為陣列');
-    }
-
-    if (reqBody.food_consumption_list.length > 0) {
-      reqBody.food_consumption_list.forEach((food) => {
-        checkSubFieldsExist(
-          'food_consumption_list',
-          food,
-          food_consumption_list_obj,
-        );
-      });
-    }
-    // 把 food_consumption_list 裡用到的 food_item_id 組成轉成 ObjectId 的結果，
-    // 傳遞到 controller 給 Service，讓 Service 在建立資料時可以直接用，不用再跑迴圈轉換。
-    const product_note = [...reqBody.product_note];
-    const food_consumption_list = [...reqBody.food_consumption_list];
-    req.middle_data = {
-      food_consumption_list_obj,
-      product_note,
-      food_consumption_list,
-    };
-
-    next();
-  }
-}
-
-/**
- * 檢查註記名稱是否重複
- * @param note_title_obj
- * @param note_title
- */
-const checkNoteTitleRepeat = (note_title_obj, note_title) => {
-  if (note_title_obj[note_title]) {
-    throw new BadRequestException(`註記內，${note_title} 註記名稱重複`);
-  } else {
-    note_title_obj[note_title] = true;
-  }
-};
 
 /**
  * 檢查子欄位是否存在
  * @param fieldName
  * @param subFields
+ * @param food_consumption_list_obj
+ * @param noteTitle
  */
-const checkSubFieldsExist = (
+export function checkSubFieldsExist(
   fieldName,
   subFields,
   food_consumption_list_obj,
   noteTitle?,
-) => {
+) {
   switch (fieldName) {
     case 'product_note':
       // 檢查欄位：note_title、use_money、is_food_consumption、food_consumption_list
@@ -176,10 +109,10 @@ const checkSubFieldsExist = (
       } else {
         if (
           !Number.isInteger(subFields.consumption_quantity) ||
-          subFields.consumption_quantity !== 0
+          subFields.consumption_quantity === 0
         ) {
           throw new BadRequestException(
-            `「${noteTitle}」註記內的 ${fieldName} 內的 consumption_quantity 欄位必須為整數且不等於0`,
+            `${fieldName} 內的 consumption_quantity 欄位必須為整數且不等於0`,
           );
         }
       }
@@ -187,4 +120,4 @@ const checkSubFieldsExist = (
     default:
       break;
   }
-};
+}

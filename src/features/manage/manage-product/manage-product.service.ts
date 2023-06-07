@@ -14,6 +14,7 @@ import {
   AddProductDto,
   SortingDto,
   ChangeTagStatusDto,
+  UpdateProductDto,
 } from './dto';
 @Injectable()
 export class ManageProductService {
@@ -435,8 +436,8 @@ export class ManageProductService {
     };
   }
 
-  public async editProduct(
-    dto: AddProductDto,
+  public async updateProduct(
+    dto: UpdateProductDto,
     user: IUserPayload,
     middle_data,
     p_id: string,
@@ -446,15 +447,22 @@ export class ManageProductService {
     // 3. [v] 取得所有食材清單，如果只有一種所耗食材，則直接問資料庫。(其實不太確定要一次取回來比對，還是針對每項都去資料庫確認，這兩種方式哪一個比較好)
     // 4. [v] 檢查所耗食材是否存存在於食材清單。
     // 5. [v] 組合資料，並更新整筆商品。
+
+    const hasProductTag = dto.hasOwnProperty('product_tags');
+    const hasProductNote = dto.hasOwnProperty('product_note');
+    const hasFoodConsumptionList = dto.hasOwnProperty('food_consumption_list');
     const productId = new Types.ObjectId(p_id);
     const targetProduct = await this.productListModel.findById(productId);
 
     if (!targetProduct) {
       throw new BadRequestException('目標商品不存在');
     }
-    const tagRes = await this.productTagsModel.findById(dto.product_tags);
-    if (!tagRes) {
-      throw new BadRequestException('商品類別不存在');
+
+    if (hasProductTag) {
+      const tagRes = await this.productTagsModel.findById(dto.product_tags);
+      if (!tagRes) {
+        throw new BadRequestException('商品類別不存在');
+      }
     }
 
     const foodLength = Object.keys(
@@ -482,14 +490,24 @@ export class ManageProductService {
       }
     }
 
-    const updatedData = {
+    const updatedData: any = {
       ...dto,
-      product_tags: new Types.ObjectId(dto.product_tags),
-      product_note: [...middle_data.product_note],
-      food_consumption_list: [...middle_data.food_consumption_list],
-      is_delete: false,
       set_state_user: new Types.ObjectId(user.id),
     };
+
+    if (hasProductTag) {
+      updatedData.product_tags = new Types.ObjectId(dto.product_tags);
+    }
+
+    if (hasProductNote) {
+      updatedData.product_note = [...middle_data.product_note];
+    }
+
+    if (hasFoodConsumptionList) {
+      updatedData.food_consumption_list = [
+        ...middle_data.food_consumption_list,
+      ];
+    }
 
     await this.productListModel.findByIdAndUpdate(productId, updatedData);
   }
