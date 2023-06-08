@@ -353,6 +353,7 @@ export class ManageProductService {
         product_type,
         product_tags,
         product_image,
+        product_price,
         product_note,
         food_consumption_list,
         is_delete,
@@ -376,6 +377,7 @@ export class ManageProductService {
         product_type,
         product_tags,
         product_image,
+        product_price,
         product_note,
         food_consumption_list: finalFoodList,
         is_delete,
@@ -409,6 +411,7 @@ export class ManageProductService {
       product_type,
       product_tags,
       product_image,
+      product_price,
       product_note,
       food_consumption_list,
     } = document.toJSON();
@@ -431,6 +434,7 @@ export class ManageProductService {
       product_type,
       product_tags,
       product_image,
+      product_price,
       product_note,
       food_consumption_list: finalFoodList,
     };

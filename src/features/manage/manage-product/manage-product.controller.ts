@@ -150,11 +150,6 @@ export class ManageProductController {
 
   @ApiOperation({ summary: '管理端-取得商品' })
   @ApiBearerAuth()
-  @ApiParam({
-    name: 'p_id',
-    description: '商品id',
-    required: false,
-  })
   @ApiResponse({
     status: 200,
     schema: {
