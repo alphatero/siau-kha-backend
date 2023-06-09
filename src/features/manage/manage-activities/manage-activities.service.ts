@@ -44,8 +44,10 @@ export class ManageActivitiesService {
         end_time: activity.end_time,
         act_products_list: activity.act_products_list.map(
           (product: ProductListDocument) => ({
-            ...product,
             id: product._id,
+            product_name: product.product_name,
+            product_type: product.product_type,
+            product_price: product.product_price,
           }),
         ),
         status: activity.status,
