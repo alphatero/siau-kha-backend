@@ -22,6 +22,7 @@ import { OrderDetailModule } from './features/order-detail';
 import { OrderModule } from './features/order';
 import { ReservationModule } from './features/reservation';
 import { CheckOutModule } from './features/check-out';
+import { ManageActivitiesModule } from './features/manage/manage-activities/manage-activities.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { CheckOutModule } from './features/check-out';
     OrderDetailModule,
     OrderModule,
     CheckOutModule,
+    ManageActivitiesModule,
   ],
   controllers: [],
   providers: [
