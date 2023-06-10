@@ -58,7 +58,7 @@ export class Activities {
     type: [Types.ObjectId],
     ref: 'ProductList',
   })
-  act_products_list: ProductList;
+  act_products_list: ProductList[];
 
   @Prop()
   create_time: Date;

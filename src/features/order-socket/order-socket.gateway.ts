@@ -10,6 +10,7 @@ import { Server, Socket } from 'socket.io';
 
 import { TableDataDto } from './dto/table-data.dto';
 import { WSValidationPipe } from '../../common/pipes';
+import { getCurrentDateTime } from '../../common/utils/time';
 import { WebSocketExceptionFilter } from 'src/common/filters/websocket/ws-exception.filter';
 import { corsOrigin, GATEWAY_NAMESPACE, SUBSCRIBE } from 'src/core/gateways';
 import { OrderDetailService } from 'src/features/order-detail';
@@ -56,6 +57,7 @@ export class OrderSocketGateway implements OnGatewayConnection {
     await this.orderDetailService.orderFlow(orderDetailDto, body.order_id);
     this.server.emit('onOrder', {
       ...body,
+      order_time: getCurrentDateTime(),
     });
   }
 
