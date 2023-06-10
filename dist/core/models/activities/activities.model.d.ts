@@ -34,7 +34,7 @@ export declare class Activities {
     is_period: boolean;
     start_time: Date;
     end_time: Date;
-    act_products_list: ProductList;
+    act_products_list: ProductList[];
     create_time: Date;
     status: boolean;
     is_delete: boolean;

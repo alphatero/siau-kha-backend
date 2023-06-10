@@ -25,6 +25,7 @@ const order_detail_1 = require("./features/order-detail");
 const order_1 = require("./features/order");
 const reservation_1 = require("./features/reservation");
 const check_out_1 = require("./features/check-out");
+const manage_activities_module_1 = require("./features/manage/manage-activities/manage-activities.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -52,6 +53,7 @@ AppModule = __decorate([
             order_detail_1.OrderDetailModule,
             order_1.OrderModule,
             check_out_1.CheckOutModule,
+            manage_activities_module_1.ManageActivitiesModule,
         ],
         controllers: [],
         providers: [

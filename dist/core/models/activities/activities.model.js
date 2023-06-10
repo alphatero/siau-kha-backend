@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActivitiesSchema = exports.Activities = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const product_list_1 = require("../product-list");
 let Activities = class Activities {
 };
 __decorate([
@@ -64,7 +63,7 @@ __decorate([
         type: [mongoose_2.Types.ObjectId],
         ref: 'ProductList',
     }),
-    __metadata("design:type", product_list_1.ProductList)
+    __metadata("design:type", Array)
 ], Activities.prototype, "act_products_list", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),

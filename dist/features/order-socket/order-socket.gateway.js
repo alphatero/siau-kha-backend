@@ -18,6 +18,7 @@ const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
 const table_data_dto_1 = require("./dto/table-data.dto");
 const pipes_1 = require("../../common/pipes");
+const time_1 = require("../../common/utils/time");
 const ws_exception_filter_1 = require("../../common/filters/websocket/ws-exception.filter");
 const gateways_1 = require("../../core/gateways");
 const order_detail_1 = require("../order-detail");
@@ -41,7 +42,7 @@ let OrderSocketGateway = class OrderSocketGateway {
             product_detail,
         };
         await this.orderDetailService.orderFlow(orderDetailDto, body.order_id);
-        this.server.emit('onOrder', Object.assign({}, body));
+        this.server.emit('onOrder', Object.assign(Object.assign({}, body), { order_time: (0, time_1.getCurrentDateTime)() }));
     }
     async onUpdateProductDetail(body) {
         await this.orderDetailService.patchOrderDetail(body.order_id, body.detail_id, body.p_id, product_detail_1.ProductDetailStatus.FINISH);
