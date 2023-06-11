@@ -28,13 +28,13 @@ export class ManageProductService {
   ) {}
 
   public async getProductTags() {
-    const documents = await this.findEnableTags();
-    // 排除刪除，只回傳啟用的
+    const documents = await this.findTags();
     const list = documents.map((doc) => {
-      const { _id, tag_name, sort_no } = doc.toJSON();
+      const { _id, tag_name, status, sort_no } = doc.toJSON();
       return {
         id: _id,
         tag_name,
+        status,
         sort_no,
       };
     });
@@ -47,7 +47,7 @@ export class ManageProductService {
     // 3. [v] 檢查是否有重複的商品類別名稱。
     // 4. [v] 取得最大的 sort_no，並 +1。
     // 5. [v] 新增商品類別。
-    const documents = await this.findEnableTags();
+    const documents = await this.findTags();
     const repeat = documents.find((doc) => doc.tag_name === dto.tag_name);
     if (repeat) {
       throw new BadRequestException('商品類別名稱重複');
@@ -532,9 +532,13 @@ export class ManageProductService {
   private async findEnableTags() {
     return this.productTagsModel
       .find({
-        status: { $ne: ProductTagStatus.DISABLE },
+        status: ProductTagStatus.ENABLE,
       })
       .sort({ sort_no: 1 });
+  }
+
+  private async findTags() {
+    return this.productTagsModel.find().sort({ sort_no: 1 });
   }
 
   private async findTag(id: string) {
