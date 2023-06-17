@@ -13,6 +13,7 @@ import { OrderDetail, OrderDetailDocument } from 'src/core/models/order-detail';
 import { ProductList, ProductListDocument } from 'src/core/models/product-list';
 import { User } from 'src/core/models/user';
 import { validateObjectIds } from 'src/common/utils/validate';
+import { formatDateTime } from 'src/common/utils/time';
 
 @Injectable()
 export class OrderDetailService {
@@ -244,6 +245,7 @@ export class OrderDetailService {
               product_note: product.product_note,
               status: product.status,
               is_delete: product.is_delete,
+              order_time: formatDateTime(detail.create_time),
             }),
           ),
           create_time: detail.create_time,
