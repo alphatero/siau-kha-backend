@@ -19,6 +19,7 @@ import { JwtGuard } from 'src/common/guards';
 import { TableService } from './table.service';
 import { CreateTableDto } from './dto/create-table.dto';
 import { UpdateTableDto } from './dto/update-table.dto';
+import { formatDateTime } from 'src/common/utils/time';
 
 @ApiTags('Table')
 @UseGuards(JwtGuard)
@@ -97,6 +98,7 @@ export class TableController {
             product_name: p.product_name,
             status: p.status,
             is_delete: p.is_delete,
+            order_time: formatDateTime(order_detail.create_time),
           };
         });
       });
