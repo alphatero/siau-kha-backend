@@ -54,6 +54,7 @@ export class TableController {
                     product_name: 'A5 日本和牛套餐',
                     status: 'IN_PROGRESS',
                     is_delete: false,
+                    order_time: '2023-05-28 02:41',
                   },
                   {
                     order_detail_id: '645bded09373ce38a31ef49e',
@@ -61,6 +62,7 @@ export class TableController {
                     product_name: '豪華全牛套餐',
                     status: 'IN_PROGRESS',
                     is_delete: false,
+                    order_time: '2023-05-28 02:41',
                   },
                 ],
                 [
@@ -70,6 +72,7 @@ export class TableController {
                     product_name: '可爾必思',
                     status: 'IN_PROGRESS',
                     is_delete: false,
+                    order_time: '2023-05-28 02:41',
                   },
                 ],
               ],
