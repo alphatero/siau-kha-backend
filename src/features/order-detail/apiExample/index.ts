@@ -14,6 +14,7 @@ export const getOrderDetailExample = {
             product_note: ['去糖'],
             product_final_price: 1760,
             status: 'IN_PROGRESS',
+            order_time: '2023-05-28 02:41',
           },
         ],
         create_time: '2023-05-10T18:13:36.536Z',
