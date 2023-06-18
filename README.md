@@ -151,6 +151,14 @@ FIREBASE_AUTH_PROVIDER_X509_CERT_URL=
 FIREBASE_CLIENT_X509_CERT_URL=
 ...
 ```
+## Swagger-ui 使用說明
+### 啟動專案後，可以在專案路徑後加上`/swagger-ui`，即可使用swagger進行測試
+![image](https://github.com/alphatero/siau-kha-backend/assets/59496575/cb655bd9-cf74-425f-8ab6-765046842b27)
+
+### 可以透過Authorize按鈕輸入jwt token 使用登入後的操作
+![image](https://github.com/alphatero/siau-kha-backend/assets/59496575/038ee7c9-b7f0-4cdf-96f2-491b50b581ea)
+
+--- 
 ## 資料夾說明
 
 | 資料夾/檔案 | 說明 |
