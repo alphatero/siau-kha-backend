@@ -17,6 +17,12 @@ export const getOrderDetailExample = {
             order_time: '2023-05-28 02:41',
           },
         ],
+        activities: {
+          activities_name: '',
+          discount_type: '',
+          charge_type: '',
+          activity_charge: '88',
+        },
         create_time: '2023-05-10T18:13:36.536Z',
       },
     ],
