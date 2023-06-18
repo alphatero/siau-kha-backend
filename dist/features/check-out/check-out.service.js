@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const order_1 = require("../../core/models/order");
-const product_detail_1 = require("../../core/models/product-detail");
 let CheckOutService = class CheckOutService {
     constructor(orderModel) {
         this.orderModel = orderModel;
@@ -31,6 +30,9 @@ let CheckOutService = class CheckOutService {
             throw new common_1.BadRequestException('無此訂單');
         }
         if (orderRes.status === order_1.OrderStatus.SUCCESS) {
+            throw new common_1.BadRequestException('此桌訂單已清理完成,並釋出桌位');
+        }
+        if (orderRes.is_pay) {
             throw new common_1.BadRequestException('此訂單已結帳');
         }
         if (!Number.isInteger(final_price) || final_price < 0) {
@@ -39,7 +41,7 @@ let CheckOutService = class CheckOutService {
         if (final_price !== orderRes.final_total) {
             throw new common_1.BadRequestException(`實收金額與應收金額不符；實收金額:${final_price}，應收金額:${orderRes.final_total}`);
         }
-        await this.orderModel.findByIdAndUpdate(id, { status: order_1.OrderStatus.SUCCESS }, { new: true });
+        await this.orderModel.findByIdAndUpdate(id, { is_pay: true }, { new: true });
     }
     async getCheckOutInfo(id) {
         if (!mongoose_2.Types.ObjectId.isValid(id)) {
@@ -50,6 +52,9 @@ let CheckOutService = class CheckOutService {
             throw new common_1.BadRequestException('查無此訂單');
         }
         if (orderRes.status !== order_1.OrderStatus.IN_PROGRESS) {
+            throw new common_1.BadRequestException('此桌訂單已清理完成,並釋出桌位');
+        }
+        if (orderRes.is_pay) {
             throw new common_1.BadRequestException('此訂單已結帳');
         }
         if (orderRes.order_detail.length === 0) {
@@ -60,8 +65,7 @@ let CheckOutService = class CheckOutService {
         let finalTotal = 0;
         orderRes.order_detail.forEach((detail) => {
             detail.product_detail.forEach((product) => {
-                if (product.status === product_detail_1.ProductDetailStatus.SUCCESS &&
-                    product.is_delete === false) {
+                if (product.is_delete === false) {
                     if (productListObj[product.product_id]) {
                         productListObj[product.product_id].product_quantity =
                             productListObj[product.product_id].product_quantity +

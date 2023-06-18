@@ -22,6 +22,7 @@ const order_1 = require("../../core/models/order");
 const order_detail_1 = require("../../core/models/order-detail");
 const product_list_1 = require("../../core/models/product-list");
 const validate_1 = require("../../common/utils/validate");
+const time_1 = require("../../common/utils/time");
 let OrderDetailService = class OrderDetailService {
     constructor(orderModel, orderDetailModel, productDetailModel, productListModel) {
         this.orderModel = orderModel;
@@ -159,10 +160,11 @@ let OrderDetailService = class OrderDetailService {
                         product_note: product.product_note,
                         status: product.status,
                         is_delete: product.is_delete,
+                        order_time: (0, time_1.formatDateTime)(detail.create_time),
                     })),
                     create_time: detail.create_time,
                 })),
-                total: order.final_total,
+                total: order.total,
             };
             return result;
         }
@@ -264,10 +266,6 @@ let OrderDetailService = class OrderDetailService {
         if (actionType === product_detail_1.ProductDetailStatus.SUCCESS) {
             if (product_detail[productDetailIsExist].is_delete) {
                 throw new common_1.BadRequestException('此單品已經退點，不可上菜');
-            }
-            if (product_detail[productDetailIsExist].status ===
-                product_detail_1.ProductDetailStatus.IN_PROGRESS) {
-                throw new common_1.BadRequestException('此單品尚未完成，不可上菜');
             }
             if (product_detail[productDetailIsExist].status ===
                 product_detail_1.ProductDetailStatus.SUCCESS) {

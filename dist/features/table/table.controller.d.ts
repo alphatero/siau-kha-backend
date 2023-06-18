@@ -43,8 +43,11 @@ export declare class TableController {
                 order_detail_id: any;
                 id: any;
                 product_name: string;
+                product_quantity: number;
+                product_note: string[];
                 status: import("../../core/models/product-detail").ProductDetailStatus;
                 is_delete: boolean;
+                order_time: string;
             }[][];
         }[];
     }>;

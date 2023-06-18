@@ -12,6 +12,7 @@ export declare const getOrderDetailExample: {
                 product_note: string[];
                 product_final_price: number;
                 status: string;
+                order_time: string;
             }[];
             create_time: string;
         }[];

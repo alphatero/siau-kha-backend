@@ -18,6 +18,7 @@ export declare class OrderDetailController {
                 product_note: string[];
                 status: ProductDetailStatus;
                 is_delete: boolean;
+                order_time: string;
             }[];
             create_time: Date;
         }[];
