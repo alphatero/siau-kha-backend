@@ -138,7 +138,6 @@ export class CheckOutService {
         };
       },
     );
-
     // 如果有折扣，則計算折扣後的金額
     if (orderRes.activities) {
       finalTotal = this.calActivityDiscount(
