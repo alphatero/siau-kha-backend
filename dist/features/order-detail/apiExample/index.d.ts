@@ -14,6 +14,12 @@ export declare const getOrderDetailExample: {
                 status: string;
                 order_time: string;
             }[];
+            activities: {
+                activities_name: string;
+                discount_type: string;
+                charge_type: string;
+                activity_charge: string;
+            };
             create_time: string;
         }[];
         total: number;

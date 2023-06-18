@@ -94,10 +94,22 @@ export declare class OrderDetailService {
                 is_delete: boolean;
                 order_time: string;
             }[];
+            activities: {
+                activities_name: string;
+                discount_type: string;
+                charge_type: string;
+                activity_charge: number;
+            } | {
+                activities_name?: undefined;
+                discount_type?: undefined;
+                charge_type?: undefined;
+                activity_charge?: undefined;
+            };
             create_time: Date;
         }[];
         total: number;
     }>;
     deleteOrderDetail(orderId: string, detailId: string, pId: string): Promise<void>;
     patchOrderDetail(orderId: string, detailId: string, pId: string, actionType: ProductDetailStatus): Promise<{}>;
+    private calActivityDiscount;
 }

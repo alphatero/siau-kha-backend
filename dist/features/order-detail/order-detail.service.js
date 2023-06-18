@@ -149,6 +149,41 @@ let OrderDetailService = class OrderDetailService {
         (0, validate_1.validateObjectIds)({ oredr_id: id });
         try {
             const order = await this.orderModel.findById(id).exec();
+            const productListObj = {};
+            let validTotal = 0;
+            let finalTotal = 0;
+            order.order_detail.forEach((detail) => {
+                detail.product_detail.forEach((product) => {
+                    if (product.is_delete === false) {
+                        if (productListObj[product.product_id]) {
+                            productListObj[product.product_id].product_quantity =
+                                productListObj[product.product_id].product_quantity +
+                                    product.product_quantity;
+                            productListObj[product.product_id].product_price =
+                                product.product_price;
+                        }
+                        else {
+                            productListObj[product.product_id] = {
+                                product_name: product.product_name,
+                                product_price: product.product_price,
+                                product_quantity: product.product_quantity,
+                            };
+                        }
+                    }
+                });
+            });
+            Object.values(productListObj).map((product) => {
+                const { product_price, product_quantity } = product;
+                const product_final_price = product_price * product_quantity;
+                validTotal = validTotal + product_final_price;
+            });
+            if (order.activities) {
+                finalTotal = this.calActivityDiscount(productListObj, validTotal, order.activities);
+            }
+            else {
+                finalTotal = validTotal;
+            }
+            const activity_charge = finalTotal - validTotal;
             const result = {
                 order_detail: order.order_detail.map((detail) => ({
                     id: detail._id,
@@ -162,6 +197,14 @@ let OrderDetailService = class OrderDetailService {
                         is_delete: product.is_delete,
                         order_time: (0, time_1.formatDateTime)(detail.create_time),
                     })),
+                    activities: order.activities
+                        ? {
+                            activities_name: order.activities.activities_name,
+                            discount_type: order.activities.discount_type,
+                            charge_type: order.activities.charge_type,
+                            activity_charge: activity_charge,
+                        }
+                        : {},
                     create_time: detail.create_time,
                 })),
                 total: order.total,
@@ -291,6 +334,39 @@ let OrderDetailService = class OrderDetailService {
             },
         }, { new: true });
         return {};
+    }
+    calActivityDiscount(validObj, validTotal, activities) {
+        let finalTotal = 0;
+        switch (activities.discount_type) {
+            case '0':
+                if (activities.charge_type === '0') {
+                    finalTotal = validTotal * ((100 - activities.discount) / 100);
+                }
+                else {
+                    finalTotal = validTotal - activities.discount;
+                }
+                break;
+            case '1':
+                let needMinus = 0;
+                activities.act_products_list.forEach((act_product) => {
+                    if (validObj[act_product]) {
+                        if (activities.charge_type === '0') {
+                            needMinus =
+                                needMinus +
+                                    validObj[act_product].product_price *
+                                        (activities.discount / 100);
+                        }
+                        else {
+                            needMinus = needMinus + activities.discount;
+                        }
+                    }
+                });
+                finalTotal = validTotal - needMinus;
+                break;
+            default:
+                break;
+        }
+        return finalTotal;
     }
 };
 OrderDetailService = __decorate([

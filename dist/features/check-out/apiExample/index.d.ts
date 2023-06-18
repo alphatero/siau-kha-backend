@@ -6,6 +6,7 @@ export declare const getCheckOutInfoExample: {
             customer_num: number;
             total: string;
             final_total: string;
+            service_charge: string;
             create_time: string;
             order_detail: {
                 product_name: string;
@@ -17,6 +18,7 @@ export declare const getCheckOutInfoExample: {
                 activities_name: string;
                 discount_type: string;
                 charge_type: string;
+                activity_charge: string;
             };
         }[];
     };

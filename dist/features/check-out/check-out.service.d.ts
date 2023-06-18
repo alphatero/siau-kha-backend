@@ -9,6 +9,7 @@ export declare class CheckOutService {
             customer_num: number;
             total: number;
             final_total: number;
+            service_charge: number;
             order_detail: {
                 product_name: any;
                 product_price: any;
@@ -19,10 +20,12 @@ export declare class CheckOutService {
                 activities_name: string;
                 discount_type: string;
                 charge_type: string;
+                activity_charge: number;
             } | {
                 activities_name?: undefined;
                 discount_type?: undefined;
                 charge_type?: undefined;
+                activity_charge?: undefined;
             };
         };
     }>;
