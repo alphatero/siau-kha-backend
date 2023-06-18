@@ -44,7 +44,7 @@ export declare class ManageActivitiesService {
             act_products_list: {
                 id: any;
                 product_name: string;
-                product_type: string;
+                product_type: number;
                 product_price: number;
             }[];
             status: boolean;

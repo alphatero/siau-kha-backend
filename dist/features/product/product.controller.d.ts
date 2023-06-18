@@ -42,7 +42,7 @@ export declare class ProductController {
         product_list: {
             id: any;
             product_name: string;
-            product_type: string;
+            product_type: number;
             product_tags: import("mongoose").FlattenMaps<import("../../core/models/product-tags").ProductTags>;
             product_image: string;
             product_price: number;
@@ -53,7 +53,7 @@ export declare class ProductController {
         product: {
             id: any;
             product_name: string;
-            product_type: string;
+            product_type: number;
             product_tags: import("../../core/models/product-tags").ProductTags;
             product_price: number;
             product_note: import("../../core/models/product-list/product-list.type").ProductNote[];

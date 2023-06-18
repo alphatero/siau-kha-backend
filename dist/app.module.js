@@ -24,6 +24,8 @@ const order_socket_1 = require("./features/order-socket");
 const order_detail_1 = require("./features/order-detail");
 const order_1 = require("./features/order");
 const reservation_1 = require("./features/reservation");
+const manage_product_1 = require("./features/manage/manage-product");
+const food_items_1 = require("./features/manage/food-items");
 const check_out_1 = require("./features/check-out");
 const manage_activities_module_1 = require("./features/manage/manage-activities/manage-activities.module");
 let AppModule = class AppModule {
@@ -52,10 +54,11 @@ AppModule = __decorate([
             order_socket_1.OrderSocketModule,
             order_detail_1.OrderDetailModule,
             order_1.OrderModule,
+            manage_product_1.ManageProductModule,
+            food_items_1.FoodItemsModule,
             check_out_1.CheckOutModule,
             manage_activities_module_1.ManageActivitiesModule,
         ],
-        controllers: [],
         providers: [
             providers_1.GLOBAL_VALIDATION_PIPE,
             providers_1.GLOBAL_RESPONSE_INTERCEPTOR,

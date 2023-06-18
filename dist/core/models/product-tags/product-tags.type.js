@@ -5,6 +5,5 @@ var ProductTagStatus;
 (function (ProductTagStatus) {
     ProductTagStatus["ENABLE"] = "ENABLE";
     ProductTagStatus["DISABLE"] = "DISABLE";
-    ProductTagStatus["DELETE"] = "DELETE";
 })(ProductTagStatus = exports.ProductTagStatus || (exports.ProductTagStatus = {}));
 //# sourceMappingURL=product-tags.type.js.map
