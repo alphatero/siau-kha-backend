@@ -22,7 +22,7 @@ export class CheckOutService {
     }
 
     if (orderRes.status === OrderStatus.SUCCESS) {
-      throw new BadRequestException('此桌訂單已清理完成');
+      throw new BadRequestException('此桌訂單已清理完成,並釋出桌位');
     }
 
     if (orderRes.is_pay) {
@@ -51,7 +51,7 @@ export class CheckOutService {
     // 2. [v] 透過id查詢訂單資訊。
     // 3. [v] 確認是否有此訂單。
     // 4. [v] 確認此定單狀態
-    //        a. [v] status = OrderStatus.IN_PROGRESS (尚未清理完成)。
+    //        a. [v] status = OrderStatus.IN_PROGRESS (已清理完成,並釋出桌位)。
     //        b. [v] 確認此定單 is_pay = false (尚未結帳)。
     // 5. [v] 透過訂單資訊中的order_details欄位，取得訂單明細資訊。
     // 6. [v] 判斷訂單明細資訊是否為空。
@@ -78,10 +78,8 @@ export class CheckOutService {
     }
 
     if (orderRes.status !== OrderStatus.IN_PROGRESS) {
-      throw new BadRequestException('此桌訂單已清理完成');
+      throw new BadRequestException('此桌訂單已清理完成,並釋出桌位');
     }
-
-    console.log(orderRes);
 
     if (orderRes.is_pay) {
       throw new BadRequestException('此訂單已結帳');
