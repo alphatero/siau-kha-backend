@@ -432,13 +432,13 @@ export class OrderDetailService {
       if (product_detail[productDetailIsExist].is_delete) {
         throw new BadRequestException('此單品已經退點，不可上菜');
       }
-      // 如果此單品尚未完成，則不可上菜
-      if (
-        product_detail[productDetailIsExist].status ===
-        ProductDetailStatus.IN_PROGRESS
-      ) {
-        throw new BadRequestException('此單品尚未完成，不可上菜');
-      }
+      // 如果此單品尚未完成，則不可上菜 -> for demo 移除卡控
+      // if (
+      //   product_detail[productDetailIsExist].status ===
+      //   ProductDetailStatus.IN_PROGRESS
+      // ) {
+      //   throw new BadRequestException('此單品尚未完成，不可上菜');
+      // }
 
       // 如果此單品已經上菜過，則不可再次上菜
       if (
