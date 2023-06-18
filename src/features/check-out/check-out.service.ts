@@ -138,7 +138,6 @@ export class CheckOutService {
         };
       },
     );
-
     // 如果有折扣，則計算折扣後的金額
     if (orderRes.activities) {
       finalTotal = this.calActivityDiscount(
@@ -154,6 +153,10 @@ export class CheckOutService {
       finalTotal = validTotal;
     }
 
+    const activity_charge = finalTotal - validTotal;
+    const service_charge = finalTotal * 0.1;
+    finalTotal = finalTotal + service_charge;
+
     await this.orderModel
       .findByIdAndUpdate(id, { final_total: finalTotal }, { new: true })
       .exec();
@@ -161,12 +164,14 @@ export class CheckOutService {
       customer_num: orderRes.customer_num,
       total: validTotal,
       final_total: finalTotal,
+      service_charge: service_charge,
       order_detail: order_detail_list,
       activities: orderRes.activities
         ? {
             activities_name: orderRes.activities.activities_name,
             discount_type: orderRes.activities.discount_type,
             charge_type: orderRes.activities.charge_type,
+            activity_charge: activity_charge,
           }
         : {},
     };

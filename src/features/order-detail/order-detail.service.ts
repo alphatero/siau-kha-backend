@@ -232,6 +232,53 @@ export class OrderDetailService {
     validateObjectIds({ oredr_id: id });
     try {
       const order: OrderDocument = await this.orderModel.findById(id).exec();
+      const productListObj = {}; // 存放所有有效的餐點，以 product_id 為 key
+      let validTotal = 0;
+      let finalTotal = 0;
+
+      order.order_detail.forEach((detail) => {
+        detail.product_detail.forEach((product) => {
+          if (
+            // ProductDetailStatus.SUCCESS (已上菜)
+            // is_delete = false。(未被退點)
+            // product.status === ProductDetailStatus.SUCCESS &&
+            product.is_delete === false
+          ) {
+            // 用 product_id 做key，來合併計算相同餐點的數量及總額
+            if (productListObj[product.product_id]) {
+              productListObj[product.product_id].product_quantity =
+                productListObj[product.product_id].product_quantity +
+                product.product_quantity;
+              productListObj[product.product_id].product_price =
+                product.product_price;
+            } else {
+              productListObj[product.product_id] = {
+                product_name: product.product_name,
+                product_price: product.product_price,
+                product_quantity: product.product_quantity,
+              };
+            }
+          }
+        });
+      });
+
+      Object.values(productListObj).map((product: any) => {
+        const { product_price, product_quantity } = product;
+        const product_final_price = product_price * product_quantity;
+        validTotal = validTotal + product_final_price;
+      });
+
+      if (order.activities) {
+        finalTotal = this.calActivityDiscount(
+          productListObj,
+          validTotal,
+          order.activities,
+        );
+      } else {
+        finalTotal = validTotal;
+      }
+
+      const activity_charge = finalTotal - validTotal;
 
       const result = {
         order_detail: order.order_detail.map((detail: OrderDetailDocument) => ({
@@ -248,6 +295,14 @@ export class OrderDetailService {
               order_time: formatDateTime(detail.create_time),
             }),
           ),
+          activities: order.activities
+            ? {
+                activities_name: order.activities.activities_name,
+                discount_type: order.activities.discount_type,
+                charge_type: order.activities.charge_type,
+                activity_charge: activity_charge,
+              }
+            : {},
           create_time: detail.create_time,
         })),
         total: order.total,
@@ -482,5 +537,45 @@ export class OrderDetailService {
     );
 
     return {};
+  }
+
+  private calActivityDiscount(validObj, validTotal, activities) {
+    let finalTotal = 0;
+    // 判斷 計算類別 discount_type 0-全單優惠 1-指定商品。
+    switch (activities.discount_type) {
+      case '0': // 0-全單優惠
+        // 確認 計算類型 charge_type 0-折扣 1-折讓
+        if (activities.charge_type === '0') {
+          finalTotal = validTotal * ((100 - activities.discount) / 100);
+        } else {
+          finalTotal = validTotal - activities.discount;
+        }
+        break;
+      case '1': // 1-指定商品 則需確認點餐清單內有該商品。
+        // 因為可能有多個商品，所以要用迴圈去確認
+        // 並記錄每個商品要折扣的金額，最後再由有效應收金額扣除
+        // 找目標折扣商品
+        // 備註：都只折扣一次
+        let needMinus = 0;
+
+        activities.act_products_list.forEach((act_product) => {
+          if (validObj[act_product]) {
+            if (activities.charge_type === '0') {
+              needMinus =
+                needMinus +
+                validObj[act_product].product_price *
+                  (activities.discount / 100);
+            } else {
+              needMinus = needMinus + activities.discount;
+            }
+          }
+        });
+        finalTotal = validTotal - needMinus;
+        break;
+      default:
+        break;
+    }
+
+    return finalTotal;
   }
 }
