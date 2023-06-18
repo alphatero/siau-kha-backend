@@ -21,6 +21,8 @@ import { OrderSocketModule } from './features/order-socket';
 import { OrderDetailModule } from './features/order-detail';
 import { OrderModule } from './features/order';
 import { ReservationModule } from './features/reservation';
+import { ManageProductModule } from './features/manage/manage-product';
+import { FoodItemsModule } from './features/manage/food-items';
 import { CheckOutModule } from './features/check-out';
 import { ManageActivitiesModule } from './features/manage/manage-activities/manage-activities.module';
 
@@ -48,10 +50,11 @@ import { ManageActivitiesModule } from './features/manage/manage-activities/mana
     OrderSocketModule,
     OrderDetailModule,
     OrderModule,
+    ManageProductModule,
+    FoodItemsModule,
     CheckOutModule,
     ManageActivitiesModule,
   ],
-  controllers: [],
   providers: [
     // * DTO 驗證
     GLOBAL_VALIDATION_PIPE,
