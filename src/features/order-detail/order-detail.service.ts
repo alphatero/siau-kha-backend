@@ -250,7 +250,7 @@ export class OrderDetailService {
           ),
           create_time: detail.create_time,
         })),
-        total: order.final_total,
+        total: order.total,
       };
 
       return result;
