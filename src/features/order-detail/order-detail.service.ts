@@ -13,6 +13,7 @@ import { OrderDetail, OrderDetailDocument } from 'src/core/models/order-detail';
 import { ProductList, ProductListDocument } from 'src/core/models/product-list';
 import { User } from 'src/core/models/user';
 import { validateObjectIds } from 'src/common/utils/validate';
+import { formatDateTime } from 'src/common/utils/time';
 
 @Injectable()
 export class OrderDetailService {
@@ -244,11 +245,12 @@ export class OrderDetailService {
               product_note: product.product_note,
               status: product.status,
               is_delete: product.is_delete,
+              order_time: formatDateTime(detail.create_time),
             }),
           ),
           create_time: detail.create_time,
         })),
-        total: order.final_total,
+        total: order.total,
       };
 
       return result;
@@ -430,13 +432,13 @@ export class OrderDetailService {
       if (product_detail[productDetailIsExist].is_delete) {
         throw new BadRequestException('此單品已經退點，不可上菜');
       }
-      // 如果此單品尚未完成，則不可上菜
-      if (
-        product_detail[productDetailIsExist].status ===
-        ProductDetailStatus.IN_PROGRESS
-      ) {
-        throw new BadRequestException('此單品尚未完成，不可上菜');
-      }
+      // 如果此單品尚未完成，則不可上菜 -> for demo 移除卡控
+      // if (
+      //   product_detail[productDetailIsExist].status ===
+      //   ProductDetailStatus.IN_PROGRESS
+      // ) {
+      //   throw new BadRequestException('此單品尚未完成，不可上菜');
+      // }
 
       // 如果此單品已經上菜過，則不可再次上菜
       if (
