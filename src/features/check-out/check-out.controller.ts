@@ -40,11 +40,8 @@ export class CheckOutController {
       example: basicExample,
     },
   })
-  @Patch('/:id/:final_price')
-  async checkOut(
-    @Param('id') id: string,
-    @Param('final_price') final_price: number,
-  ) {
-    return this.checkOutService.checkOut(id, final_price);
+  @Patch('/:id')
+  async checkOut(@Param('id') id: string) {
+    return this.checkOutService.checkOut(id);
   }
 }
