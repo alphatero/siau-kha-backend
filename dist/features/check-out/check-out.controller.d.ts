@@ -27,5 +27,5 @@ export declare class CheckOutController {
             };
         };
     }>;
-    checkOut(id: string, final_price: number): Promise<void>;
+    checkOut(id: string): Promise<void>;
 }

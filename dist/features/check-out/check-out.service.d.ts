@@ -3,7 +3,7 @@ import { Order } from 'src/core/models/order';
 export declare class CheckOutService {
     private readonly orderModel;
     constructor(orderModel: Model<Order>);
-    checkOut(id: string, final_price: number): Promise<void>;
+    checkOut(id: string): Promise<void>;
     getCheckOutInfo(id: string): Promise<{
         order: {
             customer_num: number;

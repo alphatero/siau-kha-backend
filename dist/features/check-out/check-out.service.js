@@ -21,7 +21,7 @@ let CheckOutService = class CheckOutService {
     constructor(orderModel) {
         this.orderModel = orderModel;
     }
-    async checkOut(id, final_price) {
+    async checkOut(id) {
         if (!mongoose_2.Types.ObjectId.isValid(id)) {
             throw new common_1.BadRequestException('id 格式錯誤');
         }
@@ -34,12 +34,6 @@ let CheckOutService = class CheckOutService {
         }
         if (orderRes.is_pay) {
             throw new common_1.BadRequestException('此訂單已結帳');
-        }
-        if (!Number.isInteger(final_price) || final_price < 0) {
-            throw new common_1.BadRequestException('實收金額應為正整數');
-        }
-        if (final_price !== orderRes.final_total) {
-            throw new common_1.BadRequestException(`實收金額與應收金額不符；實收金額:${final_price}，應收金額:${orderRes.final_total}`);
         }
         await this.orderModel.findByIdAndUpdate(id, { is_pay: true }, { new: true });
     }

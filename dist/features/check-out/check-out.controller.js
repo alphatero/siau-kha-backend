@@ -26,8 +26,8 @@ let CheckOutController = class CheckOutController {
     async getCheckOutInfo(id) {
         return this.checkOutService.getCheckOutInfo(id);
     }
-    async checkOut(id, final_price) {
-        return this.checkOutService.checkOut(id, final_price);
+    async checkOut(id) {
+        return this.checkOutService.checkOut(id);
     }
 };
 __decorate([
@@ -54,11 +54,10 @@ __decorate([
             example: apiExample_1.basicExample,
         },
     }),
-    (0, common_1.Patch)('/:id/:final_price'),
+    (0, common_1.Patch)('/:id'),
     __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Param)('final_price')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Number]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], CheckOutController.prototype, "checkOut", null);
 CheckOutController = __decorate([
