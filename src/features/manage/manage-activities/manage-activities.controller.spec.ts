@@ -9,7 +9,9 @@ describe('ManageActivitiesController', () => {
       controllers: [ManageActivitiesController],
     }).compile();
 
-    controller = module.get<ManageActivitiesController>(ManageActivitiesController);
+    controller = module.get<ManageActivitiesController>(
+      ManageActivitiesController,
+    );
   });
 
   it('should be defined', () => {
