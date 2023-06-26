@@ -21,6 +21,7 @@ const create_order_detail_dto_1 = require("./dto/create-order-detail.dto");
 const apiExample_1 = require("./apiExample");
 const apiExample_2 = require("../../common/utils/apiExample");
 const product_detail_1 = require("../../core/models/product-detail");
+const update_product_detail_dto_1 = require("../order-socket/dto/update-product-detail.dto");
 let OrderDetailController = class OrderDetailController {
     constructor(orderDetailService) {
         this.orderDetailService = orderDetailService;
@@ -36,6 +37,9 @@ let OrderDetailController = class OrderDetailController {
     }
     async getOrderDetail(id) {
         return await this.orderDetailService.getOrderDetail(id);
+    }
+    async patchOrderDetailFinish(body) {
+        await this.orderDetailService.patchOrderDetail(body.order_id, body.detail_id, body.p_id, product_detail_1.ProductDetailStatus.FINISH);
     }
 };
 __decorate([
@@ -103,6 +107,21 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], OrderDetailController.prototype, "getOrderDetail", null);
+__decorate([
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: '單一餐點出菜' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        schema: {
+            example: apiExample_2.basicExample,
+        },
+    }),
+    (0, common_1.Patch)('/product-detail/finish'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [update_product_detail_dto_1.UpdateProductDetailDto]),
+    __metadata("design:returntype", Promise)
+], OrderDetailController.prototype, "patchOrderDetailFinish", null);
 OrderDetailController = __decorate([
     (0, swagger_1.ApiTags)('OrderDetail'),
     (0, common_1.UseGuards)(guards_1.JwtGuard),

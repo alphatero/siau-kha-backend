@@ -1,6 +1,7 @@
 import { OrderDetailService } from './order-detail.service';
 import { CreateOrderDetailDto } from './dto/create-order-detail.dto';
 import { ProductDetailStatus } from 'src/core/models/product-detail';
+import { UpdateProductDetailDto } from '../order-socket/dto/update-product-detail.dto';
 export declare class OrderDetailController {
     private readonly orderDetailService;
     constructor(orderDetailService: OrderDetailService);
@@ -35,4 +36,5 @@ export declare class OrderDetailController {
         }[];
         total: number;
     }>;
+    patchOrderDetailFinish(body: UpdateProductDetailDto): Promise<void>;
 }
