@@ -68,10 +68,6 @@ export class TableService {
 
         if (!order.is_pay)
           throw new BadRequestException('尚未結帳，不得清潔桌位');
-
-        if (dto.customer_num !== 0)
-          throw new BadRequestException('清潔完成, 人數須為 0');
-        break;
     }
 
     const tableSession = await this.tableMainModel.db.startSession();
@@ -124,7 +120,6 @@ export class TableService {
           id,
           {
             status: TableStatus.IDLE,
-            customer_num: 0,
             $unset: { order: '' },
           },
           {
