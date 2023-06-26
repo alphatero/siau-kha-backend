@@ -38,19 +38,23 @@ let TableService = class TableService {
         if (!table_main || table_main.is_delete) {
             throw new common_1.BadRequestException('找不到此桌號');
         }
+        if (table_main.status === dto.status) {
+            throw new common_1.BadRequestException(`目前狀態已為 ${dto.status} ， 不同重複設置相同桌況`);
+        }
         switch (dto.status) {
             case table_main_1.TableStatus.MEAL:
                 if (dto.customer_num <= 0)
                     throw new common_1.BadRequestException('安排入座, 用餐人數須大於0');
-                else if (dto.customer_num > table_main.seat_max + 2)
+                if (dto.customer_num > table_main.seat_max + 2)
                     throw new common_1.BadRequestException(`預設可容納人數為 ${table_main.seat_max}, 實際人數可超過「預設可容納人數」最多兩位`);
-                else if (table_main.status === table_main_1.TableStatus.MEAL)
+                if (table_main.status === table_main_1.TableStatus.MEAL)
                     throw new common_1.BadRequestException('此桌次為用餐中, 無法安排入座');
                 break;
             case table_main_1.TableStatus.IDLE:
-                if (dto.customer_num !== 0)
-                    throw new common_1.BadRequestException('清潔完成, 人數須為 0');
-                break;
+                const order_id = table_main.order;
+                const order = await this.orderModel.findById(order_id).exec();
+                if (!order.is_pay)
+                    throw new common_1.BadRequestException('尚未結帳，不得清潔桌位');
         }
         const tableSession = await this.tableMainModel.db.startSession();
         const orderSession = await this.orderModel.db.startSession();
