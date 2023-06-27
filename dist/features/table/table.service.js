@@ -16,6 +16,7 @@ exports.TableService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const time_1 = require("../../common/utils/time");
 const order_1 = require("../../core/models/order");
 const table_main_1 = require("../../core/models/table-main");
 let TableService = class TableService {
@@ -27,8 +28,37 @@ let TableService = class TableService {
         return this.tableMainModel.create(dto);
     }
     async getTableList(filters) {
-        const query = this.tableMainModel.find(filters);
-        return query;
+        const documents = await this.tableMainModel.find(filters);
+        const table_list = documents.map((doc) => {
+            var _a, _b, _c, _d;
+            const table = doc.toJSON();
+            const order_detail = (_a = table.order) === null || _a === void 0 ? void 0 : _a.order_detail.map((order_detail) => {
+                return order_detail.product_detail.map((p) => {
+                    return {
+                        order_detail_id: order_detail['_id'],
+                        id: p['_id'],
+                        product_name: p.product_name,
+                        product_quantity: p.product_quantity,
+                        product_note: p.product_note,
+                        status: p.status,
+                        is_delete: p.is_delete,
+                        order_time: (0, time_1.formatDateTime)(order_detail.create_time),
+                    };
+                });
+            });
+            return {
+                id: table._id,
+                table_name: table.table_name,
+                seat_max: table.seat_max,
+                status: table.status,
+                customer_num: (_b = table.order) === null || _b === void 0 ? void 0 : _b.customer_num,
+                create_time: (_c = table.order) === null || _c === void 0 ? void 0 : _c.create_time,
+                is_pay: (_d = table.order) === null || _d === void 0 ? void 0 : _d.is_pay,
+                order_id: table.order ? table.order['_id'] : '',
+                order_detail,
+            };
+        });
+        return table_list;
     }
     async updateTable(id, dto, user) {
         if (!mongoose_2.Types.ObjectId.isValid(id)) {

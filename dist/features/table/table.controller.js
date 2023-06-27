@@ -19,7 +19,6 @@ const guards_1 = require("../../common/guards");
 const table_service_1 = require("./table.service");
 const create_table_dto_1 = require("./dto/create-table.dto");
 const update_table_dto_1 = require("./dto/update-table.dto");
-const time_1 = require("../../common/utils/time");
 const apiExample_1 = require("./apiExample");
 const apiExample_2 = require("../../common/utils/apiExample");
 let TableController = class TableController {
@@ -27,36 +26,7 @@ let TableController = class TableController {
         this.tableService = tableService;
     }
     async getTableList() {
-        const documents = await this.tableService.getTableList();
-        const table_list = documents.map((doc) => {
-            var _a, _b, _c, _d;
-            const table = doc.toJSON();
-            const order_detail = (_a = table.order) === null || _a === void 0 ? void 0 : _a.order_detail.map((order_detail) => {
-                return order_detail.product_detail.map((p) => {
-                    return {
-                        order_detail_id: order_detail['_id'],
-                        id: p['_id'],
-                        product_name: p.product_name,
-                        product_quantity: p.product_quantity,
-                        product_note: p.product_note,
-                        status: p.status,
-                        is_delete: p.is_delete,
-                        order_time: (0, time_1.formatDateTime)(order_detail.create_time),
-                    };
-                });
-            });
-            return {
-                id: table._id,
-                table_name: table.table_name,
-                seat_max: table.seat_max,
-                status: table.status,
-                customer_num: (_b = table.order) === null || _b === void 0 ? void 0 : _b.customer_num,
-                create_time: (_c = table.order) === null || _c === void 0 ? void 0 : _c.create_time,
-                is_pay: (_d = table.order) === null || _d === void 0 ? void 0 : _d.is_pay,
-                order_id: table.order ? table.order['_id'] : '',
-                order_detail,
-            };
-        });
+        const table_list = await this.tableService.getTableList();
         return { table_list };
     }
     async createTable(dto) {

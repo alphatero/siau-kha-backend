@@ -18,17 +18,18 @@ const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
 const table_data_dto_1 = require("./dto/table-data.dto");
 const pipes_1 = require("../../common/pipes");
-const time_1 = require("../../common/utils/time");
 const ws_exception_filter_1 = require("../../common/filters/websocket/ws-exception.filter");
 const gateways_1 = require("../../core/gateways");
 const order_detail_1 = require("../order-detail");
 const update_product_detail_dto_1 = require("./dto/update-product-detail.dto");
 const delete_product_detail_dto_1 = require("./dto/delete-product-detail.dto");
 const product_detail_1 = require("../../core/models/product-detail");
+const table_1 = require("../table");
 const namespace = gateways_1.GATEWAY_NAMESPACE.ORDER;
 let OrderSocketGateway = class OrderSocketGateway {
-    constructor(orderDetailService) {
+    constructor(orderDetailService, tableService) {
         this.orderDetailService = orderDetailService;
+        this.tableService = tableService;
     }
     async onOrder(body) {
         const product_detail = body.product_detail.map((item) => {
@@ -42,7 +43,10 @@ let OrderSocketGateway = class OrderSocketGateway {
             product_detail,
         };
         await this.orderDetailService.orderFlow(orderDetailDto, body.order_id);
-        this.server.emit('onOrder', Object.assign(Object.assign({}, body), { order_time: (0, time_1.getCurrentDateTime)() }));
+        const table_list = await this.tableService.getTableList();
+        this.server.emit('onOrder', {
+            table_list,
+        });
     }
     async onUpdateProductDetail(body) {
         await this.orderDetailService.patchOrderDetail(body.order_id, body.detail_id, body.p_id, product_detail_1.ProductDetailStatus.FINISH);
@@ -102,7 +106,8 @@ OrderSocketGateway = __decorate([
         },
     }),
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [order_detail_1.OrderDetailService])
+    __metadata("design:paramtypes", [order_detail_1.OrderDetailService,
+        table_1.TableService])
 ], OrderSocketGateway);
 exports.OrderSocketGateway = OrderSocketGateway;
 //# sourceMappingURL=order-socket.gateway.js.map

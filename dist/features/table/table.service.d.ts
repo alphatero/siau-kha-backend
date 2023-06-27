@@ -24,7 +24,7 @@
 /// <reference types="mongoose/types/inferschematype" />
 import { FilterQuery, Model, Types } from 'mongoose';
 import { OrderDocument } from 'src/core/models/order';
-import { TableMain, TableMainDocument } from 'src/core/models/table-main';
+import { TableMain, TableMainDocument, TableStatus } from 'src/core/models/table-main';
 import { IUserPayload } from '../auth';
 import { CreateTableDto } from './dto/create-table.dto';
 import { UpdateTableDto } from './dto/update-table.dto';
@@ -35,8 +35,25 @@ export declare class TableService {
     createTable(dto: CreateTableDto): Promise<import("mongoose").Document<unknown, {}, TableMainDocument> & Omit<TableMain & import("mongoose").Document<any, any, any> & {
         _id: Types.ObjectId;
     }, never>>;
-    getTableList(filters?: FilterQuery<TableMain>): Promise<(import("mongoose").Document<unknown, {}, TableMainDocument> & Omit<TableMain & import("mongoose").Document<any, any, any> & {
-        _id: Types.ObjectId;
-    }, never>)[]>;
+    getTableList(filters?: FilterQuery<TableMain>): Promise<{
+        id: any;
+        table_name: string;
+        seat_max: number;
+        status: TableStatus;
+        customer_num: number;
+        create_time: Date;
+        is_pay: boolean;
+        order_id: any;
+        order_detail: {
+            order_detail_id: any;
+            id: any;
+            product_name: string;
+            product_quantity: number;
+            product_note: string[];
+            status: import("../../core/models/product-detail").ProductDetailStatus;
+            is_delete: boolean;
+            order_time: string;
+        }[][];
+    }[]>;
     updateTable(id: string, dto: UpdateTableDto, user: IUserPayload): Promise<void>;
 }

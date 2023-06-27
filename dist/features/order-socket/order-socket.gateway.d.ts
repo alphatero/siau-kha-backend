@@ -4,9 +4,11 @@ import { TableDataDto } from './dto/table-data.dto';
 import { OrderDetailService } from 'src/features/order-detail';
 import { UpdateProductDetailDto } from './dto/update-product-detail.dto';
 import { DeleteProductDetailDto } from './dto/delete-product-detail.dto';
+import { TableService } from 'src/features/table';
 export declare class OrderSocketGateway implements OnGatewayConnection {
     private readonly orderDetailService;
-    constructor(orderDetailService: OrderDetailService);
+    private readonly tableService;
+    constructor(orderDetailService: OrderDetailService, tableService: TableService);
     server: Server;
     onOrder(body: TableDataDto): Promise<void>;
     onUpdateProductDetail(body: UpdateProductDetailDto): Promise<void>;

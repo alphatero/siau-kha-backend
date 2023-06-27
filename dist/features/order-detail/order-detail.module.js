@@ -16,6 +16,8 @@ const order_1 = require("../../core/models/order");
 const order_detail_1 = require("../../core/models/order-detail");
 const product_list_1 = require("../../core/models/product-list");
 const activities_1 = require("../../core/models/activities");
+const table_service_1 = require("../table/table.service");
+const table_main_1 = require("../../core/models/table-main");
 let OrderDetailModule = class OrderDetailModule {
 };
 OrderDetailModule = __decorate([
@@ -42,11 +44,15 @@ OrderDetailModule = __decorate([
                     name: activities_1.Activities.name,
                     schema: activities_1.ActivitiesSchema,
                 },
+                {
+                    name: table_main_1.TableMain.name,
+                    schema: table_main_1.TableMainSchema,
+                },
             ]),
         ],
-        providers: [order_detail_service_1.OrderDetailService],
+        providers: [order_detail_service_1.OrderDetailService, table_service_1.TableService],
         controllers: [order_detail_controller_1.OrderDetailController],
-        exports: [order_detail_service_1.OrderDetailService],
+        exports: [order_detail_service_1.OrderDetailService, table_service_1.TableService],
     })
 ], OrderDetailModule);
 exports.OrderDetailModule = OrderDetailModule;
