@@ -10,7 +10,6 @@ import { Server, Socket } from 'socket.io';
 
 import { TableDataDto } from './dto/table-data.dto';
 import { WSValidationPipe } from '../../common/pipes';
-import { getCurrentDateTime } from '../../common/utils/time';
 import { WebSocketExceptionFilter } from 'src/common/filters/websocket/ws-exception.filter';
 import { corsOrigin, GATEWAY_NAMESPACE, SUBSCRIBE } from 'src/core/gateways';
 import { OrderDetailService } from 'src/features/order-detail';
@@ -18,6 +17,7 @@ import { CreateOrderDetailDto } from 'src/features/order-detail/dto/create-order
 import { UpdateProductDetailDto } from './dto/update-product-detail.dto';
 import { DeleteProductDetailDto } from './dto/delete-product-detail.dto';
 import { ProductDetailStatus } from 'src/core/models/product-detail';
+import { TableService } from 'src/features/table';
 
 // 設定 namespace
 const namespace = GATEWAY_NAMESPACE.ORDER;
@@ -30,7 +30,10 @@ const namespace = GATEWAY_NAMESPACE.ORDER;
 })
 @Injectable()
 export class OrderSocketGateway implements OnGatewayConnection {
-  constructor(private readonly orderDetailService: OrderDetailService) {}
+  constructor(
+    private readonly orderDetailService: OrderDetailService,
+    private readonly tableService: TableService,
+  ) {}
   @WebSocketServer()
   server: Server;
 
@@ -55,9 +58,9 @@ export class OrderSocketGateway implements OnGatewayConnection {
     };
 
     await this.orderDetailService.orderFlow(orderDetailDto, body.order_id);
+    const table_list = await this.tableService.getTableList();
     this.server.emit('onOrder', {
-      ...body,
-      order_time: getCurrentDateTime(),
+      table_list,
     });
   }
 

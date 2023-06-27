@@ -11,6 +11,8 @@ import { Order, OrderSchema } from 'src/core/models/order';
 import { OrderDetail, OrderDetailSchema } from 'src/core/models/order-detail';
 import { ProductList, ProductListSchema } from 'src/core/models/product-list';
 import { Activities, ActivitiesSchema } from 'src/core/models/activities';
+import { TableService } from '../table/table.service';
+import { TableMain, TableMainSchema } from 'src/core/models/table-main';
 
 @Module({
   imports: [
@@ -35,10 +37,14 @@ import { Activities, ActivitiesSchema } from 'src/core/models/activities';
         name: Activities.name,
         schema: ActivitiesSchema,
       },
+      {
+        name: TableMain.name,
+        schema: TableMainSchema,
+      },
     ]),
   ],
-  providers: [OrderDetailService],
+  providers: [OrderDetailService, TableService],
   controllers: [OrderDetailController],
-  exports: [OrderDetailService],
+  exports: [OrderDetailService, TableService],
 })
 export class OrderDetailModule {}
