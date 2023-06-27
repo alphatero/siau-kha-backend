@@ -19,7 +19,6 @@ import { JwtGuard } from 'src/common/guards';
 import { TableService } from './table.service';
 import { CreateTableDto } from './dto/create-table.dto';
 import { UpdateTableDto } from './dto/update-table.dto';
-import { formatDateTime } from 'src/common/utils/time';
 import { getTableListExample } from './apiExample';
 import { basicExample } from 'src/common/utils/apiExample';
 
@@ -39,35 +38,7 @@ export class TableController {
   })
   @Get('/list')
   async getTableList() {
-    const documents = await this.tableService.getTableList();
-    const table_list = documents.map((doc) => {
-      const table = doc.toJSON();
-      const order_detail = table.order?.order_detail.map((order_detail) => {
-        return order_detail.product_detail.map((p) => {
-          return {
-            order_detail_id: order_detail['_id'],
-            id: p['_id'],
-            product_name: p.product_name,
-            product_quantity: p.product_quantity,
-            product_note: p.product_note,
-            status: p.status,
-            is_delete: p.is_delete,
-            order_time: formatDateTime(order_detail.create_time),
-          };
-        });
-      });
-      return {
-        id: table._id,
-        table_name: table.table_name,
-        seat_max: table.seat_max,
-        status: table.status,
-        customer_num: table.order?.customer_num,
-        create_time: table.order?.create_time,
-        is_pay: table.order?.is_pay,
-        order_id: table.order ? table.order['_id'] : '',
-        order_detail,
-      };
-    });
+    const table_list = await this.tableService.getTableList();
     return { table_list };
   }
 
