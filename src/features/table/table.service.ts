@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, Types } from 'mongoose';
+import { formatDateTime } from 'src/common/utils/time';
 import { Order, OrderDocument, OrderStatus } from 'src/core/models/order';
 import {
   TableMain,
@@ -24,8 +25,36 @@ export class TableService {
     return this.tableMainModel.create(dto);
   }
   public async getTableList(filters?: FilterQuery<TableMain>) {
-    const query = this.tableMainModel.find(filters);
-    return query;
+    const documents = await this.tableMainModel.find(filters);
+    const table_list = documents.map((doc) => {
+      const table = doc.toJSON();
+      const order_detail = table.order?.order_detail.map((order_detail) => {
+        return order_detail.product_detail.map((p) => {
+          return {
+            order_detail_id: order_detail['_id'],
+            id: p['_id'],
+            product_name: p.product_name,
+            product_quantity: p.product_quantity,
+            product_note: p.product_note,
+            status: p.status,
+            is_delete: p.is_delete,
+            order_time: formatDateTime(order_detail.create_time),
+          };
+        });
+      });
+      return {
+        id: table._id,
+        table_name: table.table_name,
+        seat_max: table.seat_max,
+        status: table.status,
+        customer_num: table.order?.customer_num,
+        create_time: table.order?.create_time,
+        is_pay: table.order?.is_pay,
+        order_id: table.order ? table.order['_id'] : '',
+        order_detail,
+      };
+    });
+    return table_list;
   }
 
   public async updateTable(
