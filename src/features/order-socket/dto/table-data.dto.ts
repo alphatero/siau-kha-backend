@@ -5,10 +5,6 @@ import { ProductDetailDto } from './product-detail.dto';
 export class TableDataDto {
   @IsNotEmpty()
   @IsString()
-  table_id: string;
-
-  @IsNotEmpty()
-  @IsString()
   order_id: string;
 
   @IsNotEmpty()

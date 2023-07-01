@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, Types } from 'mongoose';
+import { formatDateTime } from 'src/common/utils/time';
 import { Order, OrderDocument, OrderStatus } from 'src/core/models/order';
 import {
   TableMain,
@@ -24,8 +25,36 @@ export class TableService {
     return this.tableMainModel.create(dto);
   }
   public async getTableList(filters?: FilterQuery<TableMain>) {
-    const query = this.tableMainModel.find(filters);
-    return query;
+    const documents = await this.tableMainModel.find(filters);
+    const table_list = documents.map((doc) => {
+      const table = doc.toJSON();
+      const order_detail = table.order?.order_detail.map((order_detail) => {
+        return order_detail.product_detail.map((p) => {
+          return {
+            order_detail_id: order_detail['_id'],
+            id: p['_id'],
+            product_name: p.product_name,
+            product_quantity: p.product_quantity,
+            product_note: p.product_note,
+            status: p.status,
+            is_delete: p.is_delete,
+            order_time: formatDateTime(order_detail.create_time),
+          };
+        });
+      });
+      return {
+        id: table._id,
+        table_name: table.table_name,
+        seat_max: table.seat_max,
+        status: table.status,
+        customer_num: table.order?.customer_num,
+        create_time: table.order?.create_time,
+        is_pay: table.order?.is_pay,
+        order_id: table.order ? table.order['_id'] : '',
+        order_detail,
+      };
+    });
+    return table_list;
   }
 
   public async updateTable(
@@ -42,22 +71,32 @@ export class TableService {
       throw new BadRequestException('找不到此桌號');
     }
 
+    if (table_main.status === dto.status) {
+      throw new BadRequestException(
+        `目前狀態已為 ${dto.status} ， 不同重複設置相同桌況`,
+      );
+    }
+
     switch (dto.status) {
-      case TableStatus.MEAL:
+      case TableStatus.MEAL: // 用餐中
         if (dto.customer_num <= 0)
           throw new BadRequestException('安排入座, 用餐人數須大於0');
-        else if (dto.customer_num > table_main.seat_max + 2)
+
+        if (dto.customer_num > table_main.seat_max + 2)
           throw new BadRequestException(
             `預設可容納人數為 ${table_main.seat_max}, 實際人數可超過「預設可容納人數」最多兩位`,
           );
-        else if (table_main.status === TableStatus.MEAL)
-          throw new BadRequestException('此桌次為用餐中, 無法安排入座');
-        break;
 
-      case TableStatus.IDLE:
-        if (dto.customer_num !== 0)
-          throw new BadRequestException('清潔完成, 人數須為 0');
+        if (table_main.status === TableStatus.MEAL)
+          throw new BadRequestException('此桌次為用餐中, 無法安排入座');
+
         break;
+      case TableStatus.IDLE: // 閒置
+        const order_id = table_main.order;
+        const order = await this.orderModel.findById(order_id).exec();
+
+        if (!order.is_pay)
+          throw new BadRequestException('尚未結帳，不得清潔桌位');
     }
 
     const tableSession = await this.tableMainModel.db.startSession();

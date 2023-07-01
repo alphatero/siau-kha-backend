@@ -23,6 +23,7 @@ import { CreateOrderDetailDto } from './dto/create-order-detail.dto';
 import { getOrderDetailExample } from './apiExample';
 import { basicExample } from 'src/common/utils/apiExample';
 import { ProductDetailStatus } from 'src/core/models/product-detail';
+import { UpdateProductDetailDto } from '../order-socket/dto/update-product-detail.dto';
 
 // B-10 送出餐點紀錄
 @ApiTags('OrderDetail')
@@ -100,5 +101,24 @@ export class OrderDetailController {
   @Get('')
   async getOrderDetail(@Query('id') id: string) {
     return await this.orderDetailService.getOrderDetail(id);
+  }
+
+  // B-14 單一餐點出菜 ( 廚房端 )
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '單一餐點出菜' })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      example: basicExample,
+    },
+  })
+  @Patch('/product-detail/finish')
+  async patchOrderDetailFinish(@Body() body: UpdateProductDetailDto) {
+    await this.orderDetailService.patchOrderDetail(
+      body.order_id,
+      body.detail_id,
+      body.p_id,
+      ProductDetailStatus.FINISH,
+    );
   }
 }

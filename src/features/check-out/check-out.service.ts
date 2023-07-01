@@ -10,7 +10,7 @@ export class CheckOutService {
     private readonly orderModel: Model<Order>,
   ) {}
 
-  public async checkOut(id: string, final_price: number) {
+  public async checkOut(id: string) {
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('id 格式錯誤');
     }
@@ -27,16 +27,6 @@ export class CheckOutService {
 
     if (orderRes.is_pay) {
       throw new BadRequestException('此訂單已結帳');
-    }
-
-    if (!Number.isInteger(final_price) || final_price < 0) {
-      throw new BadRequestException('實收金額應為正整數');
-    }
-
-    if (final_price !== orderRes.final_total) {
-      throw new BadRequestException(
-        `實收金額與應收金額不符；實收金額:${final_price}，應收金額:${orderRes.final_total}`,
-      );
     }
 
     await this.orderModel.findByIdAndUpdate(
@@ -154,7 +144,7 @@ export class CheckOutService {
     }
 
     const activity_charge = finalTotal - validTotal;
-    const service_charge = finalTotal * 0.1;
+    const service_charge = Math.round(finalTotal * 0.1);
     finalTotal = finalTotal + service_charge;
 
     await this.orderModel
