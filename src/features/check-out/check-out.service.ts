@@ -144,7 +144,7 @@ export class CheckOutService {
     }
 
     const activity_charge = finalTotal - validTotal;
-    const service_charge = finalTotal * 0.1;
+    const service_charge = Math.round(finalTotal * 0.1);
     finalTotal = finalTotal + service_charge;
 
     await this.orderModel
